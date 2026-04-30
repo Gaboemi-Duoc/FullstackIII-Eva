@@ -1,4 +1,4 @@
-package alumnoduoc.smartlogix.controller;
+package alumnoduoc.user-service.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -6,8 +6,8 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import alumnoduoc.smartlogix.model.User;
-import alumnoduoc.smartlogix.service.UserService;
+import alumnoduoc.user-service.model.User;
+import alumnoduoc.user-service.service.UserService;
 
 
 @RestController

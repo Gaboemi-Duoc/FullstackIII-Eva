@@ -13,10 +13,10 @@
     </parent>
 
     <groupId>alumnoduoc</groupId>
-    <artifactId>smartlogix</artifactId>
+    <artifactId>user-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>smartlogix</name>
-    <description>Backend SmartLogix</description>
+    <name>user-service</name>
+    <description>Backend SmartLogix - User Service</description>
 
     <properties>
         <java.version>21</java.version>
