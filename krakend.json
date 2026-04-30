@@ -1,0 +1,37 @@
+{
+  "version": 3,
+  "name": "SmartLogix API Gateway",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/api/users/login",
+      "method": "POST",
+      "backend": [
+        {
+          "url_pattern": "/api/users/login",
+          "host": ["http://backend:8080"]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/users/register",
+      "method": "POST",
+      "backend": [
+        {
+          "url_pattern": "/api/users/register",
+          "host": ["http://backend:8080"]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/users/{id}/username",
+      "method": "PUT",
+      "backend": [
+        {
+          "url_pattern": "/api/users/{id}/username",
+          "host": ["http://backend:8080"]
+        }
+      ]
+    }
+  ]
+}
