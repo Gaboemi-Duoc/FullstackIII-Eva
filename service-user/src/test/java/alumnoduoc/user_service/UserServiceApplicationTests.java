@@ -1,10 +1,10 @@
-package alumnoduoc.smartlogix;
+package alumnoduoc.user_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SmartlogixApplicationTests {
+class UserServiceApplicationTests {
 
 	@Test
 	void contextLoads() {

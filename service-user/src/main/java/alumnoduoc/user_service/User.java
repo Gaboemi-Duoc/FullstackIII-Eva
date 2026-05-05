@@ -1,5 +1,4 @@
-package alumnoduoc.smartlogix.model;
-
+package alumnoduoc.user_service;
 import jakarta.persistence.*;
 import lombok.*;
 

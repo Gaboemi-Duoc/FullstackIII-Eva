@@ -1,13 +1,13 @@
-package alumnoduoc.smartlogix;
+package alumnoduoc.user_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SmartlogixApplication {
+public class UserServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SmartlogixApplication.class, args);
+		SpringApplication.run(UserServiceApplication.class, args);
 	}
 
 }

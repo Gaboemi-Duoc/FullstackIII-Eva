@@ -1,11 +1,9 @@
-package alumnoduoc.smartlogix.repository;
+package alumnoduoc.user_service;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import alumnoduoc.smartlogix.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

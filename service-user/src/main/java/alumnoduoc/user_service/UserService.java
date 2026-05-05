@@ -1,11 +1,8 @@
-package alumnoduoc.smartlogix.service;
+package alumnoduoc.user_service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-
-import alumnoduoc.smartlogix.model.User;
-import alumnoduoc.smartlogix.repository.UserRepository;
 
 @Service
 public class UserService {
