@@ -32,3 +32,7 @@ Patrones de Diseño usados:
     
 
 NOTAS: Debe estar corriendo el Backend para que el Frontend tenga cualquier forma de utilidad.
+
+## my sql
+
+posible opcion ocupar flyway, para la automatizacion de esquemas de sql
