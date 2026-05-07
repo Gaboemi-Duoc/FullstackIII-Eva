@@ -1,4 +1,4 @@
-import { useUser } from "../viewmodels/UserView";
+import { useUser } from "../viewmodels/UserViewModel";
 
 const Navbar = () => {
   const { user } = useUser();

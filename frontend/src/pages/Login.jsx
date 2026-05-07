@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { login } from "../api/userApi";
-import { useUser } from "../viewmodels/UserView";
+import { useUser } from "../viewmodels/UserViewModel";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {

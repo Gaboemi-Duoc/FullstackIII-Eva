@@ -1,4 +1,5 @@
 package alumnoduoc.bff.client;
+
 import alumnoduoc.bff.dto.LoginRequest;
 import alumnoduoc.bff.dto.UpdateUsernameRequest;
 import alumnoduoc.bff.model.User;
@@ -6,9 +7,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
-@FeignClient(name = "user-service", url = "${user-service.url}")
+@FeignClient(name = "user-service", url = "http://localhost:9090") 
 public interface UserServiceClient {
     
     @GetMapping("/api/users")
