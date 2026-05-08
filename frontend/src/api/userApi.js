@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BFF_API_URL = "http://localhost:8081/api/bff";
+const BFF_API_URL = "http://localhost:8080/api/bff/users";
 
 export const login = async (username, password) => {
   try {
