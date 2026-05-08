@@ -19,7 +19,7 @@ public class UserService {
 
     public User obtenerPorId(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 
     public User registrarUsuario(User user) {
@@ -28,7 +28,7 @@ public class UserService {
 
     public User login(String username, String password) {
         return userRepository.findByUsernameAndPassword(username, password)
-                .orElseThrow(() -> new RuntimeException("Credenciales incorrectas"));
+            .orElseThrow(() -> new RuntimeException("Credenciales incorrectas"));
     }
 
     public User actualizarUsername(Long id, String nuevoUsername) {

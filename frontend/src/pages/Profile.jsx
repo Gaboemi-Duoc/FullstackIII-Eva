@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUser } from "../viewmodels/UserView";
+import { useUser } from "../viewmodels/UserViewModel";
 import { updateUsername } from "../api/userApi";
 
 const Profile = () => {
