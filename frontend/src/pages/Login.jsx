@@ -21,7 +21,7 @@ const Login = () => {
 
   return (
     <div className="page">
-      <h2>Login</h2>
+      <h2>Bienvenido a SmartLogix</h2>
 
       <input
         placeholder="Username"
