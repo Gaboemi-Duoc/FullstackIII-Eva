@@ -9,7 +9,9 @@
       "backend": [
         {
           "url_pattern": "/api/users/login",
-          "host": ["http://backend:8080"]
+          "host": [
+            "http://backend:8080"
+          ]
         }
       ]
     },
@@ -19,7 +21,9 @@
       "backend": [
         {
           "url_pattern": "/api/users/register",
-          "host": ["http://backend:8080"]
+          "host": [
+            "http://backend:8080"
+          ]
         }
       ]
     },
@@ -29,7 +33,69 @@
       "backend": [
         {
           "url_pattern": "/api/users/{id}/username",
-          "host": ["http://backend:8080"]
+          "host": [
+            "http://backend:8080"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/inventory",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/api/inventory",
+          "host": [
+            "http://service-inventory:9091"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/inventory/{id}",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/api/inventory/{id}",
+          "host": [
+            "http://service-inventory:9091"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/inventory",
+      "method": "POST",
+      "backend": [
+        {
+          "url_pattern": "/api/inventory",
+          "host": [
+            "http://service-inventory:9091"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/inventory/{id}/cantidad",
+      "method": "PUT",
+      "backend": [
+        {
+          "url_pattern": "/api/inventory/{id}/cantidad",
+          "host": [
+            "http://service-inventory:9091"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/inventory/{id}",
+      "method": "DELETE",
+      "backend": [
+        {
+          "url_pattern": "/api/inventory/{id}",
+          "host": [
+            "http://service-inventory:9091"
+          ]
         }
       ]
     }
