@@ -5,6 +5,7 @@ import alumnoduoc.bff.dto.*;
 import alumnoduoc.bff.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import alumnoduoc.bff.security.JwtService;
 
 import java.util.UUID;
 
@@ -13,9 +14,13 @@ import java.util.UUID;
 public class UserBffService {
     
     private final UserServiceClient userServiceClient;
+    private final JwtService jwtService;
     
-    public UserBffService(UserServiceClient userServiceClient) {
+    public UserBffService(UserServiceClient userServiceClient,
+                        JwtService jwtService) {
+
         this.userServiceClient = userServiceClient;
+        this.jwtService = jwtService;
     }
     
     public ApiResponse<LoginResponse> login(LoginRequest loginRequest) {
@@ -26,8 +31,9 @@ public class UserBffService {
             User user = userServiceClient.login(loginRequest);
             
             // Generate a token (in production, use JWT)
-            String token = generateToken(user.getId_user());
-            
+            //String token = generateToken(user.getId_user());
+            String token = jwtService.generateToken(user.getUsername());
+
             // Create response with additional BFF-specific data
             LoginResponse response = new LoginResponse(
                 user.getId_user(),
