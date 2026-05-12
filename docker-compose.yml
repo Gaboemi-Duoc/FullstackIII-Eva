@@ -28,6 +28,18 @@ services:
     networks:
       - smartlogix-net
 
+  postgres:
+    image: postgres:15
+    container_name: user-service-db
+    environment:
+      POSTGRES_DB: user_service_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Informatica.25 # Asumiendo el ambiente local del DuocUC
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   bff:
     build: ./smartlogix-bff
     container_name: smartlogix-bff
