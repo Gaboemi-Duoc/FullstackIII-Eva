@@ -1,7 +1,10 @@
-package alumnoduoc.user_service;
+package alumnoduoc.user_service.controller;
 
 import java.util.List;
 import java.util.Map;
+
+import alumnoduoc.user_service.service.UserService;
+import alumnoduoc.user_service.model.*;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

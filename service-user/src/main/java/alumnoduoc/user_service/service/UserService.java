@@ -1,6 +1,9 @@
-package alumnoduoc.user_service;
+package alumnoduoc.user_service.service;
 
 import java.util.List;
+
+import alumnoduoc.user_service.repository.UserRepository;
+import alumnoduoc.user_service.model.*;
 
 import org.springframework.stereotype.Service;
 
