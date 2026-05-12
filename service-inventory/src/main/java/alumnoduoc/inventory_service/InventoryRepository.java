@@ -1,22 +1,28 @@
 package alumnoduoc.inventory_service;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-// JpaRepository<InventoryItem, Long> provee gratis:
-// findAll(), findById(), save(), deleteById(), count(), etc.
-
 @Repository
 public interface InventoryRepository extends JpaRepository<InventoryItem, Long> {
 
-    // Spring genera: SELECT * FROM inventory_item WHERE nombre = ?
-    // Igual al findByEmail de UserRepository, derivado del nombre del método
+    // Busca por nombre exacto
     Optional<InventoryItem> findByNombre(String nombre);
 
-    // SELECT * FROM inventory_item WHERE cantidad < ?
-    // Útil para detectar productos que necesitan restock
+    // Ítems con stock bajo el umbral
     List<InventoryItem> findByCantidadLessThan(Integer cantidad);
+
+    // RF13 — todos los ítems de una bodega específica
+    // Spring genera: SELECT * FROM inventory_item WHERE bodega = ?
+    List<InventoryItem> findByBodega(String bodega);
+
+    // RF13 — stock total agrupado por bodega
+    // Suma todas las cantidades de cada bodega
+    // Retorna Object[]: [0] = nombre bodega, [1] = suma cantidad
+    @Query("SELECT i.bodega, SUM(i.cantidad) FROM InventoryItem i GROUP BY i.bodega")
+    List<Object[]> stockTotalPorBodega();
 }

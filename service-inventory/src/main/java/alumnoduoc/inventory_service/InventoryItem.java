@@ -25,4 +25,9 @@ public class InventoryItem {
 
     @Column(nullable = false)
     private Double precio;
+
+    // RF13 — stock por bodega
+    // Ej: "Bodega Central", "Bodega Norte", "Bodega Sur"
+    @Column(nullable = false)
+    private String bodega;
 }

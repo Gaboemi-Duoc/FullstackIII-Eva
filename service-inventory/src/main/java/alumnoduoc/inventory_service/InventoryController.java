@@ -72,6 +72,19 @@ public class InventoryController {
         Double nuevoPrecio = datos.get("precio");
         return ResponseEntity.ok(inventoryService.actualizarPrecio(id, nuevoPrecio));
     }
+    // GET /api/inventory/bodega?nombre=Bodega Central
+    // → lista todos los ítems de esa bodega
+    @GetMapping("/bodega")
+    public ResponseEntity<List<InventoryItem>> itemsPorBodega(@RequestParam String nombre) {
+        return ResponseEntity.ok(inventoryService.obtenerItemsPorBodega(nombre));
+    }
+
+    // GET /api/inventory/stock-por-bodega
+    // → stock total agrupado: { "Bodega Central": 500, "Bodega Norte": 230 }
+    @GetMapping("/stock-por-bodega")
+    public ResponseEntity<Map<String, Long>> stockPorBodega() {
+        return ResponseEntity.ok(inventoryService.stockTotalPorBodega());
+    }
 
     // DELETE /api/inventory/{id} → elimina ítem, responde 204 No Content
     @DeleteMapping("/{id}")
