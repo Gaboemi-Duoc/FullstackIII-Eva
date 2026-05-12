@@ -212,7 +212,7 @@ Se utiliza **H2** como base de datos embebida en memoria. La dependencia `spring
 La dependencia `springdoc-openapi-starter-webmvc-ui` genera automáticamente documentación interactiva de la API. Al correr el servicio, la interfaz Swagger UI es accesible en:
 
 ```
-http://localhost:8080/swagger-ui/index.html
+http://localhost:9091/swagger-ui/index.html#/
 ```
 
 ---
@@ -317,9 +317,10 @@ Los servicios estarán disponibles en:
 
 - **Frontend:** http://localhost:5173
 - **API Gateway (KrakenD):** http://localhost:8090
-- **Backend (service-user):** http://localhost:8080
-- **Swagger UI:** http://localhost:8080/swagger-ui/index.html
-- **BFF:** http://localhost:8081
+- **Backend (service-user):** http://localhost:9090
+- **Swagger UI:** http://localhost:9091/swagger-ui/index.html#/
+- **Backend (service-inventory):** http://localhost:9091
+- **BFF:** http://localhost:8080
 
 ### Desarrollo local del frontend
 

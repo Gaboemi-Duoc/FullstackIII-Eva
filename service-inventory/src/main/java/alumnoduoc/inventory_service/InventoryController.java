@@ -8,11 +8,11 @@ import java.util.Map;
 
 // Mismo patrón que UserController:
 // @RestController = responde JSON automáticamente
-// @CrossOrigin    = permite llamadas desde el BFF (puerto 8081)
+// @CrossOrigin    = permite llamadas desde el BFF (puerto 8080)
 
 @RestController
 @RequestMapping("/api/inventory")
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins = "http://localhost:8080")
 public class InventoryController {
 
     private final InventoryService inventoryService;
