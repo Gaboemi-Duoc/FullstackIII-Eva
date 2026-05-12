@@ -79,3 +79,16 @@ services:
 networks:
   smartlogix-net:
     driver: bridge
+
+service-inventory:
+    build: ./service-inventory
+    container_name: smartlogix-inventory
+    ports:
+      - "9091:9091"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    depends_on:
+      - kafka
+    networks:
+      - smartlogix-net

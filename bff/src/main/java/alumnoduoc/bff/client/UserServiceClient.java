@@ -29,4 +29,6 @@ public interface UserServiceClient {
     
     @DeleteMapping("/api/users/{id}")
     void deleteUser(@PathVariable("id") Long id);
+
+    
 }
