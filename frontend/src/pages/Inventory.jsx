@@ -17,6 +17,7 @@ const Inventory = () => {
     descripcion: "",
     cantidad: "",
     precio: "",
+    bodega: "",
   });
 
   const [umbral, setUmbral] = useState("");
@@ -46,6 +47,7 @@ const Inventory = () => {
         descripcion: nuevoItem.descripcion,
         cantidad: parseInt(nuevoItem.cantidad),
         precio: parseFloat(nuevoItem.precio),
+        bodega: nuevoItem.bodega,
       };
 
       await crearItem(itemParaEnviar);
@@ -57,6 +59,7 @@ const Inventory = () => {
         descripcion: "",
         cantidad: "",
         precio: "",
+        bodega: "",
       });
 
       cargarItems();
@@ -172,6 +175,16 @@ const Inventory = () => {
             required
           />
 
+          <input
+            type="text"
+            placeholder="Bodega (ej: Bodega Central)"
+            value={nuevoItem.bodega}
+            onChange={(e) =>
+              setNuevoItem({ ...nuevoItem, bodega: e.target.value })
+            }
+            required
+          />
+
           <button type="submit">Crear</button>
         </form>
       </div>
@@ -210,6 +223,7 @@ const Inventory = () => {
                 <th>Descripción</th>
                 <th>Cantidad</th>
                 <th>Precio</th>
+                <th>Bodega</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -222,6 +236,7 @@ const Inventory = () => {
                   <td>{item.descripcion}</td>
                   <td>{item.cantidad}</td>
                   <td>${item.precio}</td>
+                  <td>{item.bodega}</td>
 
                   <td>
                     <button
