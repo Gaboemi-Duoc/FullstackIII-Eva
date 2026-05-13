@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { login } from "../api/userApi";
 import { useUser } from "../viewmodels/UserViewModel";
 import { useNavigate } from "react-router-dom";
@@ -9,11 +9,19 @@ const Login = () => {
   const { setUser } = useUser();
   const navigate = useNavigate();
 
+  // Si ya hay token, redirigir al inventario automáticamente
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      navigate("/inventory");
+    }
+  }, [navigate]);
+
   const handleLogin = async () => {
     try {
       const userData = await login(username, password);
       setUser(userData);
-      navigate("/profile");
+      navigate("/inventory");
     } catch (error) {
       alert("Error al iniciar sesión");
     }
@@ -21,22 +29,23 @@ const Login = () => {
 
   return (
     <div className="page">
-      <h2>Bienvenido a SmartLogix</h2>
+      <h2>Login</h2>
 
       <input
-        placeholder="Username"
+        type="text"
+        placeholder="Usuario"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
 
       <input
         type="password"
-        placeholder="Password"
+        placeholder="Contraseña"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleLogin}>Ingresar</button>
     </div>
   );
 };

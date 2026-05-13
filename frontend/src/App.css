@@ -44,3 +44,82 @@ button {
   border-radius: 8px;
   cursor: pointer;
 }
+
+
+
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+.logout-btn {
+  background: #dc2626;
+  padding: 8px 12px;
+  border-radius: 8px;
+  width: auto;
+}
+
+.logout-btn:hover {
+  opacity: 0.9;
+}
+
+.inventory-page {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+}
+
+.stock-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.stock-buttons button {
+  width: 50%;
+}
+
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inventory-table th,
+.inventory-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.inventory-table th {
+  background: #f3f4f6;
+}
+
+.small-btn {
+  width: auto;
+  margin-right: 5px;
+  padding: 8px 10px;
+}
+
+.small-btn.danger {
+  background: #dc2626;
+}
