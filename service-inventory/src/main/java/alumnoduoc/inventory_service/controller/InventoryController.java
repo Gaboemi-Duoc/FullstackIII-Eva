@@ -1,7 +1,10 @@
-package alumnoduoc.inventory_service;
+package alumnoduoc.inventory_service.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import alumnoduoc.inventory_service.model.Item;
+import alumnoduoc.inventory_service.service.InventoryService;
 
 import java.util.List;
 import java.util.Map;
@@ -23,32 +26,32 @@ public class InventoryController {
 
     // GET /api/inventory → lista todos los ítems
     @GetMapping
-    public ResponseEntity<List<InventoryItem>> listarItems() {
+    public ResponseEntity<List<Item>> listarItems() {
         return ResponseEntity.ok(inventoryService.listarItems());
     }
 
     // GET /api/inventory/{id} → obtiene ítem por ID
     @GetMapping("/{id}")
-    public ResponseEntity<InventoryItem> obtenerItem(@PathVariable Long id) {
+    public ResponseEntity<Item> obtenerItem(@PathVariable Long id) {
         return ResponseEntity.ok(inventoryService.obtenerPorId(id));
     }
 
     // GET /api/inventory/buscar?nombre=Tornillo → busca por nombre
     @GetMapping("/buscar")
-    public ResponseEntity<InventoryItem> buscarPorNombre(@RequestParam String nombre) {
+    public ResponseEntity<Item> buscarPorNombre(@RequestParam String nombre) {
         return ResponseEntity.ok(inventoryService.buscarPorNombre(nombre));
     }
 
     // GET /api/inventory/stock-bajo?umbral=10 → ítems con cantidad < umbral
     @GetMapping("/stock-bajo")
-    public ResponseEntity<List<InventoryItem>> stockBajo(@RequestParam Integer umbral) {
+    public ResponseEntity<List<Item>> stockBajo(@RequestParam Integer umbral) {
         return ResponseEntity.ok(inventoryService.itemsConStockBajo(umbral));
     }
 
     // POST /api/inventory → crea ítem nuevo
     // Body: { "nombre": "...", "descripcion": "...", "cantidad": 100, "precio": 9.99 }
     @PostMapping
-    public ResponseEntity<InventoryItem> crearItem(@RequestBody InventoryItem item) {
+    public ResponseEntity<Item> crearItem(@RequestBody Item item) {
         return ResponseEntity.ok(inventoryService.crearItem(item));
     }
 
@@ -56,7 +59,7 @@ public class InventoryController {
     // Mismo patrón que actualizarUsername: recibe Map para leer un campo
     // Body: { "cantidad": 50 }
     @PutMapping("/{id}/cantidad")
-    public ResponseEntity<InventoryItem> actualizarCantidad(
+    public ResponseEntity<Item> actualizarCantidad(
             @PathVariable Long id,
             @RequestBody Map<String, Integer> datos) {
         Integer nuevaCantidad = datos.get("cantidad");
@@ -66,7 +69,7 @@ public class InventoryController {
     // PUT /api/inventory/{id}/precio → actualiza solo el precio
     // Body: { "precio": 14.99 }
     @PutMapping("/{id}/precio")
-    public ResponseEntity<InventoryItem> actualizarPrecio(
+    public ResponseEntity<Item> actualizarPrecio(
             @PathVariable Long id,
             @RequestBody Map<String, Double> datos) {
         Double nuevoPrecio = datos.get("precio");
@@ -75,7 +78,7 @@ public class InventoryController {
     // GET /api/inventory/bodega?nombre=Bodega Central
     // → lista todos los ítems de esa bodega
     @GetMapping("/bodega")
-    public ResponseEntity<List<InventoryItem>> itemsPorBodega(@RequestParam String nombre) {
+    public ResponseEntity<List<Item>> itemsPorBodega(@RequestParam String nombre) {
         return ResponseEntity.ok(inventoryService.obtenerItemsPorBodega(nombre));
     }
 

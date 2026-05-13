@@ -1,4 +1,4 @@
-package alumnoduoc.inventory_service;
+package alumnoduoc.inventory_service.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,7 +8,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InventoryItem {
+public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
