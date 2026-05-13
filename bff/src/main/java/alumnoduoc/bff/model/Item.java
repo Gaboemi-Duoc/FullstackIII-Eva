@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InventoryItem {
+public class Item {
     private Long id_item;
     private String nombre;
     private String descripcion;

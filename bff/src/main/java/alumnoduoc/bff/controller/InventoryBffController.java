@@ -1,7 +1,7 @@
 package alumnoduoc.bff.controller;
 
 import alumnoduoc.bff.client.InventoryServiceClient;
-import alumnoduoc.bff.model.InventoryItem;
+import alumnoduoc.bff.model.Item;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,33 +20,33 @@ public class InventoryBffController {
     }
 
     @GetMapping
-    public ResponseEntity<List<InventoryItem>> listarItems() {
+    public ResponseEntity<List<Item>> listarItems() {
         return ResponseEntity.ok(inventoryServiceClient.getAllItems());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InventoryItem> obtenerItem(@PathVariable Long id) {
+    public ResponseEntity<Item> obtenerItem(@PathVariable Long id) {
         return ResponseEntity.ok(inventoryServiceClient.getItemById(id));
     }
 
     @GetMapping("/stock-bajo")
-    public ResponseEntity<List<InventoryItem>> stockBajo(@RequestParam Integer umbral) {
+    public ResponseEntity<List<Item>> stockBajo(@RequestParam Integer umbral) {
         return ResponseEntity.ok(inventoryServiceClient.getStockBajo(umbral));
     }
 
     @PostMapping
-    public ResponseEntity<InventoryItem> crearItem(@RequestBody InventoryItem item) {
+    public ResponseEntity<Item> crearItem(@RequestBody Item item) {
         return ResponseEntity.ok(inventoryServiceClient.crearItem(item));
     }
 
     @PutMapping("/{id}/cantidad")
-    public ResponseEntity<InventoryItem> actualizarCantidad(@PathVariable Long id,
+    public ResponseEntity<Item> actualizarCantidad(@PathVariable Long id,
                                                             @RequestBody Map<String, Integer> datos) {
         return ResponseEntity.ok(inventoryServiceClient.actualizarCantidad(id, datos));
     }
 
     @PutMapping("/{id}/precio")
-    public ResponseEntity<InventoryItem> actualizarPrecio(@PathVariable Long id,
+    public ResponseEntity<Item> actualizarPrecio(@PathVariable Long id,
                                                         @RequestBody Map<String, Double> datos) {
         return ResponseEntity.ok(inventoryServiceClient.actualizarPrecio(id, datos));
     }
