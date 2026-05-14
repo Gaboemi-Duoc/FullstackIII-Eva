@@ -123,3 +123,16 @@ button {
 .small-btn.danger {
   background: #dc2626;
 }
+
+
+
+.login-logo {
+  width: 180px;
+  display: block;
+  margin: 0 auto 20px auto;
+}
+
+.page h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}

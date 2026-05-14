@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { login } from "../api/userApi";
 import { useUser } from "../viewmodels/UserViewModel";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/LogoConNombre.png";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -29,7 +30,10 @@ const Login = () => {
 
   return (
     <div className="page">
-      <h2>Login</h2>
+
+
+      <img src={logo} alt="Logo" className="login-logo" />
+      <h2>Ingresa a SmartLogix</h2>
 
       <input
         type="text"
