@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { login } from "../api/userApi";
 import { useUser } from "../viewmodels/UserViewModel";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/LogoConNombre.png";
+import logo from "../assets/LogoParaInicio.png";
 
 const Login = () => {
   const [username, setUsername] = useState("");

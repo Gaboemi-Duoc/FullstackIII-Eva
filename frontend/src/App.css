@@ -1,53 +1,38 @@
+/* ================================
+   NAVBAR
+================================ */
 .navbar {
+  width: 100%;
   height: 60px;
-  background: #1f2937;
-  color: white;
+  background: var(--color-navbar);
+  color: var(--color-text);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
+  border-bottom: 1px solid var(--color-border);
 }
 
+.navbar h3 {
+  color: var(--color-accent);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Avatar */
 .avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #2563eb;
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-navbar);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
 }
 
-.page {
-  max-width: 400px;
-  margin: 80px auto;
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-}
-
-button {
-  width: 100%;
-  padding: 12px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-
-
-
+/* Navbar links */
 .nav-links {
   display: flex;
   align-items: center;
@@ -55,84 +40,215 @@ button {
 }
 
 .nav-links a {
-  color: white;
+  color: var(--color-text);
   text-decoration: none;
   font-weight: bold;
+  transition: 0.2s;
 }
 
 .nav-links a:hover {
-  text-decoration: underline;
+  color: var(--color-accent);
 }
 
+/* Logout button */
 .logout-btn {
-  background: #dc2626;
+  background: var(--color-danger);
   padding: 8px 12px;
   border-radius: 8px;
   width: auto;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  transition: 0.2s;
 }
 
 .logout-btn:hover {
-  opacity: 0.9;
+  background: var(--color-danger-hover);
 }
 
-.inventory-page {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 20px;
-}
-
-.card {
-  background: white;
-  padding: 20px;
-  margin-bottom: 25px;
-  border-radius: 12px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-}
-
-.stock-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.stock-buttons button {
-  width: 50%;
-}
-
-.inventory-table {
+/* ================================
+   PAGE (LOGIN / PROFILE)
+================================ */
+.page {
+  max-width: 420px;
   width: 100%;
-  border-collapse: collapse;
+  margin: 80px auto;
+  background: var(--color-card);
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
-.inventory-table th,
-.inventory-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: left;
+.page h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--color-accent);
 }
 
-.inventory-table th {
-  background: #f3f4f6;
-}
-
-.small-btn {
-  width: auto;
-  margin-right: 5px;
-  padding: 8px 10px;
-}
-
-.small-btn.danger {
-  background: #dc2626;
-}
-
-
-
+/* Login logo */
 .login-logo {
   width: 180px;
   display: block;
   margin: 0 auto 20px auto;
 }
 
-.page h2 {
-  text-align: center;
-  margin-bottom: 30px;
+/* ================================
+   INPUTS
+================================ */
+input {
+  width: 100%;
+  display: block;
+  padding: 12px;
+  margin: 10px 0;
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+input::placeholder {
+  color: var(--color-text-muted);
+}
+
+input:focus {
+  outline: none;
+  border: 1px solid var(--color-accent);
+}
+
+/* ================================
+   BUTTONS
+================================ */
+button {
+  width: 100%;
+  padding: 12px;
+  background: var(--color-accent);
+  color: var(--color-navbar);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: var(--color-accent-hover);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* ================================
+   INVENTORY PAGE
+================================ */
+.inventory-page {
+  max-width: 1000px;
+  width: 100%;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.inventory-page h2 {
+  color: var(--color-accent);
+  margin-bottom: 20px;
+}
+
+/* Cards */
+.card {
+  width: 100%;
+  background: var(--color-card);
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.card h3 {
+  margin-bottom: 15px;
+  color: var(--color-text);
+}
+
+/* Stock buttons */
+.stock-buttons {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.stock-buttons button {
+  width: 50%;
+}
+
+/* ================================
+   TABLE
+================================ */
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.inventory-table th,
+.inventory-table td {
+  border-bottom: 1px solid var(--color-border);
+  padding: 12px;
+  text-align: left;
+}
+
+.inventory-table th {
+  background: var(--color-navbar);
+  color: var(--color-text);
+}
+
+.inventory-table td {
+  color: var(--color-text-muted);
+}
+
+.inventory-table tr:hover {
+  background: var(--color-input-bg);
+}
+
+/* ================================
+   SMALL BUTTONS
+================================ */
+.small-btn {
+  width: auto;
+  margin-right: 5px;
+  padding: 8px 10px;
+  background: var(--color-accent);
+  color: var(--color-navbar);
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.small-btn:hover {
+  background: var(--color-accent-hover);
+}
+
+.small-btn.danger {
+  background: var(--color-danger);
+  color: white;
+}
+
+.small-btn.danger:hover {
+  background: var(--color-danger-hover);
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
 }

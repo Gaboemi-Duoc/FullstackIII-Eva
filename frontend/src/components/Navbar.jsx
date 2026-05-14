@@ -1,9 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../viewmodels/UserViewModel";
+import logo from "../assets/LogoConBorde.png";
 
 const Navbar = () => {
   const { user, setUser } = useUser();
   const navigate = useNavigate();
+
+  const token = localStorage.getItem("authToken");
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -14,9 +17,12 @@ const Navbar = () => {
 
   return (
     <div className="navbar">
-      <h3>SmartLogix</h3>
+      <div className="nav-left">
+        <img src={logo} alt="SmartLogix Logo" className="navbar-logo" />
+        <h3>SmartLogix</h3>
+      </div>
 
-      {user && (
+      {token && (
         <div className="nav-links">
           <Link to="/inventory">Inventario</Link>
           <Link to="/profile">Perfil</Link>
@@ -26,7 +32,7 @@ const Navbar = () => {
           </button>
 
           <div className="avatar">
-            {user.username.charAt(0).toUpperCase()}
+            {user?.username ? user.username.charAt(0).toUpperCase() : "U"}
           </div>
         </div>
       )}
