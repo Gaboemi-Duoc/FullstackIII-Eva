@@ -7,20 +7,21 @@ import {
   actualizarPrecio,
   getStockBajo,
 } from "../api/InventoryApi";
+import { InventoryItem, NewInventoryItem } from "../types";
 
 const Inventory = () => {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState<InventoryItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const [nuevoItem, setNuevoItem] = useState({
+  const [nuevoItem, setNuevoItem] = useState<NewInventoryItem>({
     nombre: "",
     descripcion: "",
-    cantidad: "",
-    precio: "",
+    cantidad: 0,
+    precio: 0,
     bodega: "",
   });
 
-  const [umbral, setUmbral] = useState("");
+  const [umbral, setUmbral] = useState<string>("");
 
   const cargarItems = async () => {
     try {
@@ -38,15 +39,15 @@ const Inventory = () => {
     cargarItems();
   }, []);
 
-  const handleCrear = async (e) => {
+  const handleCrear = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const itemParaEnviar = {
+      const itemParaEnviar: NewInventoryItem = {
         nombre: nuevoItem.nombre,
         descripcion: nuevoItem.descripcion,
-        cantidad: parseInt(nuevoItem.cantidad),
-        precio: parseFloat(nuevoItem.precio),
+        cantidad: Number(nuevoItem.cantidad),
+        precio: Number(nuevoItem.precio),
         bodega: nuevoItem.bodega,
       };
 
@@ -57,8 +58,8 @@ const Inventory = () => {
       setNuevoItem({
         nombre: "",
         descripcion: "",
-        cantidad: "",
-        precio: "",
+        cantidad: 0,
+        precio: 0,
         bodega: "",
       });
 
@@ -68,7 +69,7 @@ const Inventory = () => {
     }
   };
 
-  const handleEliminar = async (id) => {
+  const handleEliminar = async (id: number) => {
     if (!confirm("¿Seguro que deseas eliminar este item?")) return;
 
     try {
@@ -80,7 +81,7 @@ const Inventory = () => {
     }
   };
 
-  const handleActualizarCantidad = async (id) => {
+  const handleActualizarCantidad = async (id: number) => {
     const cantidad = prompt("Ingrese nueva cantidad:");
 
     if (cantidad === null || cantidad === "") return;
@@ -94,7 +95,7 @@ const Inventory = () => {
     }
   };
 
-  const handleActualizarPrecio = async (id) => {
+  const handleActualizarPrecio = async (id: number) => {
     const precio = prompt("Ingrese nuevo precio:");
 
     if (precio === null || precio === "") return;
@@ -159,7 +160,7 @@ const Inventory = () => {
             placeholder="Cantidad"
             value={nuevoItem.cantidad}
             onChange={(e) =>
-              setNuevoItem({ ...nuevoItem, cantidad: e.target.value })
+              setNuevoItem({ ...nuevoItem, cantidad: parseInt(e.target.value) || 0 })
             }
             required
           />
@@ -170,7 +171,7 @@ const Inventory = () => {
             placeholder="Precio"
             value={nuevoItem.precio}
             onChange={(e) =>
-              setNuevoItem({ ...nuevoItem, precio: e.target.value })
+              setNuevoItem({ ...nuevoItem, precio: parseFloat(e.target.value) || 0 })
             }
             required
           />

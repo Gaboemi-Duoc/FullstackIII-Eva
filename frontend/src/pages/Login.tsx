@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/LogoParaInicio.png";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const { setUser } = useUser();
   const navigate = useNavigate();
 
@@ -30,8 +30,6 @@ const Login = () => {
 
   return (
     <div className="page">
-
-
       <img src={logo} alt="Logo" className="login-logo" />
       <h2>Ingresa a SmartLogix</h2>
 

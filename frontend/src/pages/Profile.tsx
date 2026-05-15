@@ -4,9 +4,11 @@ import { updateUsername } from "../api/userApi";
 
 const Profile = () => {
   const { user, setUser } = useUser();
-  const [newUsername, setNewUsername] = useState("");
+  const [newUsername, setNewUsername] = useState<string>("");
 
   const handleUpdate = async () => {
+    if (!user) return;
+    
     try {
       const updatedUser = await updateUsername(user.id_user, newUsername);
       setUser(updatedUser);

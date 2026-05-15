@@ -46,13 +46,13 @@ El frontend se comunica con el backend únicamente a través del API Gateway (Kr
 
 | Capa | Tecnología | Versión |
 |---|---|---|
-| Frontend | React | 19.x |
+| Frontend Framework / Librerias | NodeJS + React | 19.x |
 | Bundler | Vite | 8.x |
 | Routing frontend | React Router DOM | 7.x |
 | HTTP client frontend | Axios | 1.15.x |
-| Backend (microservicio) | Spring Boot | 4.0.6 |
+| Backend Framework | Spring Boot | 4.0.6 |
 | Lenguaje backend | Java | 25 |
-| Persistencia | Spring Data JPA + H2 (in-memory) | — |
+| Persistencia | PostgreSQL | — |
 | Reducción de boilerplate | Lombok | — |
 | Documentación API | SpringDoc OpenAPI (Swagger UI) | 3.0.2 |
 | API Gateway | KrakenD | latest |
