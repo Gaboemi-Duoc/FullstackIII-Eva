@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from "axios";
 const INVENTORY_API_URL = "http://localhost:8081/api/bff/inventory";
 
 // Types
-export interface InventoryItem {
+export interface Item {
   id?: number;
   name: string;
   description?: string;
@@ -28,32 +28,32 @@ const getAuthHeaders = (): AuthHeaders => {
   };
 };
 
-export const getItems = async (): Promise<InventoryItem[]> => {
-  const response: AxiosResponse<InventoryItem[]> = await axios.get(
+export const getItems = async (): Promise<Item[]> => {
+  const response: AxiosResponse<Item[]> = await axios.get(
     INVENTORY_API_URL,
     getAuthHeaders()
   );
   return response.data;
 };
 
-export const getItemById = async (id: number): Promise<InventoryItem> => {
-  const response: AxiosResponse<InventoryItem> = await axios.get(
+export const getItemById = async (id: number): Promise<Item> => {
+  const response: AxiosResponse<Item> = await axios.get(
     `${INVENTORY_API_URL}/${id}`,
     getAuthHeaders()
   );
   return response.data;
 };
 
-export const getStockBajo = async (umbral: number): Promise<InventoryItem[]> => {
-  const response: AxiosResponse<InventoryItem[]> = await axios.get(
+export const getStockBajo = async (umbral: number): Promise<Item[]> => {
+  const response: AxiosResponse<Item[]> = await axios.get(
     `${INVENTORY_API_URL}/stock-bajo?umbral=${umbral}`,
     getAuthHeaders()
   );
   return response.data;
 };
 
-export const crearItem = async (item: Omit<InventoryItem, 'id'>): Promise<InventoryItem> => {
-  const response: AxiosResponse<InventoryItem> = await axios.post(
+export const crearItem = async (item: Omit<Item, 'id'>): Promise<Item> => {
+  const response: AxiosResponse<Item> = await axios.post(
     INVENTORY_API_URL,
     item,
     getAuthHeaders()
@@ -61,8 +61,8 @@ export const crearItem = async (item: Omit<InventoryItem, 'id'>): Promise<Invent
   return response.data;
 };
 
-export const actualizarCantidad = async (id: number, cantidad: number): Promise<InventoryItem> => {
-  const response: AxiosResponse<InventoryItem> = await axios.put(
+export const actualizarCantidad = async (id: number, cantidad: number): Promise<Item> => {
+  const response: AxiosResponse<Item> = await axios.put(
     `${INVENTORY_API_URL}/${id}/cantidad`,
     { cantidad },
     getAuthHeaders()
@@ -70,8 +70,8 @@ export const actualizarCantidad = async (id: number, cantidad: number): Promise<
   return response.data;
 };
 
-export const actualizarPrecio = async (id: number, precio: number): Promise<InventoryItem> => {
-  const response: AxiosResponse<InventoryItem> = await axios.put(
+export const actualizarPrecio = async (id: number, precio: number): Promise<Item> => {
+  const response: AxiosResponse<Item> = await axios.put(
     `${INVENTORY_API_URL}/${id}/precio`,
     { precio },
     getAuthHeaders()

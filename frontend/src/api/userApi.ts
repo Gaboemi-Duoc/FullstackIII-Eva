@@ -3,6 +3,12 @@ import axios, { AxiosResponse } from "axios";
 const BFF_API_URL = "http://localhost:8081/api/bff/users";
 
 // Types
+export interface User {
+  id_user: number;
+  username: string;
+  token: string;
+}
+
 export interface LoginResponse {
   token: string;
   id_user: number;
@@ -29,13 +35,7 @@ export interface UserApiResponse {
   message?: string;
 }
 
-export interface UpdateUsernameResponse {
-  id: number;
-  username: string;
-  [key: string]: any;
-}
-
-export const login = async (username: string, password: string): Promise<LoginResponse> => {
+export const login = async (username: string, password: string): Promise<User> => {
   try {
     const response: AxiosResponse<LoginApiResponse> = await axios.post(`${BFF_API_URL}/login`, {
       username,
@@ -43,9 +43,14 @@ export const login = async (username: string, password: string): Promise<LoginRe
     });
 
     if (response.data.success) {
-      localStorage.setItem("authToken", response.data.data.token);
-      localStorage.setItem("userId", response.data.data.id_user.toString());
-      return response.data.data;
+      const userData: User = {
+        id_user: response.data.data.id_user,
+        username: response.data.data.username || username,
+        token: response.data.data.token,
+      };
+      localStorage.setItem("authToken", userData.token);
+      localStorage.setItem("userId", userData.id_user.toString());
+      return userData;
     }
 
     throw new Error(response.data.message || "Login failed");
@@ -55,7 +60,7 @@ export const login = async (username: string, password: string): Promise<LoginRe
   }
 };
 
-export const updateUsername = async (id: number, username: string): Promise<UpdateUsernameResponse> => {
+export const updateUsername = async (id: number, username: string): Promise<User> => {
   try {
     const token = localStorage.getItem("authToken");
 
@@ -70,7 +75,13 @@ export const updateUsername = async (id: number, username: string): Promise<Upda
     );
 
     if (response.data.success) {
-      return response.data.data;
+      // Return updated user object matching the User interface
+      const updatedUser: User = {
+        id_user: id,
+        username: username,
+        token: token || "",
+      };
+      return updatedUser;
     }
 
     throw new Error(response.data.message || "Failed to update username");

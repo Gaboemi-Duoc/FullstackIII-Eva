@@ -7,13 +7,13 @@ import {
   actualizarPrecio,
   getStockBajo,
 } from "../api/InventoryApi";
-import { InventoryItem, NewInventoryItem } from "../types";
+import { Item, NewItem } from "../types";
 
 const Inventory = () => {
-  const [items, setItems] = useState<InventoryItem[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [nuevoItem, setNuevoItem] = useState<NewInventoryItem>({
+  const [nuevoItem, setNuevoItem] = useState<NewItem>({
     nombre: "",
     descripcion: "",
     cantidad: 0,
@@ -43,7 +43,7 @@ const Inventory = () => {
     e.preventDefault();
 
     try {
-      const itemParaEnviar: NewInventoryItem = {
+      const itemParaEnviar: NewItem = {
         nombre: nuevoItem.nombre,
         descripcion: nuevoItem.descripcion,
         cantidad: Number(nuevoItem.cantidad),

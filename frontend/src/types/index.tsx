@@ -11,7 +11,7 @@ export interface LoginCredentials {
 }
 
 // Inventory types
-export interface InventoryItem {
+export interface Item {
   id_item: number;
   nombre: string;
   descripcion: string;
@@ -20,7 +20,7 @@ export interface InventoryItem {
   bodega: string;
 }
 
-export interface NewInventoryItem {
+export interface NewItem {
   nombre: string;
   descripcion: string;
   cantidad: number;

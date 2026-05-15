@@ -66,35 +66,10 @@ El frontend se comunica con el backend únicamente a través del API Gateway (Kr
 ```
 FullstackIII-Eva-main/
 ├── docker-compose.yml          # Orquestación de todos los servicios
-├── docs/
-│   ├── Diagrama de Contenedores - Fullstack III.drawio.png
-│   └── Fullstack III Parcial 1.pdf
+├── docs/                       # Documentacion extra del proyecto
 ├── frontend/                   # Aplicación React
-│   ├── src/
-│   │   ├── api/
-│   │   │   └── userApi.js      # Funciones de llamada a la API
-│   │   ├── components/
-│   │   │   └── Navbar.jsx      # Barra de navegación
-│   │   ├── pages/
-│   │   │   ├── Login.jsx       # Página de inicio de sesión
-│   │   │   └── Profile.jsx     # Página de perfil del usuario
-│   │   ├── viewmodels/
-│   │   │   └── UserView.jsx    # Context + estado global del usuario
-│   │   ├── App.jsx             # Enrutador principal
-│   │   └── main.jsx            # Punto de entrada React
-│   ├── package.json
-│   └── vite.config.js
 ├── service-user/               # Microservicio de usuarios (Spring Boot)
-│   ├── src/main/java/alumnoduoc/user_service/
-│   │   ├── User.java           # Entidad JPA
-│   │   ├── UserRepository.java # Repositorio Spring Data
-│   │   ├── UserService.java    # Lógica de negocio
-│   │   ├── UserController.java # Controlador REST
-│   │   └── UserServiceApplication.java
-│   └── pom.xml
-├── krakend/
-│   └── compose/
-│       └── krakend.json        # Configuración del API Gateway
+├── krakend/                    # Configuración del API Gateway
 ├── bff/                        # Backend for Frontend (pendiente)
 ├── service-inventory/          # Microservicio de inventario (pendiente)
 ├── service-orders/             # Microservicio de órdenes (pendiente)
@@ -109,27 +84,27 @@ FullstackIII-Eva-main/
 
 El frontend es una Single Page Application (SPA) construida con React 19 y empaquetada con Vite. Implementa el patrón **MVVM** mediante React Context API.
 
-#### `UserView.jsx` — ViewModel / Estado global
+#### `UserView.tsx` — ViewModel / Estado global
 
 Se implementó un contexto de React (`UserContext`) que actúa como ViewModel, centralizado el estado del usuario autenticado. Esto permite que cualquier componente del árbol acceda o modifique los datos del usuario sin necesidad de prop drilling.
 
-```jsx
+```tsx
 // Provee { user, setUser } a toda la aplicación
 export const UserProvider = ({ children }) => { ... }
 export const useUser = () => useContext(UserContext);
 ```
 
-#### `App.jsx` — Enrutador principal
+#### `App.tsx` — Enrutador principal
 
 Envuelve la aplicación en el `UserProvider` y define dos rutas principales:
 - `/` → Página de Login
 - `/profile` → Página de Perfil (accesible tras autenticarse)
 
-#### `Navbar.jsx` — Barra de navegación
+#### `Navbar.tsx` — Barra de navegación
 
 Muestra el nombre de la aplicación **SmartLogix** y, cuando hay un usuario autenticado, muestra un avatar generado con la primera letra del username en mayúscula.
 
-#### `Login.jsx` — Página de inicio de sesión
+#### `Login.tsx` — Página de inicio de sesión
 
 Formulario con campos `username` y `password`. Al hacer clic en "Login":
 1. Llama a `login()` desde `userApi.js` (POST al backend).
@@ -137,7 +112,7 @@ Formulario con campos `username` y `password`. Al hacer clic en "Login":
 3. Redirige automáticamente a `/profile` usando `useNavigate`.
 4. Si las credenciales son incorrectas, muestra un alert de error.
 
-#### `Profile.jsx` — Página de perfil
+#### `Profile.tsx` — Página de perfil
 
 Muestra los datos del usuario autenticado (username actual) y permite actualizarlos:
 1. El usuario ingresa un nuevo username en el campo de texto.
