@@ -1,94 +1,130 @@
+version: '3.8'
+
 services:
-  kafka:
-    image: bitnami/kafka:latest
-    container_name: smartlogix-kafka
-    ports:
-      - "9092:9092"
+  # PostgreSQL for User Service
+  user-db:
+    image: postgres:17-alpine
+    container_name: user-db
     environment:
-      - KAFKA_CFG_NODE_ID=1
-      - KAFKA_CFG_PROCESS_ROLES=broker,controller
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - ALLOW_PLAINTEXT_LISTENER=yes
-    networks:
-      - smartlogix-net
-
-  backend:
-    build: ./FullstackIII-Backend
-    container_name: smartlogix-backend
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-    depends_on:
-      - kafka
-    networks:
-      - smartlogix-net
-
-  postgres:
-    image: postgres:15
-    container_name: user-service-db
-    environment:
-      POSTGRES_DB: user_service_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Informatica.25 # Asumiendo el ambiente local del DuocUC
+      POSTGRES_DB: userdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: userpass123
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  bff:
-    build: ./smartlogix-bff
-    container_name: smartlogix-bff
-    ports:
-      - "8081:8081"
-    environment:
-      - BACKEND_URL=http://backend:8080
-    depends_on:
-      - backend
+      - user-db-data:/var/lib/postgresql/data
     networks:
-      - smartlogix-net
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d userdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  krakend:
-    image: devopsfaith/krakend:latest
-    container_name: smartlogix-krakend
+  # PostgreSQL for Inventory Service
+  inventory-db:
+    image: postgres:17-alpine
+    container_name: inventory-db
+    environment:
+      POSTGRES_DB: inventorydb
+      POSTGRES_USER: inventory
+      POSTGRES_PASSWORD: inventorypass123
     ports:
-      - "8090:8080"
+      - "5433:5432"
     volumes:
-      - ./krakend/krakend.json:/etc/krakend/krakend.json
-    command: ["run", "-c", "/etc/krakend/krakend.json"]
+      - inventory-db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inventory -d inventorydb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # User Service
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://user-db:5432/userdb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: userpass123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    ports:
+      - "8081:8080"
+    depends_on:
+      user-db:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: on-failure
+
+  # Inventory Service
+  inventory-service:
+    build:
+      context: ./inventory-service
+      dockerfile: Dockerfile
+    container_name: inventory-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://inventory-db:5432/inventorydb
+      SPRING_DATASOURCE_USERNAME: inventory
+      SPRING_DATASOURCE_PASSWORD: inventorypass123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    ports:
+      - "8082:8080"
+    depends_on:
+      inventory-db:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: on-failure
+
+  # BFF (Backend For Frontend)
+  bff:
+    build:
+      context: ./bff
+      dockerfile: Dockerfile
+    container_name: bff
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      USER_SERVICE_URL: http://user-service:8080
+      INVENTORY_SERVICE_URL: http://inventory-service:8080
+      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - user-service
+      - inventory-service
+    networks:
+      - app-network
+    restart: on-failure
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./fullstackiii-front
+      dockerfile: Dockerfile
+    container_name: frontend
+    environment:
+      VITE_API_URL: http://localhost:8080/api
+    ports:
+      - "3000:80"
     depends_on:
       - bff
-      - backend
     networks:
-      - smartlogix-net
-
-  frontend:
-    build: ./FullstackIII-Front
-    container_name: smartlogix-frontend
-    ports:
-      - "5173:5173"
-    depends_on:
-      - krakend
-    networks:
-      - smartlogix-net
+      - app-network
+    restart: on-failure
 
 networks:
-  smartlogix-net:
+  app-network:
     driver: bridge
 
-service-inventory:
-    build: ./service-inventory
-    container_name: smartlogix-inventory
-    ports:
-      - "9091:9091"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-    depends_on:
-      - kafka
-    networks:
-      - smartlogix-net
+volumes:
+  user-db-data:
+  inventory-db-data:
