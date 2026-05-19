@@ -9,6 +9,7 @@ El frontend es una Single Page Application (SPA) construida con React 19 y empaq
 #### Patrones de Diseño usados:
     - ViewModel
     - Arquitectura basada en Componentes: Assets, Componentes, Paginas, Tipos, VM, API
+    - Singletons
 
 #### `UserView.tsx` — ViewModel / Estado global
 
