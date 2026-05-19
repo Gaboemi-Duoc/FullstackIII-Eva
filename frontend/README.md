@@ -1,5 +1,5 @@
 # Fullstack III - Frontend
-# SmartLogix
+
 Requiere Node.js
 React
 

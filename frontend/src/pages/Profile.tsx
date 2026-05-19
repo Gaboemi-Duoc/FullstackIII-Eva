@@ -4,13 +4,20 @@ import { updateUsername } from "../api/userApi";
 
 const Profile = () => {
   const { user, setUser } = useUser();
-  const [newUsername, setNewUsername] = useState("");
+  const [newUsername, setNewUsername] = useState<string>("");
 
   const handleUpdate = async () => {
+    if (!user) return;
+    
     try {
       const updatedUser = await updateUsername(user.id_user, newUsername);
-      setUser(updatedUser);
+      // Update the user state with the full user object
+      setUser({
+        ...user,
+        username: updatedUser.username,
+      });
       alert("Username actualizado");
+      setNewUsername(""); // Clear the input
     } catch (error) {
       alert("Error al actualizar");
     }
@@ -25,6 +32,7 @@ const Profile = () => {
       <p>Username actual: {user.username}</p>
 
       <input
+        type="text"
         placeholder="Nuevo username"
         value={newUsername}
         onChange={(e) => setNewUsername(e.target.value)}
