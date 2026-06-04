@@ -1,9 +1,9 @@
-package com.smartlogix.inventory_service.service;
+package com.smartlogix.ms_inventory.service;
 
 import org.springframework.stereotype.Service;
 
-import com.smartlogix.inventory_service.model.Item;
-import com.smartlogix.inventory_service.repository.InventoryRepository;
+import com.smartlogix.ms_inventory.model.Item;
+import com.smartlogix.ms_inventory.repository.InventoryRepository;
 
 import java.util.HashMap;
 import java.util.List;

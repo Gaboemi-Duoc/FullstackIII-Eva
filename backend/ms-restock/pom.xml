@@ -8,8 +8,8 @@
 		<version>4.0.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>alumnoduoc</groupId>
-	<artifactId>restock-service</artifactId>
+	<groupId>com.smartlogix</groupId>
+	<artifactId>ms-restock</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
 	<description/>

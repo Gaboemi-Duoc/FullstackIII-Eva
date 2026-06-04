@@ -1,10 +1,10 @@
-package com.smartlogix.inventory_service.repository;
+package com.smartlogix.ms_inventory.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.smartlogix.inventory_service.model.Item;
+import com.smartlogix.ms_inventory.model.Item;
 
 import java.util.List;
 import java.util.Optional;

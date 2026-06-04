@@ -1,4 +1,4 @@
-package com.smartlogix.inventory_service;
+package com.smartlogix.ms_inventory;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

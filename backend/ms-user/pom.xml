@@ -8,10 +8,10 @@
 		<version>4.0.6</version>
 		<relativePath/>
 	</parent>
-	<groupId>alumnoduoc</groupId>
-	<artifactId>user-service</artifactId>
+	<groupId>com.smartlogix</groupId>
+	<artifactId>ms-user</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>user-service</name>
+	<name>ms-user</name>
 	<description>User Service with Flyway</description>
 	
 	<properties>
