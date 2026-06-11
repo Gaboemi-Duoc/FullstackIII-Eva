@@ -2,7 +2,7 @@ package com.smartlogix.bff.service;
 
 import com.smartlogix.bff.dto.LoginRequest;
 import com.smartlogix.bff.dto.LoginResponse;
-import com.smartlogix.bff.dto.ApiResponse;
+import com.smartlogix.bff.dto.DtoApiResponse;
 import com.smartlogix.bff.dto.UpdateUsernameRequest;
 import com.smartlogix.bff.client.UserServiceClient;
 import com.smartlogix.bff.model.User;
@@ -26,7 +26,7 @@ public class UserBffService {
         this.jwtService = jwtService;
     }
     
-    public ApiResponse<LoginResponse> login(LoginRequest loginRequest) {
+    public DtoApiResponse<LoginResponse> login(LoginRequest loginRequest) {
         try {
             log.info("Processing login for user: {}", loginRequest.getUsername());
             
@@ -46,37 +46,37 @@ public class UserBffService {
                 "Login successful"
             );
             
-            return new ApiResponse<>(true, "Login successful", response, 200);
+            return new DtoApiResponse<>(true, "Login successful", response, 200);
             
         } catch (Exception e) {
             log.error("Login failed for user: {}", loginRequest.getUsername(), e);
-            return new ApiResponse<>(false, "Invalid credentials", null, 401);
+            return new DtoApiResponse<>(false, "Invalid credentials", null, 401);
         }
     }
     
-    public ApiResponse<User> updateUsername(Long userId, UpdateUsernameRequest request) {
+    public DtoApiResponse<User> updateUsername(Long userId, UpdateUsernameRequest request) {
         try {
             log.info("Updating username for user ID: {}", userId);
             
             User updatedUser = userServiceClient.updateUsername(userId, request);
             
-            return new ApiResponse<>(true, "Username updated successfully", updatedUser, 200);
+            return new DtoApiResponse<>(true, "Username updated successfully", updatedUser, 200);
             
         } catch (Exception e) {
             log.error("Failed to update username for user ID: {}", userId, e);
-            return new ApiResponse<>(false, "Failed to update username", null, 500);
+            return new DtoApiResponse<>(false, "Failed to update username", null, 500);
         }
     }
     
-    public ApiResponse<User> getUserDetails(Long userId) {
+    public DtoApiResponse<User> getUserDetails(Long userId) {
         try {
             User user = userServiceClient.getUserById(userId);
             // Remove sensitive data
             user.setPassword(null);
-            return new ApiResponse<>(true, "User found", user, 200);
+            return new DtoApiResponse<>(true, "User found", user, 200);
         } catch (Exception e) {
             log.error("User not found with ID: {}", userId, e);
-            return new ApiResponse<>(false, "User not found", null, 404);
+            return new DtoApiResponse<>(false, "User not found", null, 404);
         }
     }
     
