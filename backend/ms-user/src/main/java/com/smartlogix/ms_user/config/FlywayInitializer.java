@@ -1,4 +1,4 @@
-package com.smartlogix.user_service.config;
+package com.smartlogix.ms_user.config;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;

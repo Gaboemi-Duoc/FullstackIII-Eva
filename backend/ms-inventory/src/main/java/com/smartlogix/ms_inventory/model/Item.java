@@ -1,4 +1,4 @@
-package com.smartlogix.inventory_service.model;
+package com.smartlogix.ms_inventory.model;
 
 import jakarta.persistence.*;
 import lombok.*;

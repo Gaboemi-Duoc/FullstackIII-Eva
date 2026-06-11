@@ -1,10 +1,10 @@
-package com.smartlogix.user_service.controller;
+package com.smartlogix.ms_user.controller;
 
-import com.smartlogix.user_service.model.User;
+import com.smartlogix.ms_user.model.User;
 import java.util.List;
 import java.util.Map;
 
-import com.smartlogix.user_service.service.UserService;
+import com.smartlogix.ms_user.service.UserService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

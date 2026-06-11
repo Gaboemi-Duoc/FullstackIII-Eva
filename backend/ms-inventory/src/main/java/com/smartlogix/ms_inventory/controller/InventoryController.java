@@ -1,10 +1,10 @@
-package com.smartlogix.inventory_service.controller;
+package com.smartlogix.ms_inventory.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.smartlogix.inventory_service.model.Item;
-import com.smartlogix.inventory_service.service.InventoryService;
+import com.smartlogix.ms_inventory.model.Item;
+import com.smartlogix.ms_inventory.service.InventoryService;
 
 import java.util.List;
 import java.util.Map;

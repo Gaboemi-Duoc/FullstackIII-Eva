@@ -1,4 +1,4 @@
-package com.smartlogix.inventory_service.config;
+package com.smartlogix.ms_inventory.config;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,9 +1,9 @@
-package com.smartlogix.user_service.service;
+package com.smartlogix.ms_user.service;
 
-import com.smartlogix.user_service.model.User;
+import com.smartlogix.ms_user.model.User;
 import java.util.List;
 
-import com.smartlogix.user_service.repository.UserRepository;
+import com.smartlogix.ms_user.repository.UserRepository;
 
 import org.springframework.stereotype.Service;
 

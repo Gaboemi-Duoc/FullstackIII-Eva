@@ -11,10 +11,10 @@
     <relativePath/>
 </parent>
 
-<groupId>alumnoduoc</groupId>
-<artifactId>inventory-service</artifactId>
+<groupId>com.smartlogix</groupId>
+<artifactId>ms-inventory</artifactId>
 <version>0.0.1-SNAPSHOT</version>
-<name>inventory-service</name>
+<name>ms-inventory</name>
 <description>Inventory Service with Flyway</description>
 
 <properties>

@@ -1,6 +1,6 @@
-package com.smartlogix.user_service.repository;
+package com.smartlogix.ms_user.repository;
 
-import com.smartlogix.user_service.model.User;
+import com.smartlogix.ms_user.model.User;
 import java.util.Optional;
 
 
