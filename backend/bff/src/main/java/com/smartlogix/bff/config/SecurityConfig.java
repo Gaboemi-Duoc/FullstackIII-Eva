@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .permitAll()
                         
                         // HEALTH endpoint
-                        .requestMatchers("/api/bff/users/health")
+                        .requestMatchers("/api/bff/health")
                         .permitAll()
                         
                         // SWAGGER UI v3 (SpringDoc)

@@ -207,40 +207,4 @@ public class UserBffController {
         
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-    
-    @GetMapping("/health")
-    @Operation(
-        summary = "Health check endpoint",
-        description = """
-            Returns the health status of the BFF service.
-            
-            This endpoint is used by:
-            - Kubernetes liveness and readiness probes
-            - Docker Compose health checks
-            - Load balancer health monitoring
-            - Monitoring systems (Prometheus, Grafana)
-            
-            No authentication required for this endpoint.
-            """,
-        tags = {"Health Check"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Service is healthy and operational",
-            content = @Content(
-                mediaType = "application/json", 
-                schema = @Schema(implementation = DtoApiResponse.class)
-            )
-        ),
-        @ApiResponse(
-            responseCode = "503",
-            description = "Service is unhealthy - Check dependencies (user-service, inventory-service)",
-            content = @Content(mediaType = "application/json")
-        )
-    })
-    public ResponseEntity<DtoApiResponse<String>> healthCheck() {
-        log.debug("BFF: Health check requested - user-service URL: {}", userServiceUrl);
-        return ResponseEntity.ok(new DtoApiResponse<>(true, "BFF is running", "OK", 200));
-    }
 }
