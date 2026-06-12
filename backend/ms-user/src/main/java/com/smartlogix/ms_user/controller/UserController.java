@@ -6,12 +6,20 @@ import java.util.Map;
 
 import com.smartlogix.ms_user.service.UserService;
 
+import com.smartlogix.ms_user.dto.RegisterUserRequest;
+import com.smartlogix.ms_user.dto.LoginRequest;
+import com.smartlogix.ms_user.dto.UpdateUsernameRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import org.springframework.validation.annotation.Validated;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "*")
+@Validated
 public class UserController {
     private final UserService userService;
 
@@ -19,46 +27,40 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<User>> listarUsuarios() {
-        return ResponseEntity.ok(userService.listarUsuarios());
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<User> obtenerUsuario(@PathVariable Long id) {
+    public ResponseEntity<User> obtenerUsuario(@PathVariable @Min(1) Long id) {
         return ResponseEntity.ok(userService.obtenerPorId(id));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> registrarUsuario(@RequestBody User user) {
+    public ResponseEntity<User> registrarUsuario(@Valid @RequestBody RegisterUserRequest request) {
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+
         return ResponseEntity.ok(userService.registrarUsuario(user));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody Map<String, String> datos) {
-        String username = datos.get("username");
-        String password = datos.get("password");
-
-        User user = userService.login(username, password);
-
+    public ResponseEntity<User> login(@Valid @RequestBody LoginRequest request) {
+        User user = userService.login(request.getUsername(), request.getPassword());
         return ResponseEntity.ok(user);
     }
 
     @PutMapping("/{id}/username")
     public ResponseEntity<User> actualizarUsername(
-            @PathVariable Long id,
-            @RequestBody Map<String, String> datos) {
+            @PathVariable @Min(1) Long id,
+            @Valid @RequestBody UpdateUsernameRequest request) {
 
-        String nuevoUsername = datos.get("username");
-
-        User userActualizado = userService.actualizarUsername(id, nuevoUsername);
-
+        User userActualizado = userService.actualizarUsername(id, request.getUsername());
         return ResponseEntity.ok(userActualizado);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable @Min(1) Long id) {
         userService.eliminarUsuario(id);
         return ResponseEntity.noContent().build();
     }
+
 }
