@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # ========== DATABASES ==========
   
@@ -81,48 +79,48 @@ services:
       - app-network
     restart: on-failure
 
-  ms-orders:
-    image: ms-orders:1.0
-    container_name: ms-orders
-    build:
-      context: ./backend/ms-orders
-      dockerfile: Dockerfile
-    environment:
-      # Assuming orders service uses its own database
-      SPRING_DATASOURCE_URL: jdbc:postgresql://orders-db:5432/ordersdb
-      SPRING_DATASOURCE_USERNAME: orders
-      SPRING_DATASOURCE_PASSWORD: orderspass123
-      # Dependencies on other services
-      USER_SERVICE_URL: http://ms-user:9090
-      INVENTORY_SERVICE_URL: http://ms-inventory:9091
-    ports:
-      - "9092:9092"
-    depends_on:
-      - ms-user
-      - ms-inventory
-    networks:
-      - app-network
-    restart: on-failure
+  # ms-orders:
+  #   image: ms-orders:1.0
+  #   container_name: ms-orders
+  #   build:
+  #     context: ./backend/ms-orders
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     # Assuming orders service uses its own database
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://orders-db:5432/ordersdb
+  #     SPRING_DATASOURCE_USERNAME: orders
+  #     SPRING_DATASOURCE_PASSWORD: orderspass123
+  #     # Dependencies on other services
+  #     USER_SERVICE_URL: http://ms-user:9090
+  #     INVENTORY_SERVICE_URL: http://ms-inventory:9091
+  #   ports:
+  #     - "9092:9092"
+  #   depends_on:
+  #     - ms-user
+  #     - ms-inventory
+  #   networks:
+  #     - app-network
+  #   restart: on-failure
 
-  ms-restock:
-    image: ms-restock:1.0
-    container_name: ms-restock
-    build:
-      context: ./backend/ms-restock
-      dockerfile: Dockerfile
-    environment:
-      # Assuming restock service uses its own database
-      SPRING_DATASOURCE_URL: jdbc:postgresql://restock-db:5432/restockdb
-      SPRING_DATASOURCE_USERNAME: restock
-      SPRING_DATASOURCE_PASSWORD: restockpass123
-      INVENTORY_SERVICE_URL: http://ms-inventory:9091
-    ports:
-      - "9093:9093"
-    depends_on:
-      - ms-inventory
-    networks:
-      - app-network
-    restart: on-failure
+  # ms-restock:
+  #   image: ms-restock:1.0
+  #   container_name: ms-restock
+  #   build:
+  #     context: ./backend/ms-restock
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     # Assuming restock service uses its own database
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://restock-db:5432/restockdb
+  #     SPRING_DATASOURCE_USERNAME: restock
+  #     SPRING_DATASOURCE_PASSWORD: restockpass123
+  #     INVENTORY_SERVICE_URL: http://ms-inventory:9091
+  #   ports:
+  #     - "9093:9093"
+  #   depends_on:
+  #     - ms-inventory
+  #   networks:
+  #     - app-network
+  #   restart: on-failure
 
   # ========== BFF (Backend for Frontend) ==========
 
@@ -130,7 +128,7 @@ services:
     image: bff:1.0
     container_name: bff
     build:
-      context: ./bff
+      context: ./backend/bff
       dockerfile: Dockerfile
     environment:
       USER_SERVICE_URL: http://ms-user:9090
@@ -143,8 +141,8 @@ services:
     depends_on:
       - ms-user
       - ms-inventory
-      - ms-orders
-      - ms-restock
+      #- ms-orders
+      #- ms-restock
     networks:
       - app-network
     restart: on-failure
@@ -200,12 +198,34 @@ services:
     ports:
       - "30080:80"
     environment:
-      BFF_URL: http://bff:8081
+      BFF_URL: http://krakend:8080    # Ahora apunta al gateway
     depends_on:
-      - bff
+      - krakend                         # Depende del gateway, no directamente del BFF
     networks:
       - app-network
     restart: on-failure
+
+  # ========== API GATEWAY ==========
+
+  krakend:
+    image: krakend:latest
+    container_name: krakend
+    ports:
+      - "8080:8080"      # Gateway principal
+      - "8090:8090"      # Admin endpoint (opcional)
+    volumes:
+      - ./krakend/krakend.json:/etc/krakend/krakend.json
+    networks:
+      - app-network
+    depends_on:
+      - bff
+    restart: on-failure
+    environment:
+      FC_ENABLE: "1"
+    command:
+      - "run"
+      - "-c"
+      - "/etc/krakend/krakend.json"
 
 # ========== VOLUMES ==========
 
