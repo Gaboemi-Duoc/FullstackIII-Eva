@@ -2,6 +2,9 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 
+# Instalar pnpm globalmente
+RUN npm install -g pnpm
+
 # Copiar archivos de dependencias
 COPY package*.json ./
 RUN npm ci --only=production
