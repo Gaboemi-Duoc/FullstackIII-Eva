@@ -1,9 +1,9 @@
 com\smartlogix\ms_orders\dto\CreateOrderRequest.class
-com\smartlogix\ms_orders\service\OrderServiceApplication.class
 com\smartlogix\ms_orders\controller\OrderController.class
 com\smartlogix\ms_orders\model\OrderStatus.class
 com\smartlogix\ms_orders\exception\GlobalExceptionHandler.class
 com\smartlogix\ms_orders\repository\OrderRepository.class
 com\smartlogix\ms_orders\model\Order.class
 com\smartlogix\ms_orders\dto\UpdateOrderStatusRequest.class
+com\smartlogix\ms_orders\OrderServiceApplication.class
 com\smartlogix\ms_orders\service\OrderService.class
