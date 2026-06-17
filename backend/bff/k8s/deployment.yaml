@@ -23,3 +23,5 @@ spec:
               value: http://ms-user:9090
             - name: INVENTORY_SERVICE_URL
               value: http://ms-inventory:9091
+            - name: ORDERS_SERVICE_URL
+              value: http://ms-orders:9092
