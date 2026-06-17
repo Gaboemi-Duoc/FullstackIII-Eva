@@ -1,6 +1,6 @@
-package alumnoduoc.restock_service.repository;
+package com.smartlogix.ms_restock.repository;
 
-import alumnoduoc.restock_service.model.RestockRequest;
+import com.smartlogix.ms_restock.model.RestockRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

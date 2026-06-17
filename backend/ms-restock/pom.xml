@@ -11,11 +11,11 @@
     <relativePath/>
 </parent>
 
-<groupId>alumnoduoc</groupId>
-<artifactId>restock-service</artifactId>
+<groupId>com.smartlogix</groupId>
+<artifactId>ms-restock</artifactId>
 <version>0.0.1-SNAPSHOT</version>
-<name>restock-service</name>
-<description>Restock Service — gestión de solicitudes de reposición de stock</description>
+<name>ms-restock</name>
+<description>Restock Service with Flyway</description>
 
 <properties>
     <java.version>25</java.version>

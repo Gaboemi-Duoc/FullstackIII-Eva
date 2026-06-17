@@ -1,4 +1,4 @@
-package alumnoduoc.restock_service.model;
+package com.smartlogix.ms_restock.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,7 +23,7 @@ public class RestockRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_restock;
 
-    /** FK lógica al ítem en service-inventory (no hay FK física entre servicios). */
+    /** FK lógica al ítem en ms-inventory (no hay FK física entre servicios). */
     @Column(nullable = false)
     private Long id_item;
 
@@ -52,7 +52,6 @@ public class RestockRequest {
     /** Se actualiza cada vez que cambia el estado. */
     private LocalDateTime fecha_actualizacion;
 
-    // ─── Enum interno para los estados válidos ───────────────────────────────
     public enum EstadoRestock {
         PENDIENTE, APROBADA, RECHAZADA, COMPLETADA
     }
