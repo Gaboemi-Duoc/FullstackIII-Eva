@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: restock-db
+spec:
+  selector:
+    app: restock-db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-restock
+spec:
+  selector:
+    app: ms-restock
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 9093
+      targetPort: 9093
+      nodePort: 30093

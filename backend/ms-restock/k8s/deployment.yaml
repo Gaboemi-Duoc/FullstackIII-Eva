@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restock-db
+  labels:
+    app: restock-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restock-db
+  template:
+    metadata:
+      labels:
+        app: restock-db
+    spec:
+      containers:
+        - name: restock-db
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: restockdb
+            - name: POSTGRES_USER
+              value: restock
+            - name: POSTGRES_PASSWORD
+              value: restockpass123
+          volumeMounts:
+            - name: restock-db-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: restock-db-storage
+          persistentVolumeClaim:
+            claimName: restock-db-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-restock
+  labels:
+    app: ms-restock
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-restock
+  template:
+    metadata:
+      labels:
+        app: ms-restock
+    spec:
+      containers:
+        - name: ms-restock
+          image: ms-restock:latest
+          ports:
+            - containerPort: 9093
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://restock-db:5432/restockdb
+            - name: SPRING_DATASOURCE_USERNAME
+              value: restock
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: restockpass123
