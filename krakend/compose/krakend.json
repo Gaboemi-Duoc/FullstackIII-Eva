@@ -98,6 +98,126 @@
           ]
         }
       ]
+    },
+    {
+      "endpoint": "/api/restock",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/api/restock",
+          "host": [
+            "http://ms-restock:9093"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/restock/{id}",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/api/restock/{id}",
+          "host": [
+            "http://ms-restock:9093"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/restock/estado",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/api/restock/estado",
+          "host": [
+            "http://ms-restock:9093"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/restock/resumen",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/api/restock/resumen",
+          "host": [
+            "http://ms-restock:9093"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/restock/item/{id_item}",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/api/restock/item/{id_item}",
+          "host": [
+            "http://ms-restock:9093"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/restock/bodega",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/api/restock/bodega",
+          "host": [
+            "http://ms-restock:9093"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/restock/bodega/pendientes",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/api/restock/bodega/pendientes",
+          "host": [
+            "http://ms-restock:9093"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/restock",
+      "method": "POST",
+      "backend": [
+        {
+          "url_pattern": "/api/restock",
+          "host": [
+            "http://ms-restock:9093"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/restock/{id}/estado",
+      "method": "PUT",
+      "backend": [
+        {
+          "url_pattern": "/api/restock/{id}/estado",
+          "host": [
+            "http://ms-restock:9093"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/restock/{id}",
+      "method": "DELETE",
+      "backend": [
+        {
+          "url_pattern": "/api/restock/{id}",
+          "host": [
+            "http://ms-restock:9093"
+          ]
+        }
+      ]
     }
   ]
 }

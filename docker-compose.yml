@@ -41,6 +41,45 @@ services:
       timeout: 5s
       retries: 5
 
+  restock-db:
+    image: postgres:17-alpine
+    container_name: restock-db
+    environment:
+      POSTGRES_DB: restockdb
+      POSTGRES_USER: restock
+      POSTGRES_PASSWORD: restockpass123
+    ports:
+      - "5435:5432"
+    volumes:
+      - restock-db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U restock -d restockdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ms-restock:
+    image: ms-restock:1.0
+    container_name: ms-restock
+    build:
+      context: ./backend/ms-restock
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://restock-db:5432/restockdb
+      SPRING_DATASOURCE_USERNAME: restock
+      SPRING_DATASOURCE_PASSWORD: restockpass123
+      INVENTORY_SERVICE_URL: http://ms-inventory:9091
+    ports:
+      - "9093:9093"
+    depends_on:
+      restock-db:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: on-failure
+
   # User Service
   user-service:
     build:
@@ -93,12 +132,14 @@ services:
     container_name: bff
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      RESTOCK_SERVICE_URL: http://ms-restock:9093
       USER_SERVICE_URL: http://user-service:8080
       INVENTORY_SERVICE_URL: http://inventory-service:8080
       JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
     ports:
       - "8080:8080"
     depends_on:
+      - ms-restock
       - user-service
       - inventory-service
     networks:
