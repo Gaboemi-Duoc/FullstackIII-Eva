@@ -33,3 +33,24 @@ export interface UserContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
+// Order types
+export interface Order {
+  id_order: number;
+  customerName: string;
+  customerEmail: string;
+  deliveryAddress: string;
+  total: number;
+  status: string;
+  createdAt: string;
+}
+
+export interface NewOrder {
+  customerName: string;
+  customerEmail: string;
+  deliveryAddress: string;
+  total: number;
+}
+
+export interface UpdateOrderStatus {
+  status: string;
+}
