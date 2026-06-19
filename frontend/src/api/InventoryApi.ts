@@ -1,16 +1,7 @@
 import axios, { AxiosResponse } from "axios";
+import type { Item, NewItem } from "../types";
 
 const INVENTORY_API_URL = "http://localhost:8081/api/bff/inventory";
-
-// Types
-export interface Item {
-  id?: number;
-  name: string;
-  description?: string;
-  cantidad: number;
-  precio: number;
-  [key: string]: any;
-}
 
 export interface AuthHeaders {
   headers: {
@@ -52,7 +43,7 @@ export const getStockBajo = async (umbral: number): Promise<Item[]> => {
   return response.data;
 };
 
-export const crearItem = async (item: Omit<Item, 'id'>): Promise<Item> => {
+export const crearItem = async (item: NewItem): Promise<Item> => {
   const response: AxiosResponse<Item> = await axios.post(
     INVENTORY_API_URL,
     item,
@@ -61,7 +52,10 @@ export const crearItem = async (item: Omit<Item, 'id'>): Promise<Item> => {
   return response.data;
 };
 
-export const actualizarCantidad = async (id: number, cantidad: number): Promise<Item> => {
+export const actualizarCantidad = async (
+  id: number,
+  cantidad: number
+): Promise<Item> => {
   const response: AxiosResponse<Item> = await axios.put(
     `${INVENTORY_API_URL}/${id}/cantidad`,
     { cantidad },
@@ -70,7 +64,10 @@ export const actualizarCantidad = async (id: number, cantidad: number): Promise<
   return response.data;
 };
 
-export const actualizarPrecio = async (id: number, precio: number): Promise<Item> => {
+export const actualizarPrecio = async (
+  id: number,
+  precio: number
+): Promise<Item> => {
   const response: AxiosResponse<Item> = await axios.put(
     `${INVENTORY_API_URL}/${id}/precio`,
     { precio },

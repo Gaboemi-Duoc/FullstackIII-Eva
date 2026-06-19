@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>alumnoduoc</groupId>
+    <groupId>com.smartlogix</groupId>
     <artifactId>bff</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 

@@ -1,7 +1,6 @@
-version: '3.8'
-
 services:
-  # PostgreSQL for User Service
+  # ========== DATABASES ==========
+  
   user-db:
     image: postgres:17-alpine
     container_name: user-db
@@ -21,7 +20,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # PostgreSQL for Inventory Service
   inventory-db:
     image: postgres:17-alpine
     container_name: inventory-db
@@ -60,6 +58,69 @@ services:
       timeout: 5s
       retries: 5
 
+  # ========== BACKEND SERVICES ==========
+
+  ms-user:
+    image: ms-user:1.0
+    container_name: ms-user
+    build:
+      context: ./backend/ms-user
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://user-db:5432/userdb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: userpass123
+    ports:
+      - "9090:9090"
+    depends_on:
+      user-db:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: on-failure
+
+  ms-inventory:
+    image: ms-inventory:1.0
+    container_name: ms-inventory
+    build:
+      context: ./backend/ms-inventory
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://inventory-db:5432/inventorydb
+      SPRING_DATASOURCE_USERNAME: inventory
+      SPRING_DATASOURCE_PASSWORD: inventorypass123
+    ports:
+      - "9091:9091"
+    depends_on:
+      inventory-db:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: on-failure
+
+  # ms-orders:
+  #   image: ms-orders:1.0
+  #   container_name: ms-orders
+  #   build:
+  #     context: ./backend/ms-orders
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     # Assuming orders service uses its own database
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://orders-db:5432/ordersdb
+  #     SPRING_DATASOURCE_USERNAME: orders
+  #     SPRING_DATASOURCE_PASSWORD: orderspass123
+  #     # Dependencies on other services
+  #     USER_SERVICE_URL: http://ms-user:9090
+  #     INVENTORY_SERVICE_URL: http://ms-inventory:9091
+  #   ports:
+  #     - "9092:9092"
+  #   depends_on:
+  #     - ms-user
+  #     - ms-inventory
+  #   networks:
+  #     - app-network
+  #   restart: on-failure
+
   ms-restock:
     image: ms-restock:1.0
     container_name: ms-restock
@@ -80,93 +141,105 @@ services:
       - app-network
     restart: on-failure
 
-  # User Service
-  user-service:
-    build:
-      context: ./user-service
-      dockerfile: Dockerfile
-    container_name: user-service
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:postgresql://user-db:5432/userdb
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: userpass123
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: "true"
-    ports:
-      - "8081:8080"
-    depends_on:
-      user-db:
-        condition: service_healthy
-    networks:
-      - app-network
-    restart: on-failure
+  # ========== BFF (Backend for Frontend) ==========
 
-  # Inventory Service
-  inventory-service:
-    build:
-      context: ./inventory-service
-      dockerfile: Dockerfile
-    container_name: inventory-service
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:postgresql://inventory-db:5432/inventorydb
-      SPRING_DATASOURCE_USERNAME: inventory
-      SPRING_DATASOURCE_PASSWORD: inventorypass123
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: "true"
-    ports:
-      - "8082:8080"
-    depends_on:
-      inventory-db:
-        condition: service_healthy
-    networks:
-      - app-network
-    restart: on-failure
-
-  # BFF (Backend For Frontend)
   bff:
-    build:
-      context: ./bff
-      dockerfile: Dockerfile
+    image: bff:1.0
     container_name: bff
+    build:
+      context: ./backend/bff
+      dockerfile: Dockerfile
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      USER_SERVICE_URL: http://ms-user:9090
+      INVENTORY_SERVICE_URL: http://ms-inventory:9091
+      # Add these if your BFF also needs orders/restock
+      ORDERS_SERVICE_URL: http://ms-orders:9092
       RESTOCK_SERVICE_URL: http://ms-restock:9093
-      USER_SERVICE_URL: http://user-service:8080
-      INVENTORY_SERVICE_URL: http://inventory-service:8080
       JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
     ports:
-      - "8080:8080"
+      - "8081:8081"
     depends_on:
+      - ms-user
+      - ms-inventory
+      #- ms-orders
       - ms-restock
-      - user-service
-      - inventory-service
     networks:
       - app-network
     restart: on-failure
 
-  # React Frontend
-  frontend:
-    build:
-      context: ./fullstackiii-front
-      dockerfile: Dockerfile
-    container_name: frontend
+  # ========== ADDITIONAL DATABASES FOR NEW SERVICES ==========
+
+  orders-db:
+    image: postgres:17-alpine
+    container_name: orders-db
     environment:
-      VITE_API_URL: http://localhost:8080/api
+      POSTGRES_DB: ordersdb
+      POSTGRES_USER: orders
+      POSTGRES_PASSWORD: orderspass123
     ports:
-      - "3000:80"
+      - "5434:5432"
+    volumes:
+      - orders-db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orders -d ordersdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  # ========== FRONTEND ==========
+
+  frontend:
+    image: frontend:1.0
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "30080:80"
+    environment:
+      BFF_URL: http://krakend:8080    # Ahora apunta al gateway
+    depends_on:
+      - krakend                         # Depende del gateway, no directamente del BFF
+    networks:
+      - app-network
+    restart: on-failure
+
+  # ========== API GATEWAY ==========
+
+  krakend:
+    image: krakend:latest
+    container_name: krakend
+    ports:
+      - "8080:8080"      # Gateway principal
+      - "8090:8090"      # Admin endpoint (opcional)
+    volumes:
+      - ./krakend/krakend.json:/etc/krakend/krakend.json
+    networks:
+      - app-network
     depends_on:
       - bff
-    networks:
-      - app-network
     restart: on-failure
+    environment:
+      FC_ENABLE: "1"
+    command:
+      - "run"
+      - "-c"
+      - "/etc/krakend/krakend.json"
 
-networks:
-  app-network:
-    driver: bridge
+# ========== VOLUMES ==========
 
 volumes:
   user-db-data:
   inventory-db-data:
+  orders-db-data:
   restock-db-data:
+
+# ========== NETWORKS ==========
+
+networks:
+  app-network:
+    driver: bridge

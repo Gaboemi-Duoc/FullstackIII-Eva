@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../viewmodels/UserViewModel";
-import logo from "../assets/LogoConBorde.png";
+import logo from "../assets/logo-borde.png";
 
 const Navbar = () => {
   const { user, setUser } = useUser();
