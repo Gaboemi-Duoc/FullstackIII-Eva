@@ -58,6 +58,25 @@ services:
       timeout: 5s
       retries: 5
 
+  orders-db:
+    image: postgres:17-alpine
+    container_name: orders-db
+    environment:
+      POSTGRES_DB: ordersdb
+      POSTGRES_USER: orders
+      POSTGRES_PASSWORD: orderspass123
+    ports:
+      - "5434:5432"
+    volumes:
+      - orders-db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orders -d ordersdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # ========== BACKEND SERVICES ==========
 
   ms-user:
@@ -98,28 +117,28 @@ services:
       - app-network
     restart: on-failure
 
-  # ms-orders:
-  #   image: ms-orders:1.0
-  #   container_name: ms-orders
-  #   build:
-  #     context: ./backend/ms-orders
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     # Assuming orders service uses its own database
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://orders-db:5432/ordersdb
-  #     SPRING_DATASOURCE_USERNAME: orders
-  #     SPRING_DATASOURCE_PASSWORD: orderspass123
-  #     # Dependencies on other services
-  #     USER_SERVICE_URL: http://ms-user:9090
-  #     INVENTORY_SERVICE_URL: http://ms-inventory:9091
-  #   ports:
-  #     - "9092:9092"
-  #   depends_on:
-  #     - ms-user
-  #     - ms-inventory
-  #   networks:
-  #     - app-network
-  #   restart: on-failure
+  ms-orders:
+    image: ms-orders:1.0
+    container_name: ms-orders
+    build:
+      context: ./backend/ms-orders
+      dockerfile: Dockerfile
+    environment:
+      # Assuming orders service uses its own database
+      SPRING_DATASOURCE_URL: jdbc:postgresql://orders-db:5432/ordersdb
+      SPRING_DATASOURCE_USERNAME: orders
+      SPRING_DATASOURCE_PASSWORD: orderspass123
+      # Dependencies on other services
+      USER_SERVICE_URL: http://ms-user:9090
+      INVENTORY_SERVICE_URL: http://ms-inventory:9091
+    ports:
+      - "9092:9092"
+    depends_on:
+      - ms-user
+      - ms-inventory
+    networks:
+      - app-network
+    restart: on-failure
 
   ms-restock:
     image: ms-restock:1.0
@@ -162,33 +181,11 @@ services:
     depends_on:
       - ms-user
       - ms-inventory
-      #- ms-orders
+      - ms-orders
       - ms-restock
     networks:
       - app-network
     restart: on-failure
-
-  # ========== ADDITIONAL DATABASES FOR NEW SERVICES ==========
-
-  orders-db:
-    image: postgres:17-alpine
-    container_name: orders-db
-    environment:
-      POSTGRES_DB: ordersdb
-      POSTGRES_USER: orders
-      POSTGRES_PASSWORD: orderspass123
-    ports:
-      - "5434:5432"
-    volumes:
-      - orders-db-data:/var/lib/postgresql/data
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U orders -d ordersdb"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
 
   # ========== FRONTEND ==========
 
