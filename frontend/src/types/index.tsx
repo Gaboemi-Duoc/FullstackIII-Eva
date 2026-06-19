@@ -77,3 +77,24 @@ export interface NewRestockRequest {
 export interface UpdateEstadoRequest {
   estado: string;
 }
+// Order types
+export interface Order {
+  id_order: number;
+  customerName: string;
+  customerEmail: string;
+  deliveryAddress: string;
+  total: number;
+  status: string;
+  createdAt: string;
+}
+
+export interface NewOrder {
+  customerName: string;
+  customerEmail: string;
+  deliveryAddress: string;
+  total: number;
+}
+
+export interface UpdateOrderStatus {
+  status: string;
+}

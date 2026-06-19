@@ -3,9 +3,11 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Inventory from "./pages/Inventory";
 import Restock from "./pages/Restock";
+import Orders from "./pages/Orders";
 import Navbar from "./components/Navbar";
 import { UserProvider } from "./viewmodels/UserViewModel";
 import ProtectedRoute from "./components/ProtectedRoute";
+
 
 function App() {
   return (
@@ -39,6 +41,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <Orders />
               </ProtectedRoute>
             }
           />
