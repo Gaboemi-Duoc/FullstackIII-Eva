@@ -12,16 +12,16 @@ import lombok.Data;
 @Data
 public class CreateRestockRequest {
 
-    @NotNull(message = "id_item es obligatorio")
-    private Long id_item;
+    @NotNull(message = "idItem es obligatorio")
+    private Long idItem;
 
-    @NotBlank(message = "nombre_item es obligatorio")
-    private String nombre_item;
+    @NotBlank(message = "nombreItem es obligatorio")
+    private String nombreItem;
 
     @NotBlank(message = "bodega es obligatoria")
     private String bodega;
 
-    @NotNull(message = "cantidad_solicitada es obligatoria")
-    @Min(value = 1, message = "cantidad_solicitada debe ser mayor a 0")
-    private Integer cantidad_solicitada;
+    @NotNull(message = "cantidadSolicitada es obligatoria")
+    @Min(value = 1, message = "cantidadSolicitada debe ser mayor a 0")
+    private Integer cantidadSolicitada;
 }

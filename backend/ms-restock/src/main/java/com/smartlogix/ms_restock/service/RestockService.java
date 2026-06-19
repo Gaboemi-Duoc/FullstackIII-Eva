@@ -38,8 +38,8 @@ public class RestockService {
         return restockRepository.findByEstado(estado.toUpperCase());
     }
 
-    public List<RestockRequest> listarPorItem(Long id_item) {
-        return restockRepository.findByIdItem(id_item);
+    public List<RestockRequest> listarPorItem(Long idItem) {
+        return restockRepository.findByIdItem(idItem);
     }
 
     public List<RestockRequest> listarPorBodega(String bodega) {
@@ -65,8 +65,8 @@ public class RestockService {
 
     public RestockRequest crearSolicitud(RestockRequest solicitud) {
         solicitud.setEstado(RestockRequest.EstadoRestock.PENDIENTE.name());
-        solicitud.setFecha_solicitud(LocalDateTime.now());
-        solicitud.setFecha_actualizacion(null);
+        solicitud.setFechaSolicitud(LocalDateTime.now());
+        solicitud.setFechaActualizacion(null);
         return restockRepository.save(solicitud);
     }
 
@@ -76,7 +76,7 @@ public class RestockService {
         validarEstado(nuevoEstado);
         RestockRequest solicitud = obtenerPorId(id);
         solicitud.setEstado(nuevoEstado.toUpperCase());
-        solicitud.setFecha_actualizacion(LocalDateTime.now());
+        solicitud.setFechaActualizacion(LocalDateTime.now());
         return restockRepository.save(solicitud);
     }
 

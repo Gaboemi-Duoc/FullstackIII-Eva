@@ -46,9 +46,10 @@ public class RestockController {
         return ResponseEntity.ok(restockService.listarPorEstado(valor));
     }
 
-    @GetMapping("/item/{id_item}")
-    public ResponseEntity<List<RestockRequest>> listarPorItem(@PathVariable Long id_item) {
-        return ResponseEntity.ok(restockService.listarPorItem(id_item));
+    // Cambiamos la ruta y la variable a CamelCase (idItem)
+    @GetMapping("/item/{idItem}")
+    public ResponseEntity<List<RestockRequest>> listarPorItem(@PathVariable Long idItem) {
+        return ResponseEntity.ok(restockService.listarPorItem(idItem));
     }
 
     @GetMapping("/bodega")
@@ -73,4 +74,33 @@ public class RestockController {
      * El estado inicial (PENDIENTE) y las fechas se fijan en RestockService.
      */
     @PostMapping
-    public ResponseEntity<RestockRequest>
+    public ResponseEntity<RestockRequest> crearSolicitud(@Valid @RequestBody CreateRestockRequest dto) {
+        RestockRequest solicitud = new RestockRequest();
+        
+        // Usamos los nuevos Setters generados por Lombok y los Getters del DTO
+        solicitud.setIdItem(dto.getIdItem());
+        solicitud.setNombreItem(dto.getNombreItem());
+        solicitud.setBodega(dto.getBodega());
+        solicitud.setCantidadSolicitada(dto.getCantidadSolicitada());
+
+        return ResponseEntity.ok(restockService.crearSolicitud(solicitud));
+    }
+
+    // ─── PUT ──────────────────────────────────────────────────────────────────
+
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<RestockRequest> actualizarEstado(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateEstadoRequest dto) {
+
+        return ResponseEntity.ok(restockService.actualizarEstado(id, dto.getEstado()));
+    }
+
+    // ─── DELETE ───────────────────────────────────────────────────────────────
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarSolicitud(@PathVariable Long id) {
+        restockService.eliminarSolicitud(id);
+        return ResponseEntity.noContent().build();
+    }
+}

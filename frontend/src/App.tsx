@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Inventory from "./pages/Inventory";
+import Restock from "./pages/Restock";
 import Navbar from "./components/Navbar";
 import { UserProvider } from "./viewmodels/UserViewModel";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -20,6 +21,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <Inventory />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/restock"
+            element={
+              <ProtectedRoute>
+                <Restock />
               </ProtectedRoute>
             }
           />

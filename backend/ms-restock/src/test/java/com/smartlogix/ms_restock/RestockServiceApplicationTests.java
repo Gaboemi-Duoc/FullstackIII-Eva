@@ -39,13 +39,13 @@ class RestockServiceApplicationTests {
     @BeforeEach
     void setUp() {
         solicitudMock = new RestockRequest();
-        solicitudMock.setId_restock(1L);
-        solicitudMock.setId_item(10L);
-        solicitudMock.setNombre_item("Caja A");
+        solicitudMock.setIdRestock(1L);
+        solicitudMock.setIdItem(10L);
+        solicitudMock.setNombreItem("Caja A");
         solicitudMock.setBodega("Bodega Central");
-        solicitudMock.setCantidad_solicitada(50);
+        solicitudMock.setCantidadSolicitada(50);
         solicitudMock.setEstado("PENDIENTE");
-        solicitudMock.setFecha_solicitud(LocalDateTime.now());
+        solicitudMock.setFechaSolicitud(LocalDateTime.now());
     }
 
     // ─── listarSolicitudes ────────────────────────────────────────────────────
@@ -58,7 +58,7 @@ class RestockServiceApplicationTests {
         List<RestockRequest> resultado = restockService.listarSolicitudes();
 
         assertEquals(1, resultado.size());
-        assertEquals("Caja A", resultado.get(0).getNombre_item());
+        assertEquals("Caja A", resultado.get(0).getNombreItem());
         verify(restockRepository, times(1)).findAll();
     }
 
@@ -72,7 +72,7 @@ class RestockServiceApplicationTests {
         RestockRequest resultado = restockService.obtenerPorId(1L);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getId_restock());
+        assertEquals(1L, resultado.getIdRestock());
     }
 
     @Test
@@ -92,10 +92,10 @@ class RestockServiceApplicationTests {
     @DisplayName("crearSolicitud: fuerza estado PENDIENTE y persiste")
     void crearSolicitud_fuerzaEstadoPendiente() {
         RestockRequest nueva = new RestockRequest();
-        nueva.setId_item(5L);
-        nueva.setNombre_item("Pallet B");
+        nueva.setIdItem(5L);
+        nueva.setNombreItem("Pallet B");
         nueva.setBodega("Bodega Norte");
-        nueva.setCantidad_solicitada(20);
+        nueva.setCantidadSolicitada(20);
         nueva.setEstado("APROBADA");
 
         when(restockRepository.save(any(RestockRequest.class)))
@@ -104,8 +104,8 @@ class RestockServiceApplicationTests {
         RestockRequest resultado = restockService.crearSolicitud(nueva);
 
         assertEquals("PENDIENTE", resultado.getEstado());
-        assertNotNull(resultado.getFecha_solicitud());
-        assertNull(resultado.getFecha_actualizacion());
+        assertNotNull(resultado.getFechaSolicitud());
+        assertNull(resultado.getFechaActualizacion());
         verify(restockRepository, times(1)).save(any(RestockRequest.class));
     }
 
@@ -121,7 +121,7 @@ class RestockServiceApplicationTests {
         RestockRequest resultado = restockService.actualizarEstado(1L, "APROBADA");
 
         assertEquals("APROBADA", resultado.getEstado());
-        assertNotNull(resultado.getFecha_actualizacion());
+        assertNotNull(resultado.getFechaActualizacion());
     }
 
     @Test

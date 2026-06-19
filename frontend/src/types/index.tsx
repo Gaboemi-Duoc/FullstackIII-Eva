@@ -55,3 +55,25 @@ export interface NewRestockRequest {
 export interface UpdateEstadoRequest {
   estado: string;
 }
+
+export interface RestockRequest {
+  id_restock: number;
+  id_item: number;
+  nombre_item: string;
+  bodega: string;
+  cantidad_solicitada: number;
+  estado: string;
+  fecha_solicitud: string;
+  fecha_actualizacion: string | null;
+}
+
+export interface NewRestockRequest {
+  id_item: number;
+  nombre_item: string;
+  bodega: string;
+  cantidad_solicitada: number;
+}
+
+export interface UpdateEstadoRequest {
+  estado: string;
+}

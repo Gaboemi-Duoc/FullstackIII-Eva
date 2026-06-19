@@ -5,13 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-/**
- * Entidad que representa una solicitud de reposición de stock.
- *
- * Patrones aplicados:
- *  - Entity (JPA): mapea la tabla restock_request.
- *  - Lombok @Data: genera getters, setters, equals, hashCode y toString.
- */
 @Entity
 @Table(name = "restock_request")
 @Data
@@ -21,36 +14,29 @@ public class RestockRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_restock;
+    @Column(name = "id_restock")
+    private Long idRestock;
 
-    /** FK lógica al ítem en ms-inventory (no hay FK física entre servicios). */
-    @Column(nullable = false)
-    private Long id_item;
+    @Column(name = "id_item", nullable = false)
+    private Long idItem;
 
-    /** Nombre desnormalizado del ítem para evitar llamadas inter-servicio en lectura. */
-    @Column(nullable = false)
-    private String nombre_item;
+    @Column(name = "nombre_item", nullable = false)
+    private String nombreItem;
 
-    /** Bodega que genera la solicitud de restock. */
     @Column(nullable = false)
     private String bodega;
 
-    /** Unidades que se solicitan reponer. Debe ser positivo. */
-    @Column(nullable = false)
-    private Integer cantidad_solicitada;
+    @Column(name = "cantidad_solicitada", nullable = false)
+    private Integer cantidadSolicitada;
 
-    /**
-     * Estado del ciclo de vida de la solicitud.
-     * Valores válidos: PENDIENTE, APROBADA, RECHAZADA, COMPLETADA
-     */
     @Column(nullable = false)
     private String estado = EstadoRestock.PENDIENTE.name();
 
-    @Column(nullable = false)
-    private LocalDateTime fecha_solicitud = LocalDateTime.now();
+    @Column(name = "fecha_solicitud", nullable = false)
+    private LocalDateTime fechaSolicitud = LocalDateTime.now();
 
-    /** Se actualiza cada vez que cambia el estado. */
-    private LocalDateTime fecha_actualizacion;
+    @Column(name = "fecha_actualizacion")
+    private LocalDateTime fechaActualizacion;
 
     public enum EstadoRestock {
         PENDIENTE, APROBADA, RECHAZADA, COMPLETADA

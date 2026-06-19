@@ -169,3 +169,4 @@ networks:
 volumes:
   user-db-data:
   inventory-db-data:
+  restock-db-data:

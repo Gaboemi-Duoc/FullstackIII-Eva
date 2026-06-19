@@ -17,8 +17,10 @@ public interface RestockRepository extends JpaRepository<RestockRequest, Long> {
     /** Todas las solicitudes de un estado dado (ej: "PENDIENTE"). */
     List<RestockRequest> findByEstado(String estado);
 
-    /** Historial de solicitudes para un ítem específico. */
-    List<RestockRequest> findByIdItem(Long id_item);
+    /** Historial de solicitudes para un ítem específico. 
+     * Fíjate que ahora dice idItem (CamelCase) para coincidir con tu modelo.
+     */
+    List<RestockRequest> findByIdItem(Long idItem);
 
     /** Solicitudes por bodega (útil para vistas de administración por sede). */
     List<RestockRequest> findByBodega(String bodega);
