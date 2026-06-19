@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-db
+  template:
+    metadata:
+      labels:
+        app: orders-db
+    spec:
+      containers:
+        - name: orders-db
+          image: postgres:17-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: ordersdb
+            - name: POSTGRES_USER
+              value: orders
+            - name: POSTGRES_PASSWORD
+              value: orderspass123
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: orders-storage
+      volumes:
+        - name: orders-storage
+          persistentVolumeClaim:
+            claimName: orders-db-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-orders
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-orders
+  template:
+    metadata:
+      labels:
+        app: ms-orders
+    spec:
+      containers:
+        - name: ms-orders
+          image: ms-orders:1.0
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 9092
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://orders-db:5432/ordersdb
+            - name: SPRING_DATASOURCE_USERNAME
+              value: orders
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: orderspass123
