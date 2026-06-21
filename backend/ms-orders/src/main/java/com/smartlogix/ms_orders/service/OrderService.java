@@ -39,6 +39,9 @@ public class OrderService {
         order.setStatus(OrderStatus.CREATED);
         order.setCreatedAt(LocalDateTime.now());
 
+        order.setIdItem(request.getIdItem());
+        order.setCantidadSolicitada(request.getCantidadSolicitada());
+
         return orderRepository.save(order);
     }
 

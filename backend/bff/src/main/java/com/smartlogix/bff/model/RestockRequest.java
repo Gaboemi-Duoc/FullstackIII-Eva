@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RestockRequest {
 
-    private Long id_restock;
-    private Long id_item;
-    private String nombre_item;
+    private Long idRestock;
+    private Long idItem;
+    private String nombreItem;
     private String bodega;
-    private Integer cantidad_solicitada;
+    private Integer cantidadSolicitada;
     private String estado;
-    private LocalDateTime fecha_solicitud;
-    private LocalDateTime fecha_actualizacion;
+    private LocalDateTime fechaSolicitud;
+    private LocalDateTime fechaActualizacion;
 }
