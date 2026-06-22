@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: bff
-          image: bff:1.0
+          image: bff:3.0
           imagePullPolicy: Never
           ports:
             - containerPort: 8081
@@ -25,3 +25,5 @@ spec:
               value: http://ms-inventory:9091
             - name: ORDERS_SERVICE_URL
               value: http://ms-orders:9092
+            - name: RESTOCK_SERVICE_URL
+              value: http://ms-restock:9093

@@ -50,7 +50,8 @@ public class SecurityConfig {
                             "/swagger-resources/**",
                             "/swagger-resources",
                             "/webjars/**",
-                            "/api/bff/orders/**"
+                            "/api/bff/orders/**",
+                            "/api/bff/inventory/**" //temporal para probar
                         )
                         .permitAll()
                         

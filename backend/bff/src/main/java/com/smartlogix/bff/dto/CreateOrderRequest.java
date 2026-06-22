@@ -19,4 +19,11 @@ public class CreateOrderRequest {
     @NotNull(message = "El total es obligatorio")
     @Positive(message = "El total debe ser mayor a 0")
     private Double total;
+
+    @NotNull(message = "El id del item es obligatorio")
+    private Long idItem;
+
+    @NotNull(message = "La cantidad solicitada es obligatoria")
+    @Positive(message = "La cantidad debe ser mayor a 0")
+    private Integer cantidadSolicitada;
 }

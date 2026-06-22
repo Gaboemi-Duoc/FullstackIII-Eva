@@ -34,4 +34,10 @@ public class Order {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private Long idItem;
+
+    @Column(nullable = false)
+    private Integer cantidadSolicitada;
 }

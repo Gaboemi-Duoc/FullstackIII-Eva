@@ -1,6 +1,8 @@
 package com.smartlogix.bff.controller;
 
+import com.smartlogix.bff.client.InventoryServiceClient;
 import com.smartlogix.bff.client.RestockServiceClient;
+import com.smartlogix.bff.model.Item;
 import com.smartlogix.bff.model.RestockRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,9 +25,13 @@ import java.util.Map;
 public class RestockBffController {
 
     private final RestockServiceClient restockServiceClient;
+    private final InventoryServiceClient inventoryServiceClient;
 
-    public RestockBffController(RestockServiceClient restockServiceClient) {
+    public RestockBffController(
+            RestockServiceClient restockServiceClient,
+            InventoryServiceClient inventoryServiceClient) {
         this.restockServiceClient = restockServiceClient;
+        this.inventoryServiceClient = inventoryServiceClient;
     }
 
     // ─── GET ──────────────────────────────────────────────────────────────────
@@ -134,31 +140,42 @@ public class RestockBffController {
         @ApiResponse(responseCode = "400", description = "Datos inválidos",
             content = @Content(mediaType = "application/json"))
     })
+
     public ResponseEntity<RestockRequest> crearSolicitud(
-            @RequestBody RestockRequest solicitud) {
-        return ResponseEntity.ok(restockServiceClient.crearSolicitud(solicitud));
+            @RequestBody Map<String, Object> datos) {
+
+        return ResponseEntity.ok(restockServiceClient.crearSolicitud(datos));
     }
 
     // ─── PUT ──────────────────────────────────────────────────────────────────
 
     @PutMapping("/{id}/estado")
-    @Operation(
-        summary = "Actualizar estado de una solicitud",
-        description = "Body: { \"estado\": \"APROBADA\" }",
-        security = @SecurityRequirement(name = "Bearer Authentication")
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Estado actualizado correctamente",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(implementation = RestockRequest.class))),
-        @ApiResponse(responseCode = "404", description = "Solicitud no encontrada",
-            content = @Content(mediaType = "application/json"))
-    })
     public ResponseEntity<RestockRequest> actualizarEstado(
-            @Parameter(description = "ID de la solicitud", required = true, example = "1")
             @PathVariable Long id,
             @RequestBody Map<String, String> datos) {
-        return ResponseEntity.ok(restockServiceClient.actualizarEstado(id, datos));
+
+        RestockRequest solicitudActual = restockServiceClient.obtenerPorId(id);
+
+        RestockRequest solicitudActualizada =
+                restockServiceClient.actualizarEstado(id, datos);
+
+        String nuevoEstado = datos.get("estado");
+
+        if ("COMPLETADA".equalsIgnoreCase(nuevoEstado)) {
+            Item item = inventoryServiceClient.getItemById(solicitudActual.getIdItem());
+
+            Map<String, Integer> cantidadActualizada = Map.of(
+                    "cantidad",
+                    item.getCantidad() + solicitudActual.getCantidadSolicitada()
+            );
+
+            inventoryServiceClient.actualizarCantidad(
+                    solicitudActual.getIdItem(),
+                    cantidadActualizada
+            );
+        }
+
+        return ResponseEntity.ok(solicitudActualizada);
     }
 
     // ─── DELETE ───────────────────────────────────────────────────────────────

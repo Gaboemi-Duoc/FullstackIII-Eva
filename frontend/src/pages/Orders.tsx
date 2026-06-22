@@ -16,6 +16,8 @@ const Orders = () => {
     customerEmail: "",
     deliveryAddress: "",
     total: 0,
+    idItem: 0,
+    cantidadSolicitada: 1,
   });
 
   const cargarOrders = async () => {
@@ -37,24 +39,38 @@ const Orders = () => {
   const handleCrear = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (newOrder.idItem <= 0) {
+      alert("Debes ingresar un ID de item válido");
+      return;
+    }
+
+    if (newOrder.cantidadSolicitada <= 0) {
+      alert("La cantidad solicitada debe ser mayor a 0");
+      return;
+    }
+
     try {
       await crearOrder({
         ...newOrder,
         total: Number(newOrder.total),
+        idItem: Number(newOrder.idItem),
+        cantidadSolicitada: Number(newOrder.cantidadSolicitada),
       });
 
-      alert("Orden creada correctamente");
+      alert("Orden creada correctamente. El stock fue descontado del inventario.");
 
       setNewOrder({
         customerName: "",
         customerEmail: "",
         deliveryAddress: "",
         total: 0,
+        idItem: 0,
+        cantidadSolicitada: 1,
       });
 
       cargarOrders();
     } catch {
-      alert("Error creando orden");
+      alert("Error creando orden. Revisa que el item exista y tenga stock suficiente.");
     }
   };
 
@@ -137,6 +153,32 @@ const Orders = () => {
             required
           />
 
+          <input
+            type="number"
+            placeholder="ID del item de inventario"
+            value={newOrder.idItem}
+            onChange={(e) =>
+              setNewOrder({
+                ...newOrder,
+                idItem: parseInt(e.target.value) || 0,
+              })
+            }
+            required
+          />
+
+          <input
+            type="number"
+            placeholder="Cantidad solicitada"
+            value={newOrder.cantidadSolicitada}
+            onChange={(e) =>
+              setNewOrder({
+                ...newOrder,
+                cantidadSolicitada: parseInt(e.target.value) || 1,
+              })
+            }
+            required
+          />
+
           <button type="submit">Crear orden</button>
         </form>
       </div>
@@ -157,6 +199,8 @@ const Orders = () => {
                 <th>Email</th>
                 <th>Dirección</th>
                 <th>Total</th>
+                <th>Item</th>
+                <th>Cantidad</th>
                 <th>Estado</th>
                 <th>Fecha</th>
                 <th>Acciones</th>
@@ -171,6 +215,8 @@ const Orders = () => {
                   <td>{order.customerEmail}</td>
                   <td>{order.deliveryAddress}</td>
                   <td>${order.total}</td>
+                  <td>{order.idItem ?? "-"}</td>
+                  <td>{order.cantidadSolicitada ?? "-"}</td>
                   <td>{order.status}</td>
                   <td>{new Date(order.createdAt).toLocaleString()}</td>
                   <td>
