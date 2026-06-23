@@ -2,6 +2,7 @@ package com.smartlogix.bff.service;
 
 import com.smartlogix.bff.dto.LoginRequest;
 import com.smartlogix.bff.dto.LoginResponse;
+import com.smartlogix.bff.dto.RegisterRequest;
 import com.smartlogix.bff.dto.DtoApiResponse;
 import com.smartlogix.bff.dto.UpdateUsernameRequest;
 import com.smartlogix.bff.client.UserServiceClient;
@@ -83,5 +84,9 @@ public class UserBffService {
     private String generateToken(Long userId) {
         // In production, implement proper JWT generation
         return UUID.randomUUID().toString();
+    }
+
+    public User register(RegisterRequest request) {
+        return userServiceClient.register(request);
     }
 }

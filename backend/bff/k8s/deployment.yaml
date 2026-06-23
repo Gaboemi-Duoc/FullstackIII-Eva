@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: bff
-          image: bff:3.0
+          image: bff:6.0
           imagePullPolicy: Never
           ports:
             - containerPort: 8081

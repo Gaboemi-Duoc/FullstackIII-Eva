@@ -7,6 +7,7 @@ import Orders from "./pages/Orders";
 import Navbar from "./components/Navbar";
 import { UserProvider } from "./viewmodels/UserViewModel";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Register from "./pages/Register";
 
 
 function App() {
@@ -53,6 +54,12 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/register"
+            element={<Register />}
+          />
+
         </Routes>
       </BrowserRouter>
     </UserProvider>
