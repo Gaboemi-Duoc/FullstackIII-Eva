@@ -34,7 +34,8 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         // LOGIN endpoint
-                        .requestMatchers("/api/bff/users/login")
+                        .requestMatchers("/api/bff/users/login", "/api/bff/users/register")
+                        
                         .permitAll()
                         
                         // HEALTH endpoint

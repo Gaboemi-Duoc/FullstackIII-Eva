@@ -75,6 +75,12 @@ public class RestockController {
      */
     @PostMapping
     public ResponseEntity<RestockRequest> crearSolicitud(@Valid @RequestBody CreateRestockRequest dto) {
+
+        System.out.println("idItem = " + dto.getIdItem());
+        System.out.println("nombreItem = " + dto.getNombreItem());
+        System.out.println("bodega = " + dto.getBodega());
+        System.out.println("cantidad = " + dto.getCantidadSolicitada());
+
         RestockRequest solicitud = new RestockRequest();
         
         // Usamos los nuevos Setters generados por Lombok y los Getters del DTO

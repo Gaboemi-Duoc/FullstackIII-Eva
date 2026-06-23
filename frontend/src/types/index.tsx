@@ -82,3 +82,9 @@ export interface NewOrder {
 export interface UpdateOrderStatus {
   status: string;
 }
+
+export interface RegisterRequest {
+  username: string;
+  email: string;
+  password: string;
+}
