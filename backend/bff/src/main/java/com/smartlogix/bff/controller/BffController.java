@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/bff")
-@CrossOrigin(origins = "*")
 public class BffController {
     
     @GetMapping("/health")

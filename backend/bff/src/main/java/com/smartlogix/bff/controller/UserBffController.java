@@ -24,13 +24,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/api/bff/users")
-@CrossOrigin(origins = {
-    "http://localhost:5173",
-    "http://localhost:8080",
-    "http://localhost:30080",
-    "http://localhost:8081",
-    "http://smartlogix.local"
-}, allowCredentials = "true")
 @Tag(
     name = "User Management",
     description = "Endpoints for user authentication, profile management, and user data retrieval for SmartLogix logistics platform"
