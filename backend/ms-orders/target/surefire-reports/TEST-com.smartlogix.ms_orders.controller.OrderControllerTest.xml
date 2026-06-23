@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.smartlogix.ms_orders.OrderServiceApplicationTests" time="0.386" tests="7" errors="0" skipped="0" failures="0" flakes="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.smartlogix.ms_orders.controller.OrderControllerTest" time="1.909" tests="6" errors="0" skipped="0" failures="0" flakes="0">
   <properties>
     <property name="java.specification.version" value="26"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -60,11 +60,17 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="70.0"/>
   </properties>
-  <testcase name="obtenerPorId_noExistente_lanzaExcepcion" classname="com.smartlogix.ms_orders.OrderServiceApplicationTests" time="0.347"/>
-  <testcase name="obtenerPorEstado_retornaOrdenesFiltradas" classname="com.smartlogix.ms_orders.OrderServiceApplicationTests" time="0.003"/>
-  <testcase name="actualizarEstado_actualizaCorrectamente" classname="com.smartlogix.ms_orders.OrderServiceApplicationTests" time="0.005"/>
-  <testcase name="listarOrdenes_retornaLista" classname="com.smartlogix.ms_orders.OrderServiceApplicationTests" time="0.004"/>
-  <testcase name="obtenerPorId_existente_retornaOrden" classname="com.smartlogix.ms_orders.OrderServiceApplicationTests" time="0.005"/>
-  <testcase name="eliminarOrden_eliminaCorrectamente" classname="com.smartlogix.ms_orders.OrderServiceApplicationTests" time="0.007"/>
-  <testcase name="crearOrden_fuerzaEstadoCreated" classname="com.smartlogix.ms_orders.OrderServiceApplicationTests" time="0.004"/>
+  <testcase name="actualizarEstado_retorna200" classname="com.smartlogix.ms_orders.controller.OrderControllerTest" time="1.81">
+    <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (C:\Users\isakc\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+  </testcase>
+  <testcase name="eliminarOrden_retorna204" classname="com.smartlogix.ms_orders.controller.OrderControllerTest" time="0.025"/>
+  <testcase name="obtenerPorEstado_retornaLista" classname="com.smartlogix.ms_orders.controller.OrderControllerTest" time="0.006"/>
+  <testcase name="crearOrden_retorna200" classname="com.smartlogix.ms_orders.controller.OrderControllerTest" time="0.008"/>
+  <testcase name="obtenerOrden_existente_retorna200" classname="com.smartlogix.ms_orders.controller.OrderControllerTest" time="0.006"/>
+  <testcase name="listarOrdenes_retornaLista" classname="com.smartlogix.ms_orders.controller.OrderControllerTest" time="0.006"/>
 </testsuite>

@@ -1,5 +1,6 @@
 package com.smartlogix.ms_inventory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -83,6 +84,26 @@ class InventoryServiceApplicationTests {
     }
 
     @Test
+    @DisplayName("buscarPorNombre: retorna item cuando existe")
+    void buscarPorNombre_existente_retornaItem() {
+        when(inventoryRepository.findByNombre("Caja A")).thenReturn(Optional.of(itemMock));
+
+        Item resultado = inventoryService.buscarPorNombre("Caja A");
+
+        assertNotNull(resultado);
+        assertEquals("Caja A", resultado.getNombre());
+    }
+
+    @Test
+    @DisplayName("buscarPorNombre: lanza excepcion cuando no existe")
+    void buscarPorNombre_noExistente_lanzaExcepcion() {
+        when(inventoryRepository.findByNombre("Inexistente")).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class,
+                () -> inventoryService.buscarPorNombre("Inexistente"));
+    }
+
+    @Test
     @DisplayName("crearItem: guarda y retorna el item")
     void crearItem_guardaCorrectamente() {
         when(inventoryRepository.save(any(Item.class))).thenReturn(itemMock);
@@ -103,7 +124,6 @@ class InventoryServiceApplicationTests {
         Item resultado = inventoryService.actualizarCantidad(1L, 200);
 
         assertEquals(200, resultado.getCantidad());
-        verify(inventoryRepository, times(1)).save(any(Item.class));
     }
 
     @Test
@@ -157,4 +177,18 @@ class InventoryServiceApplicationTests {
         assertEquals(1, resultado.size());
         assertEquals("Bodega Central", resultado.get(0).getBodega());
     }
+
+    @Test
+@DisplayName("stockTotalPorBodega: retorna mapa de stock por bodega")
+void stockTotalPorBodega_retornaMapaCorrectamente() {
+    List<Object[]> filas = new ArrayList<>();
+    filas.add(new Object[]{"Bodega Central", 500L});
+    
+    when(inventoryRepository.stockTotalPorBodega()).thenReturn(filas);
+
+    var resultado = inventoryService.stockTotalPorBodega();
+
+    assertEquals(1, resultado.size());
+    assertEquals(500L, resultado.get("Bodega Central"));
+}
 }

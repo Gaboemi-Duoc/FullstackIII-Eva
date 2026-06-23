@@ -18,25 +18,25 @@ public class OrderController {
 
     private final OrderService orderService;
 
-<span class="nc" id="L21">    public OrderController(OrderService orderService) {</span>
-<span class="nc" id="L22">        this.orderService = orderService;</span>
-<span class="nc" id="L23">    }</span>
+<span class="fc" id="L21">    public OrderController(OrderService orderService) {</span>
+<span class="fc" id="L22">        this.orderService = orderService;</span>
+<span class="fc" id="L23">    }</span>
 
     @GetMapping
     public ResponseEntity&lt;List&lt;Order&gt;&gt; listarOrdenes() {
-<span class="nc" id="L27">        return ResponseEntity.ok(orderService.listarOrdenes());</span>
+<span class="fc" id="L27">        return ResponseEntity.ok(orderService.listarOrdenes());</span>
     }
 
     @GetMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;Order&gt; obtenerOrden(@PathVariable Long id) {
-<span class="nc" id="L32">        return ResponseEntity.ok(orderService.obtenerPorId(id));</span>
+<span class="fc" id="L32">        return ResponseEntity.ok(orderService.obtenerPorId(id));</span>
     }
 
     @PostMapping
     public ResponseEntity&lt;Order&gt; crearOrden(
             @Valid @RequestBody CreateOrderRequest request) {
 
-<span class="nc" id="L39">        return ResponseEntity.ok(orderService.crearOrden(request));</span>
+<span class="fc" id="L39">        return ResponseEntity.ok(orderService.crearOrden(request));</span>
     }
 
     @PutMapping(&quot;/{id}/status&quot;)
@@ -44,8 +44,8 @@ public class OrderController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateOrderStatusRequest request) {
 
-<span class="nc" id="L47">        return ResponseEntity.ok(</span>
-<span class="nc" id="L48">                orderService.actualizarEstado(id, request.getStatus())</span>
+<span class="fc" id="L47">        return ResponseEntity.ok(</span>
+<span class="fc" id="L48">                orderService.actualizarEstado(id, request.getStatus())</span>
         );
     }
 
@@ -53,17 +53,17 @@ public class OrderController {
     public ResponseEntity&lt;List&lt;Order&gt;&gt; obtenerPorEstado(
             @PathVariable OrderStatus status) {
 
-<span class="nc" id="L56">        return ResponseEntity.ok(</span>
-<span class="nc" id="L57">                orderService.obtenerPorEstado(status)</span>
+<span class="fc" id="L56">        return ResponseEntity.ok(</span>
+<span class="fc" id="L57">                orderService.obtenerPorEstado(status)</span>
         );
     }
 
     @DeleteMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;Void&gt; eliminarOrden(@PathVariable Long id) {
 
-<span class="nc" id="L64">        orderService.eliminarOrden(id);</span>
+<span class="fc" id="L64">        orderService.eliminarOrden(id);</span>
 
-<span class="nc" id="L66">        return ResponseEntity.noContent().build();</span>
+<span class="fc" id="L66">        return ResponseEntity.noContent().build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
