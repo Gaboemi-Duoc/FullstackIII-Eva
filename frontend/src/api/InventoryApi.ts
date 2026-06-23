@@ -1,7 +1,7 @@
+// src/api/InventoryApi.ts
 import axios, { AxiosResponse } from "axios";
 import type { Item, NewItem } from "../types";
-
-const INVENTORY_API_URL = "http://localhost:8081/api/bff/inventory";
+import { getApiUrl } from "./ApiConfig";
 
 export interface AuthHeaders {
   headers: {
@@ -11,13 +11,15 @@ export interface AuthHeaders {
 
 const getAuthHeaders = (): AuthHeaders => {
   const token = localStorage.getItem("authToken");
-
   return {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
 };
+
+// Use the configurable URL
+const INVENTORY_API_URL = getApiUrl('/inventory');
 
 export const getItems = async (): Promise<Item[]> => {
   const response: AxiosResponse<Item[]> = await axios.get(

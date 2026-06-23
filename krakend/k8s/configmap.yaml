@@ -26,12 +26,14 @@ data:
             "http://localhost:5173",
             "http://localhost:30080",
             "http://localhost:8080",
+            "http://localhost:8081",
             "http://smartlogix.local"
           ],
-          "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-          "allow_headers": ["Content-Type", "Authorization", "Accept"],
+          "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+          "allow_headers": ["Content-Type", "Authorization", "Accept", "X-Requested-With"],
           "expose_headers": ["Content-Length", "Authorization"],
-          "max_age": "3600"
+          "max_age": "3600",
+          "allow_credentials": true
         }
       },
       "endpoints": [

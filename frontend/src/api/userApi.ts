@@ -1,7 +1,9 @@
+// src/api/userApi.ts
 import axios, { AxiosResponse } from "axios";
 import type { RegisterRequest } from "../types";
+import { getApiUrl } from "./ApiConfig";
 
-const BFF_API_URL = "http://localhost:8081/api/bff/users";
+const BFF_API_URL = getApiUrl('/users');
 
 // Types
 export interface User {
@@ -64,7 +66,6 @@ export const login = async (username: string, password: string): Promise<User> =
 export const updateUsername = async (id: number, username: string): Promise<User> => {
   try {
     const token = localStorage.getItem("authToken");
-
     const response: AxiosResponse<UserApiResponse> = await axios.put(
       `${BFF_API_URL}/users/${id}/username`,
       { username },
@@ -76,7 +77,6 @@ export const updateUsername = async (id: number, username: string): Promise<User
     );
 
     if (response.data.success) {
-      // Return updated user object matching the User interface
       const updatedUser: User = {
         id_user: id,
         username: username,
@@ -95,7 +95,6 @@ export const updateUsername = async (id: number, username: string): Promise<User
 export const getUserDetails = async (id: number): Promise<UserDetails> => {
   try {
     const token = localStorage.getItem("authToken");
-
     const response: AxiosResponse<UserApiResponse> = await axios.get(`${BFF_API_URL}/users/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -116,11 +115,9 @@ export const getUserDetails = async (id: number): Promise<UserDetails> => {
 export const register = async (
   data: RegisterRequest
 ) => {
-
   const response = await axios.post(
     `${BFF_API_URL}/register`,
     data
   );
-
   return response.data;
 };

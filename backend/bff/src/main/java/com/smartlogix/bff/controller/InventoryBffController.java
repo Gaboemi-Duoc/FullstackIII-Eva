@@ -18,7 +18,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bff/inventory")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+    "http://localhost:5173",
+    "http://localhost:8080",
+    "http://localhost:30080",
+    "http://localhost:8081",
+    "http://smartlogix.local"
+}, allowCredentials = "true")
 @Tag(name = "Gestion de Inventario", description = "Endpoints for managing warehouse inventory items, stock levels, and pricing")
 public class InventoryBffController {
 
