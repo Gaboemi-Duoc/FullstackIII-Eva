@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-db
+  namespace: smartlogix
+  labels:
+    app: user-db
+    service: database
+    component: user-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-db
+  template:
+    metadata:
+      labels:
+        app: user-db
+        service: database
+        component: user-db
+    spec:
+      containers:
+      - name: user-db
+        image: postgres:17-alpine
+        env:
+        - name: POSTGRES_DB
+          value: "userdb"
+        - name: POSTGRES_USER
+          value: "user"
+        - name: POSTGRES_PASSWORD
+          value: "userpass123"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: user-db-storage
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - user
+            - -d
+            - userdb
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - user
+            - -d
+            - userdb
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: user-db-storage
+        persistentVolumeClaim:
+          claimName: user-db-pvc

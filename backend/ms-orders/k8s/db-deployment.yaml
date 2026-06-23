@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-db
+  namespace: smartlogix
+  labels:
+    app: orders-db
+    service: database
+    component: orders-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-db
+  template:
+    metadata:
+      labels:
+        app: orders-db
+        service: database
+        component: orders-db
+    spec:
+      containers:
+      - name: orders-db
+        image: postgres:17-alpine
+        env:
+        - name: POSTGRES_DB
+          value: "ordersdb"
+        - name: POSTGRES_USER
+          value: "orders"
+        - name: POSTGRES_PASSWORD
+          value: "orderspass123"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: orders-db-storage
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - orders
+            - -d
+            - ordersdb
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - orders
+            - -d
+            - ordersdb
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: orders-db-storage
+        persistentVolumeClaim:
+          claimName: orders-db-pvc

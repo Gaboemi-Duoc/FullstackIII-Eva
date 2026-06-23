@@ -1,43 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: inventory-db
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: inventory-db
-  template:
-    metadata:
-      labels:
-        app: inventory-db
-    spec:
-      containers:
-        - name: inventory-db
-          image: postgres:17-alpine
-          ports:
-            - containerPort: 5432
-          env:
-            - name: POSTGRES_DB
-              value: inventorydb
-            - name: POSTGRES_USER
-              value: inventory
-            - name: POSTGRES_PASSWORD
-              value: inventorypass123
-          volumeMounts:
-            - name: inventory-db-storage
-              mountPath: /var/lib/postgresql/data
-      volumes:
-        - name: inventory-db-storage
-          persistentVolumeClaim:
-            claimName: inventory-db-pvc
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: ms-inventory
+  namespace: smartlogix
+  labels:
+    app: ms-inventory
+    service: backend
+    component: inventory-service
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: ms-inventory
@@ -45,17 +16,38 @@ spec:
     metadata:
       labels:
         app: ms-inventory
+        service: backend
+        component: inventory-service
     spec:
       containers:
-        - name: ms-inventory
-          image: ms-inventory:1.0
-          imagePullPolicy: Never
-          ports:
-            - containerPort: 9091
-          env:
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://inventory-db:5432/inventorydb
-            - name: SPRING_DATASOURCE_USERNAME
-              value: inventory
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: inventorypass123
+      - name: ms-inventory
+        image: ms-inventory:1.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://inventory-db:5432/inventorydb"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "inventory"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "inventorypass123"
+        ports:
+        - containerPort: 9091
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 9091
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 9091
+          initialDelaySeconds: 30
+          periodSeconds: 10

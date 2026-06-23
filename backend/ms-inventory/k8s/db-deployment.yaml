@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-db
+  namespace: smartlogix
+  labels:
+    app: inventory-db
+    service: database
+    component: inventory-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory-db
+  template:
+    metadata:
+      labels:
+        app: inventory-db
+        service: database
+        component: inventory-db
+    spec:
+      containers:
+      - name: inventory-db
+        image: postgres:17-alpine
+        env:
+        - name: POSTGRES_DB
+          value: "inventorydb"
+        - name: POSTGRES_USER
+          value: "inventory"
+        - name: POSTGRES_PASSWORD
+          value: "inventorypass123"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: inventory-db-storage
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - inventory
+            - -d
+            - inventorydb
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - inventory
+            - -d
+            - inventorydb
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: inventory-db-storage
+        persistentVolumeClaim:
+          claimName: inventory-db-pvc

@@ -1,21 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: inventory-db
-spec:
-  selector:
-    app: inventory-db
-  ports:
-    - port: 5432
-      targetPort: 5432
----
-apiVersion: v1
-kind: Service
-metadata:
   name: ms-inventory
+  namespace: smartlogix
+  labels:
+    app: ms-inventory
+    service: backend
 spec:
+  type: ClusterIP
+  ports:
+  - port: 9091
+    targetPort: 9091
+    protocol: TCP
+    name: http
   selector:
     app: ms-inventory
-  ports:
-    - port: 9091
-      targetPort: 9091
