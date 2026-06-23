@@ -34,49 +34,29 @@ export interface UserContextType {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
+// Restock types
 export interface RestockRequest {
-  id_restock: number;
-  id_item: number;
-  nombre_item: string;
+  idRestock: number;
+  idItem: number;
+  nombreItem: string;
   bodega: string;
-  cantidad_solicitada: number;
+  cantidadSolicitada: number;
   estado: string;
-  fecha_solicitud: string;
-  fecha_actualizacion: string | null;
+  fechaSolicitud: string;
+  fechaActualizacion: string | null;
 }
 
 export interface NewRestockRequest {
-  id_item: number;
-  nombre_item: string;
+  idItem: number;
+  nombreItem: string;
   bodega: string;
-  cantidad_solicitada: number;
+  cantidadSolicitada: number;
 }
 
 export interface UpdateEstadoRequest {
   estado: string;
 }
 
-export interface RestockRequest {
-  id_restock: number;
-  id_item: number;
-  nombre_item: string;
-  bodega: string;
-  cantidad_solicitada: number;
-  estado: string;
-  fecha_solicitud: string;
-  fecha_actualizacion: string | null;
-}
-
-export interface NewRestockRequest {
-  id_item: number;
-  nombre_item: string;
-  bodega: string;
-  cantidad_solicitada: number;
-}
-
-export interface UpdateEstadoRequest {
-  estado: string;
-}
 // Order types
 export interface Order {
   id_order: number;
@@ -86,6 +66,8 @@ export interface Order {
   total: number;
   status: string;
   createdAt: string;
+  idItem?: number;
+  cantidadSolicitada?: number;
 }
 
 export interface NewOrder {
@@ -93,8 +75,16 @@ export interface NewOrder {
   customerEmail: string;
   deliveryAddress: string;
   total: number;
+  idItem: number;
+  cantidadSolicitada: number;
 }
 
 export interface UpdateOrderStatus {
   status: string;
+}
+
+export interface RegisterRequest {
+  username: string;
+  email: string;
+  password: string;
 }

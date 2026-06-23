@@ -1,0 +1,8 @@
+{
+  "customerName": "Cliente Descuento",
+  "customerEmail": "descuento@test.com",
+  "deliveryAddress": "Calle Test 123",
+  "total": 50000,
+  "idItem": 1,
+  "cantidadSolicitada": 2
+}

@@ -1,0 +1,8 @@
+{
+  "customerName": "Cliente Integrado",
+  "customerEmail": "integrado@test.com",
+  "deliveryAddress": "Calle Integrada 123",
+  "total": 25000,
+  "idItem": 1,
+  "cantidadSolicitada": 1
+}

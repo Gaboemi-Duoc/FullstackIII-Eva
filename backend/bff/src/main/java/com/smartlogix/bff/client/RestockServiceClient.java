@@ -19,8 +19,8 @@ public interface RestockServiceClient {
     @GetMapping("/api/restock/estado")
     List<RestockRequest> listarPorEstado(@RequestParam("valor") String valor);
 
-    @GetMapping("/api/restock/item/{id_item}")
-    List<RestockRequest> listarPorItem(@PathVariable("id_item") Long id_item);
+    @GetMapping("/api/restock/item/{idItem}")
+    List<RestockRequest> listarPorItem(@PathVariable("idItem") Long idItem);
 
     @GetMapping("/api/restock/bodega")
     List<RestockRequest> listarPorBodega(@RequestParam("nombre") String nombre);
@@ -32,7 +32,7 @@ public interface RestockServiceClient {
     Map<String, Long> resumenPorEstado();
 
     @PostMapping("/api/restock")
-    RestockRequest crearSolicitud(@RequestBody RestockRequest solicitud);
+    RestockRequest crearSolicitud(@RequestBody Map<String, Object> solicitud);
 
     @PutMapping("/api/restock/{id}/estado")
     RestockRequest actualizarEstado(@PathVariable("id") Long id,

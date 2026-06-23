@@ -43,12 +43,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 || path.equals("/api/bff/health")
                 || path.startsWith("/api/bff/orders")
                 || path.startsWith("/swagger-ui")
-                || path.startsWith("/v3/api-docs")) {
+                || path.startsWith("/v3/api-docs")
+                || path.equals("/api/bff/users/register")
+                || path.startsWith("/api/bff/inventory")) {
 
                 filterChain.doFilter(request, response);
                 return;
         }
-
+        //temporal el inventoy
         // Obtener header Authorization
         final String authHeader =
                 request.getHeader("Authorization");
