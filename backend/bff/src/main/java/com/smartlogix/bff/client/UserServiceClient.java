@@ -1,6 +1,7 @@
 package com.smartlogix.bff.client;
 
 import com.smartlogix.bff.dto.LoginRequest;
+import com.smartlogix.bff.dto.RegisterRequest;
 import com.smartlogix.bff.dto.UpdateUsernameRequest;
 import com.smartlogix.bff.model.User;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -8,27 +9,25 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "user-service", url = "${user-service.url}") 
+@FeignClient(name = "user-service", url = "${user-service.url}")
 public interface UserServiceClient {
-    
+
+    @PostMapping("/api/users/register")
+    User register(@RequestBody RegisterRequest request);
+
     @GetMapping("/api/users")
     List<User> getAllUsers();
-    
+
     @GetMapping("/api/users/{id}")
     User getUserById(@PathVariable("id") Long id);
-    
-    @PostMapping("/api/users/register")
-    User registerUser(@RequestBody User user);
-    
+
     @PostMapping("/api/users/login")
     User login(@RequestBody LoginRequest loginRequest);
-    
+
     @PutMapping("/api/users/{id}/username")
-    User updateUsername(@PathVariable("id") Long id, 
+    User updateUsername(@PathVariable("id") Long id,
                         @RequestBody UpdateUsernameRequest request);
-    
+
     @DeleteMapping("/api/users/{id}")
     void deleteUser(@PathVariable("id") Long id);
-
-    
 }
