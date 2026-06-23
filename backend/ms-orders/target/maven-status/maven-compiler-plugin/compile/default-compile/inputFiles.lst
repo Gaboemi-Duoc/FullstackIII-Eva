@@ -1,9 +1,0 @@
-C:\Users\vipal\Documents\GitHub\FullstackIII-Eva\backend\ms-orders\src\main\java\com\smartlogix\ms_orders\controller\OrderController.java
-C:\Users\vipal\Documents\GitHub\FullstackIII-Eva\backend\ms-orders\src\main\java\com\smartlogix\ms_orders\dto\CreateOrderRequest.java
-C:\Users\vipal\Documents\GitHub\FullstackIII-Eva\backend\ms-orders\src\main\java\com\smartlogix\ms_orders\dto\UpdateOrderStatusRequest.java
-C:\Users\vipal\Documents\GitHub\FullstackIII-Eva\backend\ms-orders\src\main\java\com\smartlogix\ms_orders\exception\GlobalExceptionHandler.java
-C:\Users\vipal\Documents\GitHub\FullstackIII-Eva\backend\ms-orders\src\main\java\com\smartlogix\ms_orders\model\Order.java
-C:\Users\vipal\Documents\GitHub\FullstackIII-Eva\backend\ms-orders\src\main\java\com\smartlogix\ms_orders\model\OrderStatus.java
-C:\Users\vipal\Documents\GitHub\FullstackIII-Eva\backend\ms-orders\src\main\java\com\smartlogix\ms_orders\OrderServiceApplication.java
-C:\Users\vipal\Documents\GitHub\FullstackIII-Eva\backend\ms-orders\src\main\java\com\smartlogix\ms_orders\repository\OrderRepository.java
-C:\Users\vipal\Documents\GitHub\FullstackIII-Eva\backend\ms-orders\src\main\java\com\smartlogix\ms_orders\service\OrderService.java

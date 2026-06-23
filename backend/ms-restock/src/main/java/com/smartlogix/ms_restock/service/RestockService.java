@@ -1,27 +1,34 @@
 package com.smartlogix.ms_restock.service;
 
-import com.smartlogix.ms_restock.model.RestockRequest;
-import com.smartlogix.ms_restock.repository.RestockRepository;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Service Layer: encapsula toda la lógica de negocio del microservicio.
- * El controlador sólo delega en esta capa; nunca accede al repositorio directamente.
- */
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.smartlogix.ms_restock.model.RestockRequest;
+import com.smartlogix.ms_restock.repository.RestockRepository;
+
 @Service
 public class RestockService {
 
     private final RestockRepository restockRepository;
+    private final RestTemplate restTemplate;
 
-    public RestockService(RestockRepository restockRepository) {
+    @Value("${inventory-service.url:http://localhost:8080}") // Agregamos un valor por defecto por si falla en los tests
+    private String inventoryServiceUrl;
+
+    // Aquí está la Buena Práctica: Inyección de Dependencias mediante el constructor
+    public RestockService(RestockRepository restockRepository, RestTemplate restTemplate) {
         this.restockRepository = restockRepository;
+        this.restTemplate = restTemplate;
     }
 
+    // ─── Consultas ────────────────────────────────────────────────────────────
+    // ... (TODO TU CÓDIGO HACIA ABAJO QUEDA EXACTAMENTE IGUAL) ...
     // ─── Consultas ────────────────────────────────────────────────────────────
 
     public List<RestockRequest> listarSolicitudes() {
@@ -64,6 +71,19 @@ public class RestockService {
     // ─── Creación ─────────────────────────────────────────────────────────────
 
     public RestockRequest crearSolicitud(RestockRequest solicitud) {
+        // Validar que el ítem existe en ms-inventory
+        try {
+            restTemplate.getForObject(
+                inventoryServiceUrl + "/api/inventory/" + solicitud.getIdItem(),
+                Map.class
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(
+                "No se pudo crear la solicitud: el ítem con id " +
+                solicitud.getIdItem() + " no existe en el inventario."
+            );
+        }
+
         solicitud.setEstado(RestockRequest.EstadoRestock.PENDIENTE.name());
         solicitud.setFechaSolicitud(LocalDateTime.now());
         solicitud.setFechaActualizacion(null);
@@ -75,6 +95,12 @@ public class RestockService {
     public RestockRequest actualizarEstado(Long id, String nuevoEstado) {
         validarEstado(nuevoEstado);
         RestockRequest solicitud = obtenerPorId(id);
+
+        // Si se aprueba, actualizar stock en ms-inventory
+        if (nuevoEstado.equalsIgnoreCase(RestockRequest.EstadoRestock.APROBADA.name())) {
+            actualizarStockEnInventario(solicitud);
+        }
+
         solicitud.setEstado(nuevoEstado.toUpperCase());
         solicitud.setFechaActualizacion(LocalDateTime.now());
         return restockRepository.save(solicitud);
@@ -85,6 +111,37 @@ public class RestockService {
     public void eliminarSolicitud(Long id) {
         obtenerPorId(id);
         restockRepository.deleteById(id);
+    }
+
+    // ─── Integración con ms-inventory ────────────────────────────────────────
+
+    @SuppressWarnings("unchecked")
+    private void actualizarStockEnInventario(RestockRequest solicitud) {
+        try {
+            // Obtener cantidad actual del ítem
+            Map<String, Object> item = restTemplate.getForObject(
+                inventoryServiceUrl + "/api/inventory/" + solicitud.getIdItem(),
+                Map.class
+            );
+
+            if (item == null) throw new RuntimeException("Item no encontrado");
+
+            int cantidadActual = ((Number) item.get("cantidad")).intValue();
+            int nuevaCantidad  = cantidadActual + solicitud.getCantidadSolicitada();
+
+            // Actualizar cantidad en ms-inventory
+            Map<String, Integer> body = new HashMap<>();
+            body.put("cantidad", nuevaCantidad);
+
+            restTemplate.put(
+                inventoryServiceUrl + "/api/inventory/" + solicitud.getIdItem() + "/cantidad",
+                body
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(
+                "No se pudo actualizar el stock en ms-inventory: " + e.getMessage()
+            );
+        }
     }
 
     // ─── Validación interna ───────────────────────────────────────────────────
