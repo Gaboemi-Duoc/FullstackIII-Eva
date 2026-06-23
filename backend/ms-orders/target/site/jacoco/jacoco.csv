@@ -1,6 +1,4 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-ms-orders,com.smartlogix.ms_orders.exception,GlobalExceptionHandler,39,0,0,0,8,0,4,0,4,0
 ms-orders,com.smartlogix.ms_orders.model,OrderStatus,0,39,0,0,0,7,0,1,0,1
 ms-orders,com.smartlogix.ms_orders.controller,OrderController,44,0,0,0,12,0,7,0,7,0
-ms-orders,com.smartlogix.ms_orders,OrderServiceApplication,8,0,0,0,3,0,2,0,2,0
 ms-orders,com.smartlogix.ms_orders.service,OrderService,0,86,0,0,0,22,0,8,0,8
