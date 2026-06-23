@@ -1,13 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: smartlogix-ingress
+  name: krakend-ingress
   namespace: smartlogix
   annotations:
-    # Traefik specific annotations
     kubernetes.io/ingress.class: "traefik"
     traefik.ingress.kubernetes.io/router.entrypoints: "web"
-    # Enable CORS if needed
     traefik.ingress.kubernetes.io/router.middlewares: "smartlogix-cors-middleware@kubernetescrd"
     # For HTTPS (uncomment when ready)
     # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
@@ -18,14 +16,6 @@ spec:
   - host: smartlogix.local  # Change to your actual domain
     http:
       paths:
-      # Frontend routes
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend
-            port:
-              number: 80
       # API Gateway routes
       - path: /api
         pathType: Prefix
@@ -34,22 +24,11 @@ spec:
             name: krakend
             port:
               number: 8080
-      # Direct backend routes (if needed, but should go through gateway)
-      - path: /actuator
+      # Health checks
+      - path: /__health
         pathType: Prefix
         backend:
           service:
             name: krakend
             port:
               number: 8080
-  # Alternative with wildcard subdomain
-  # - host: "*.smartlogix.local"
-  #   http:
-  #     paths:
-  #     - path: /
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: frontend
-  #           port:
-  #             number: 80

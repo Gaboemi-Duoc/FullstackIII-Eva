@@ -8,7 +8,7 @@ metadata:
     service: backend
     component: user-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: ms-user
