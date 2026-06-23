@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restock-db
+  namespace: smartlogix
+  labels:
+    app: restock-db
+    service: database
+    component: restock-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restock-db
+  template:
+    metadata:
+      labels:
+        app: restock-db
+        service: database
+        component: restock-db
+    spec:
+      containers:
+      - name: restock-db
+        image: postgres:17-alpine
+        env:
+        - name: POSTGRES_DB
+          value: "restockdb"
+        - name: POSTGRES_USER
+          value: "restock"
+        - name: POSTGRES_PASSWORD
+          value: "restockpass123"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: restock-db-storage
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - restock
+            - -d
+            - restockdb
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - restock
+            - -d
+            - restockdb
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: restock-db-storage
+        persistentVolumeClaim:
+          claimName: restock-db-pvc

@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import type { RegisterRequest } from "../types";
 
 const BFF_API_URL = "http://localhost:8081/api/bff/users";
 
@@ -110,4 +111,16 @@ export const getUserDetails = async (id: number): Promise<UserDetails> => {
     console.error("Get user error:", error.response?.data || error.message);
     throw error;
   }
+};
+
+export const register = async (
+  data: RegisterRequest
+) => {
+
+  const response = await axios.post(
+    `${BFF_API_URL}/register`,
+    data
+  );
+
+  return response.data;
 };

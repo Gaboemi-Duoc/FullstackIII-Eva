@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../viewmodels/UserViewModel";
-import logo from "../assets/LogoConBorde.png";
+import logo from "../assets/logo-borde.png";
 
 const Navbar = () => {
   const { user, setUser } = useUser();
@@ -25,7 +25,11 @@ const Navbar = () => {
       {token && (
         <div className="nav-links">
           <Link to="/inventory">Inventario</Link>
+          <Link to="/orders">Órdenes</Link>
+          <Link to="/restock">Restock</Link>
           <Link to="/profile">Perfil</Link>
+
+          
 
           <button className="logout-btn" onClick={handleLogout}>
             Logout

@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bff
+  namespace: smartlogix
+  labels:
+    app: bff
+    service: backend
+    component: bff-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bff
+  template:
+    metadata:
+      labels:
+        app: bff
+        service: backend
+        component: bff-service
+    spec:
+      containers:
+      - name: bff
+        image: bff:1.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "docker"
+        - name: USER_SERVICE_URL
+          value: "http://ms-user:9090"
+        - name: INVENTORY_SERVICE_URL
+          value: "http://ms-inventory:9091"
+        - name: ORDERS_SERVICE_URL
+          value: "http://ms-orders:9092"
+        - name: RESTOCK_SERVICE_URL
+          value: "http://ms-restock:9093"
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: jwt-secret
+              key: secret
+        - name: SPRING_APPLICATION_NAME
+          value: "bff-service"
+        - name: SERVER_PORT
+          value: "8081"
+        ports:
+        - containerPort: 8081
+          name: http
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /api/bff/health
+            port: 8081
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/bff/health
+            port: 8081
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 10"]

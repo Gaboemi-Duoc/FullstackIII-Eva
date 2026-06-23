@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-restock
+  namespace: smartlogix
+  labels:
+    app: ms-restock
+    service: backend
+    component: restock-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-restock
+  template:
+    metadata:
+      labels:
+        app: ms-restock
+        service: backend
+        component: restock-service
+    spec:
+      containers:
+      - name: ms-restock
+        image: ms-restock:1.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://restock-db:5432/restockdb"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "restock"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "restockpass123"
+        - name: INVENTORY_SERVICE_URL
+          value: "http://ms-inventory:9091"
+        ports:
+        - containerPort: 9093
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 9093
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 9093
+          initialDelaySeconds: 30
+          periodSeconds: 10

@@ -33,3 +33,58 @@ export interface UserContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
+
+// Restock types
+export interface RestockRequest {
+  idRestock: number;
+  idItem: number;
+  nombreItem: string;
+  bodega: string;
+  cantidadSolicitada: number;
+  estado: string;
+  fechaSolicitud: string;
+  fechaActualizacion: string | null;
+}
+
+export interface NewRestockRequest {
+  idItem: number;
+  nombreItem: string;
+  bodega: string;
+  cantidadSolicitada: number;
+}
+
+export interface UpdateEstadoRequest {
+  estado: string;
+}
+
+// Order types
+export interface Order {
+  id_order: number;
+  customerName: string;
+  customerEmail: string;
+  deliveryAddress: string;
+  total: number;
+  status: string;
+  createdAt: string;
+  idItem?: number;
+  cantidadSolicitada?: number;
+}
+
+export interface NewOrder {
+  customerName: string;
+  customerEmail: string;
+  deliveryAddress: string;
+  total: number;
+  idItem: number;
+  cantidadSolicitada: number;
+}
+
+export interface UpdateOrderStatus {
+  status: string;
+}
+
+export interface RegisterRequest {
+  username: string;
+  email: string;
+  password: string;
+}

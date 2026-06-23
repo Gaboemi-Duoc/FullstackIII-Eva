@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { login } from "../api/userApi";
 import { useUser } from "../viewmodels/UserViewModel";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/LogoParaInicio.png";
+import logo from "../assets/logo-inicio.png";
 
 const Login = () => {
   const [username, setUsername] = useState<string>("");
@@ -48,6 +48,9 @@ const Login = () => {
       />
 
       <button onClick={handleLogin}>Ingresar</button>
+      <button onClick={() => navigate("/register")}>Crear cuenta</button>
+
+
     </div>
   );
 };
