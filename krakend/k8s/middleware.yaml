@@ -1,0 +1,27 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: cors-middleware
+  namespace: smartlogix
+spec:
+  headers:
+    accessControlAllowMethods:
+      - "GET"
+      - "OPTIONS"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+    accessControlAllowHeaders:
+      - "Content-Type"
+      - "Authorization"
+      - "Accept"
+    accessControlAllowOriginList:
+      - "http://localhost:5173"
+      - "http://localhost:30080"
+      - "http://localhost:8080"
+      - "http://smartlogix.local"
+    accessControlMaxAge: 3600
+    accessControlAllowCredentials: true
+    accessControlExposeHeaders:
+      - "Content-Length"
+      - "Authorization"

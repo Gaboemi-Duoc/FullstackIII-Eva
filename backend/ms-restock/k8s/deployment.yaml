@@ -1,45 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: restock-db
-  labels:
-    app: restock-db
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: restock-db
-  template:
-    metadata:
-      labels:
-        app: restock-db
-    spec:
-      containers:
-        - name: restock-db
-          image: postgres:16-alpine
-          ports:
-            - containerPort: 5432
-          env:
-            - name: POSTGRES_DB
-              value: restockdb
-            - name: POSTGRES_USER
-              value: restock
-            - name: POSTGRES_PASSWORD
-              value: restockpass123
-          volumeMounts:
-            - name: restock-db-storage
-              mountPath: /var/lib/postgresql/data
-      volumes:
-        - name: restock-db-storage
-          persistentVolumeClaim:
-            claimName: restock-db-pvc
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: ms-restock
+  namespace: smartlogix
   labels:
     app: ms-restock
+    service: backend
+    component: restock-service
 spec:
   replicas: 1
   selector:
@@ -49,17 +16,40 @@ spec:
     metadata:
       labels:
         app: ms-restock
+        service: backend
+        component: restock-service
     spec:
       containers:
-        - name: ms-restock
-          image: ms-restock:2.0
-          imagePullPolicy: Never
-          ports:
-            - containerPort: 9093
-          env:
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://restock-db:5432/restockdb
-            - name: SPRING_DATASOURCE_USERNAME
-              value: restock
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: restockpass123
+      - name: ms-restock
+        image: ms-restock:1.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://restock-db:5432/restockdb"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "restock"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "restockpass123"
+        - name: INVENTORY_SERVICE_URL
+          value: "http://ms-inventory:9091"
+        ports:
+        - containerPort: 9093
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 9093
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 9093
+          initialDelaySeconds: 30
+          periodSeconds: 10

@@ -17,59 +17,56 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
-        this.jwtAuthFilter = jwtAuthFilter;
+	this.jwtAuthFilter = jwtAuthFilter;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
+	    throws Exception {
 
-        http
-                .csrf(csrf -> csrf.disable())
-                .cors(Customizer.withDefaults())
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS
-                        )
-                )
-                .authorizeHttpRequests(auth -> auth
-                        // LOGIN endpoint
-                        .requestMatchers("/api/bff/users/login", "/api/bff/users/register")
-                        
-                        .permitAll()
-                        
-                        // HEALTH endpoint
-                        .requestMatchers("/api/bff/health")
-                        .permitAll()
-                        
-                        // SWAGGER UI v3 (SpringDoc)
-                        .requestMatchers(
-                            "/swagger-ui/**",
-                            "/swagger-ui.html",
-                            "/v3/api-docs/**",
-                            "/v3/api-docs.yaml",
-                            "/swagger-resources/**",
-                            "/swagger-resources",
-                            "/webjars/**",
-                            "/api/bff/orders/**",
-                            "/api/bff/inventory/**" //temporal para probar
-                        )
-                        .permitAll()
-                        
-                        // Actuator endpoints (if using)
-                        .requestMatchers("/actuator/**", "/health")
-                        .permitAll()
-                        
-                        // All other endpoints require authentication
-                        .anyRequest()
-                        .authenticated()
-                )
-                // JWT FILTER
-                .addFilterBefore(
-                        jwtAuthFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
+	http
+		.csrf(csrf -> csrf.disable())
+		.cors(Customizer.withDefaults())
+		.sessionManagement(session ->
+			session.sessionCreationPolicy(
+				SessionCreationPolicy.STATELESS
+			)
+		)
+		.authorizeHttpRequests(auth -> auth
+			// LOGIN endpoint
+			.requestMatchers("/api/bff/users/login")
+			.permitAll()
+			
+			// HEALTH endpoint
+			.requestMatchers("/api/bff/health")
+			.permitAll()
+			
+			// SWAGGER UI v3 (SpringDoc)
+			.requestMatchers(
+			"/swagger-ui/**",
+			"/swagger-ui.html",
+			"/v3/api-docs/**",
+			"/v3/api-docs.yaml",
+			"/swagger-resources/**",
+			"/swagger-resources",
+			"/webjars/**",
+			)
+			.permitAll()
+			
+			// Actuator endpoints (if using)
+			.requestMatchers("/actuator/**", "/health")
+			.permitAll()
+			
+			// All other endpoints require authentication
+			.anyRequest()
+			.authenticated()
+		)
+		// JWT FILTER
+		.addFilterBefore(
+			jwtAuthFilter,
+			UsernamePasswordAuthenticationFilter.class
+		);
 
-        return http.build();
+	return http.build();
     }
 }

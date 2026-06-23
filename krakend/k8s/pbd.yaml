@@ -1,0 +1,12 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: krakend-pdb
+  namespace: smartlogix
+  labels:
+    app: krakend
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: krakend

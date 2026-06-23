@@ -1,42 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orders-db
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: orders-db
-  template:
-    metadata:
-      labels:
-        app: orders-db
-    spec:
-      containers:
-        - name: orders-db
-          image: postgres:17-alpine
-          ports:
-            - containerPort: 5432
-          env:
-            - name: POSTGRES_DB
-              value: ordersdb
-            - name: POSTGRES_USER
-              value: orders
-            - name: POSTGRES_PASSWORD
-              value: orderspass123
-          volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: orders-storage
-      volumes:
-        - name: orders-storage
-          persistentVolumeClaim:
-            claimName: orders-db-pvc
-
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: ms-orders
+  namespace: smartlogix
+  labels:
+    app: ms-orders
+    service: backend
+    component: orders-service
 spec:
   replicas: 1
   selector:
@@ -46,17 +16,42 @@ spec:
     metadata:
       labels:
         app: ms-orders
+        service: backend
+        component: orders-service
     spec:
       containers:
-        - name: ms-orders
-          image: ms-orders:1.0
-          imagePullPolicy: Never
-          ports:
-            - containerPort: 9092
-          env:
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://orders-db:5432/ordersdb
-            - name: SPRING_DATASOURCE_USERNAME
-              value: orders
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: orderspass123
+      - name: ms-orders
+        image: ms-orders:1.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://orders-db:5432/ordersdb"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "orders"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "orderspass123"
+        - name: USER_SERVICE_URL
+          value: "http://ms-user:9090"
+        - name: INVENTORY_SERVICE_URL
+          value: "http://ms-inventory:9091"
+        ports:
+        - containerPort: 9092
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 9092
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 9092
+          initialDelaySeconds: 30
+          periodSeconds: 10

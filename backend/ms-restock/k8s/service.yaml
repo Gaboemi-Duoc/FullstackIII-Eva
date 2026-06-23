@@ -1,25 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: restock-db
-spec:
-  selector:
-    app: restock-db
-  ports:
-    - protocol: TCP
-      port: 5432
-      targetPort: 5432
----
-apiVersion: v1
-kind: Service
-metadata:
   name: ms-restock
+  namespace: smartlogix
+  labels:
+    app: ms-restock
+    service: backend
 spec:
+  type: ClusterIP
+  ports:
+  - port: 9093
+    targetPort: 9093
+    protocol: TCP
+    name: http
   selector:
     app: ms-restock
-  type: NodePort
-  ports:
-    - protocol: TCP
-      port: 9093
-      targetPort: 9093
-      nodePort: 30093
