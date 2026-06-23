@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EmailService emailService) {
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     public List<User> listarUsuarios() {
@@ -26,7 +28,16 @@ public class UserService {
     }
 
     public User registrarUsuario(User user) {
-        return userRepository.save(user);
+        User nuevoUsuario = userRepository.save(user);
+
+        try {
+            emailService.enviarCorreoBienvenida(nuevoUsuario.getEmail(), nuevoUsuario.getUsername());
+        } catch (Exception e) {
+            // No queremos que falle el registro si el correo no se pudo enviar
+            System.err.println("No se pudo enviar el correo de bienvenida: " + e.getMessage());
+        }
+
+        return nuevoUsuario;
     }
 
     public User login(String username, String password) {
