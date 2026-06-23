@@ -1,3 +1,10 @@
+docker build -t ms-user:1.0 ./backend/ms-user      
+docker build -t ms-inventory:1.0 ./backend/ms-inventory
+docker build -t ms-orders:1.0 ./backend/ms-orders
+docker build -t ms-restock:2.0 ./backend/ms-restock
+docker build -t bff:3.0 ./backend/bff
+docker build -t frontend:1.0 ./frontend
+
 # Apply namespace first
 kubectl apply -f k8s/namespace.yaml
 
