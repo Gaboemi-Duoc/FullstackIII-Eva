@@ -1,15 +1,16 @@
 package com.smartlogix.ms_restock.service;
 
-import com.smartlogix.ms_restock.model.RestockRequest;
-import com.smartlogix.ms_restock.repository.RestockRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.smartlogix.ms_restock.model.RestockRequest;
+import com.smartlogix.ms_restock.repository.RestockRepository;
 
 @Service
 public class RestockService {
@@ -17,14 +18,17 @@ public class RestockService {
     private final RestockRepository restockRepository;
     private final RestTemplate restTemplate;
 
-    @Value("${inventory-service.url}")
+    @Value("${inventory-service.url:http://localhost:8080}") // Agregamos un valor por defecto por si falla en los tests
     private String inventoryServiceUrl;
 
-    public RestockService(RestockRepository restockRepository) {
+    // Aquí está la Buena Práctica: Inyección de Dependencias mediante el constructor
+    public RestockService(RestockRepository restockRepository, RestTemplate restTemplate) {
         this.restockRepository = restockRepository;
-        this.restTemplate = new RestTemplate();
+        this.restTemplate = restTemplate;
     }
 
+    // ─── Consultas ────────────────────────────────────────────────────────────
+    // ... (TODO TU CÓDIGO HACIA ABAJO QUEDA EXACTAMENTE IGUAL) ...
     // ─── Consultas ────────────────────────────────────────────────────────────
 
     public List<RestockRequest> listarSolicitudes() {
