@@ -8,7 +8,7 @@ metadata:
     service: gateway
     component: api-gateway
 spec:
-  replicas: 2
+  replicas: 1 
   selector:
     matchLabels:
       app: krakend
@@ -38,19 +38,7 @@ spec:
             cpu: "100m"
           limits:
             memory: "512Mi"
-            cpu: "250m"
-        livenessProbe:
-          httpGet:
-            path: /__health
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 30
-        readinessProbe:
-          httpGet:
-            path: /__health
-            port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 10
+            cpu: "250m
       volumes:
       - name: krakend-config
         configMap:

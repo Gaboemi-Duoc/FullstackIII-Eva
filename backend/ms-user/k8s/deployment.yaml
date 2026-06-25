@@ -30,8 +30,19 @@ spec:
           value: "user"
         - name: SPRING_DATASOURCE_PASSWORD
           value: "userpass123"
+        - name: BREVO_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: brevo-secrets
+              key: api-key
+              optional: true
+        - name: BREVO_SENDER_EMAIL
+          value: "noreply@smartlogix.com"
+        - name: SPRING_PROFILES_ACTIVE
+          value: "kubernetes"
         ports:
         - containerPort: 9090
+          name: http
         resources:
           requests:
             memory: "512Mi"
@@ -39,15 +50,20 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "500m"
+        # Use a simpler health check if actuator isn't available
         livenessProbe:
           httpGet:
-            path: /actuator/health
+            path: /api/users/health  # Use a custom health endpoint instead
             port: 9090
           initialDelaySeconds: 60
           periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
         readinessProbe:
           httpGet:
-            path: /actuator/health
+            path: /api/users/health  # Use a custom health endpoint instead
             port: 9090
           initialDelaySeconds: 30
           periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3

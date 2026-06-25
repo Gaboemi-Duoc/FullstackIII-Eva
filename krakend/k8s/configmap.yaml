@@ -63,6 +63,19 @@ data:
           ]
         },
         {
+          "endpoint": "/api/bff/users/register",
+          "method": "POST",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/bff/users/register",
+              "host": ["http://bff:8081"],
+              "encoding": "json",
+              "method": "POST"
+            }
+          ]
+        },
+        {
           "endpoint": "/api/bff/users/{id}/username",
           "method": "PUT",
           "output_encoding": "json",
