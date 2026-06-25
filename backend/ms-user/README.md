@@ -95,6 +95,44 @@ Cobertura obtenida: **100%**
 
 ---
 
+Configuración (application.properties)
+
+PropiedadValorserver.port9090spring.datasource.urljdbc:postgresql://localhost:5432/user_service_dbspring.datasource.usernamepostgresspring.datasource.passwordInformatica.25brevo.api.key(variable de entorno BREVO_API_KEY)brevo.sender.email(variable de entorno BREVO_SENDER_EMAIL)
+
+
+✉️ Envío de correo de bienvenida (API de Brevo)
+
+Cuando alguien se registra (POST /api/users/register), el sistema envía automáticamente un correo de bienvenida al email ingresado. Esto se hace con la API de Brevo (antes llamada Sendinblue), un servicio de envío de correos transaccionales con plan gratuito (300 correos/día, sin tarjeta de crédito).
+
+Si el correo no se logra enviar por algún motivo, el registro de todas formas se completa — el envío de correo nunca bloquea ni rompe el registro, solo queda un mensaje de error en la consola.
+
+Cómo configurarlo (cada integrante del equipo debe hacer esto en su máquina)
+
+
+Crea una cuenta gratis en brevo.com (no pide tarjeta). Puede ser tu cuenta personal, no se comparte entre el equipo.
+Ve a tu menú de cuenta → Settings → SMTP & API → pestaña "API Keys" → Generate a new API key. Cópiala (solo se muestra una vez).
+Ve a Settings → Senders, Domains, IPs → pestaña "Senders" → Add a sender, agrega tu correo (puede ser tu Gmail) y verifícalo con el código de 6 dígitos que te llega a ese correo.
+En la raíz del proyecto, crea un archivo .env (cópialo desde .env.example, que sí está en el repo) con tus datos:
+
+
+   BREVO_API_KEY=tu_clave_real_de_brevo
+   BREVO_SENDER_EMAIL=tu_correo_verificado
+
+⚠️ Este archivo .env no se sube a git (está en .gitignore) porque contiene una credencial personal — cada integrante usa la suya.
+5. Levanta el servicio con Docker (docker-compose up --build ms-user desde la raíz) o, si corres con ./mvnw spring-boot:run directo, exporta esas dos variables en tu terminal antes de ejecutar.
+
+Cómo probar que funciona
+
+
+Abre http://localhost:9090/swagger-ui/index.html#/
+Ejecuta POST /api/users/register con un correo real al que tengas acceso:
+
+
+json   { "username": "prueba", "email": "tu_correo_de_prueba@gmail.com", "password": "12345678" }
+
+
+Revisa la bandeja de entrada (y spam) de ese correo — debería llegar un correo de bienvenida en pocos segundos.
+
 ## Notas
 
 - Las migraciones se ejecutan automáticamente con Flyway al iniciar
