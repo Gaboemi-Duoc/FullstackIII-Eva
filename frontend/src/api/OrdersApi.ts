@@ -1,11 +1,12 @@
+// src/api/OrdersApi.ts
 import axios, { AxiosResponse } from "axios";
 import { Order, NewOrder, UpdateOrderStatus } from "../types";
+import { getApiUrl } from "./ApiConfig";
 
-const ORDERS_API_URL = "http://localhost:8081/api/bff/orders";
+const ORDERS_API_URL = getApiUrl('/orders');
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("authToken");
-
   return {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -18,7 +19,6 @@ export const getOrders = async (): Promise<Order[]> => {
     ORDERS_API_URL,
     getAuthHeaders()
   );
-
   return response.data;
 };
 
@@ -28,7 +28,6 @@ export const crearOrder = async (order: NewOrder): Promise<Order> => {
     order,
     getAuthHeaders()
   );
-
   return response.data;
 };
 
@@ -37,13 +36,11 @@ export const actualizarEstadoOrder = async (
   status: string
 ): Promise<Order> => {
   const body: UpdateOrderStatus = { status };
-
   const response: AxiosResponse<Order> = await axios.put(
     `${ORDERS_API_URL}/${id}/status`,
     body,
     getAuthHeaders()
   );
-
   return response.data;
 };
 

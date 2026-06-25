@@ -20,7 +20,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bff/restock")
-@CrossOrigin(origins = "http://localhost:5173")
 @Tag(name = "Gestion de Restock", description = "Endpoints para gestionar solicitudes de reposición de stock")
 public class RestockBffController {
 

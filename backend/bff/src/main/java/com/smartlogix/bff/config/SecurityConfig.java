@@ -49,7 +49,7 @@ public class SecurityConfig {
 			"/v3/api-docs.yaml",
 			"/swagger-resources/**",
 			"/swagger-resources",
-			"/webjars/**",
+			"/webjars/**"
 			)
 			.permitAll()
 			

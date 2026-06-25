@@ -1,7 +1,9 @@
+// src/api/RestockApi.ts
 import axios, { AxiosResponse } from "axios";
 import type { RestockRequest, NewRestockRequest, UpdateEstadoRequest } from "../types";
+import { getApiUrl } from "./ApiConfig";
 
-const RESTOCK_API_URL = "http://localhost:8081/api/bff/restock";
+const RESTOCK_API_URL = getApiUrl('/restock');
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("authToken");
