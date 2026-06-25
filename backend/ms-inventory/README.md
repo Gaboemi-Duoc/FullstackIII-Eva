@@ -1,36 +1,38 @@
-# Microservicio de Inventario
+# ms-inventory
 
-Microservicio REST de gestión de inventario. Permite crear, consultar, actualizar y eliminar ítems del inventario. Utiliza PostgreSQL con migraciones Flyway.
+Microservicio REST de gestión de inventario de la plataforma SmartLogix. Construido con Spring Boot 4.0.6 y Java 21.
 
-#### Patrones de Diseño usados:
-    - Repository Pattern
-    - Service Layer
-    - MVC: Variacion de Modelo, Servicio, Controlador
-    
+## Patrones de Diseño aplicados
+- Repository Pattern
+- Service Layer
+- MVC: Modelo → Servicio → Controlador
+- DTO: separación entre datos de entrada y entidad persistida
+
 ---
 
 ## Cómo levantar
 
 ### Prerrequisitos
-
-- Java 25
+- Java 21
 - Maven
 - PostgreSQL corriendo en `localhost:5432`
 
 ### Crear la base de datos
-
 ```sql
-CREATE DATABASE inventory_service_db;
+CREATE DATABASE inventorydb;
+CREATE USER inventory WITH PASSWORD 'inventorypass123';
+GRANT ALL PRIVILEGES ON DATABASE inventorydb TO inventory;
 ```
 
 ### Ejecutar
-
 ```bash
-cd service-inventory
+cd backend/ms-inventory
 ./mvnw spring-boot:run
 ```
 
-El servicio queda disponible en: **`http://localhost:9091`**
+Disponible en: `http://localhost:9091`
+
+Swagger UI: `http://localhost:9091/swagger-ui/index.html`
 
 ---
 
@@ -39,9 +41,9 @@ El servicio queda disponible en: **`http://localhost:9091`**
 | Propiedad | Valor |
 |-----------|-------|
 | `server.port` | `9091` |
-| `spring.datasource.url` | `jdbc:postgresql://localhost:5432/inventory_service_db` |
-| `spring.datasource.username` | `postgres` |
-| `spring.datasource.password` | `Informatica.25` |
+| `spring.datasource.url` | `jdbc:postgresql://localhost:5432/inventorydb` |
+| `spring.datasource.username` | `inventory` |
+| `spring.datasource.password` | `inventorypass123` |
 
 ---
 
@@ -52,9 +54,9 @@ El servicio queda disponible en: **`http://localhost:9091`**
 | `GET` | `/api/inventory` | Lista todos los ítems |
 | `GET` | `/api/inventory/{id}` | Obtiene ítem por ID |
 | `GET` | `/api/inventory/buscar?nombre={n}` | Busca ítem por nombre |
-| `GET` | `/api/inventory/stock-bajo?umbral={n}` | Ítems con stock menor al umbral |
+| `GET` | `/api/inventory/stock-bajo?umbral={n}` | Ítems con stock bajo |
 | `GET` | `/api/inventory/bodega?nombre={n}` | Ítems por bodega |
-| `GET` | `/api/inventory/stock-por-bodega` | Stock total agrupado por bodega |
+| `GET` | `/api/inventory/stock-por-bodega` | Stock total por bodega |
 | `POST` | `/api/inventory` | Crea un nuevo ítem |
 | `PUT` | `/api/inventory/{id}/cantidad` | Actualiza cantidad |
 | `PUT` | `/api/inventory/{id}/precio` | Actualiza precio |
@@ -64,7 +66,13 @@ El servicio queda disponible en: **`http://localhost:9091`**
 
 **Crear ítem:**
 ```json
-{ "name": "Caja A", "description": "Caja mediana", "cantidad": 100, "precio": 1500.0 }
+{
+  "nombre": "Caja A",
+  "descripcion": "Caja mediana",
+  "cantidad": 100,
+  "precio": 1500.0,
+  "bodega": "Bodega Central"
+}
 ```
 
 **Actualizar cantidad:**
@@ -79,8 +87,27 @@ El servicio queda disponible en: **`http://localhost:9091`**
 
 ---
 
+## Pruebas unitarias
+
+Ejecutar tests:
+```bash
+cd backend/ms-inventory
+./mvnw test
+```
+
+Ver reporte de cobertura JaCoCo:
+```bash
+# El reporte se genera automáticamente al correr los tests
+# Abrir en el navegador:
+backend/ms-inventory/target/site/jacoco/index.html
+```
+
+Cobertura obtenida: **100%**
+
+---
+
 ## Notas
 
-- Las migraciones se ejecutan automáticamente con **Flyway** al iniciar.
-- El BFF consume este servicio en `http://localhost:9091`.
-- Este servicio es de uso **interno**: el frontend no lo llama directamente, sino a través del BFF.
+- Las migraciones se ejecutan automáticamente con Flyway al iniciar
+- El BFF consume este servicio en `http://localhost:9091`
+- El frontend no llama a este servicio directamente, sino a través del BFF
