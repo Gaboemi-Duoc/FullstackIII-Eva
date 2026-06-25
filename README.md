@@ -1,4 +1,4 @@
-# SmartLogix — Fullstack III (Evaluación Parcial 3)
+# SmartLogix — Fullstack III 
 
 Plataforma web fullstack de arquitectura orientada a microservicios para la gestión logística de eCommerce. El proyecto implementa un frontend en React, un BFF, cuatro microservicios en Spring Boot, un API Gateway con KrakenD, y una infraestructura completa orquestada con Docker Compose.
 
