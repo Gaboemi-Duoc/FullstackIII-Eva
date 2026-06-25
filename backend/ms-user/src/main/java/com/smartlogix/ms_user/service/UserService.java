@@ -45,8 +45,7 @@ public class UserService {
         try {
             emailService.enviarCorreoBienvenida(user.getEmail(), user.getUsername());
         } catch (Exception e) {
-            // Log the error but don't rethrow - user is already saved
-            System.out.println("Failed to send welcome email for user {}: {}", user.getId(), e.getMessage());
+            System.out.println("Failed to send welcome email for user " + user.getId_user() + ": " + e.getMessage());
             // Optionally, store in a retry queue or database for later processing
         }
     }
