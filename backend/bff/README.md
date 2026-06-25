@@ -80,8 +80,6 @@ Frontend → GET /api/bff/inventory (Bearer token) → BFF valida JWT → ms-inv
 
 ### Ejemplo — Login
 
-### Ejemplo Login
-
 **Request:**
 ```json
 { "username": "juan123", "password": "mipassword" }
@@ -96,10 +94,4 @@ Frontend → GET /api/bff/inventory (Bearer token) → BFF valida JWT → ms-inv
 }
 ```
 
----
-
-## Notas
-
-- El BFF es el único punto de entrada desde el frontend
-- Todos los endpoints excepto login requieren `Authorization: Bearer <token>`
-- Los clientes Feign (`UserServiceClient`, `InventoryServiceClient`, `RestockServiceClient`) manejan la comunicación interna con los microservicios
+Usar el token recibido como `Authorization: Bearer <token>` en todas las peticiones siguientes.

@@ -1,6 +1,6 @@
 # ms-inventory
 
-Microservicio REST de gestión de inventario de la plataforma SmartLogix. Construido con Spring Boot 4.0.6 y Java 21.
+Microservicio REST de gestión de inventario de la plataforma SmartLogix. Construido con Spring Boot 4.0.6 y Java 25.
 
 ## Patrones de Diseño aplicados
 - Repository Pattern
@@ -13,7 +13,7 @@ Microservicio REST de gestión de inventario de la plataforma SmartLogix. Constr
 ## Cómo levantar
 
 ### Prerrequisitos
-- Java 21
+- Java 25
 - Maven
 - PostgreSQL corriendo en `localhost:5432`
 
