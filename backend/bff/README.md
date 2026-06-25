@@ -7,7 +7,7 @@ Capa intermediaria entre el frontend y los microservicios internos. Maneja auten
 ## Cómo levantar
 
 ### Prerrequisitos
-- Java 21
+- Java 25
 - Maven
 - ms-user corriendo en `http://localhost:9090`
 - ms-inventory corriendo en `http://localhost:9091`

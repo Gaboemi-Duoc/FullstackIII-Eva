@@ -13,9 +13,9 @@ Microservicio REST de gestión de solicitudes de reposición de stock. Construid
 ## Cómo levantar
 
 ### Prerrequisitos
-- Java 21
+- Java 25
 - Maven
-- PostgreSQL corriendo en `localhost:5432`
+- PostgreSQL corriendo en `localhost:5435`
 - ms-inventory corriendo en `http://localhost:9091`
 
 ### Crear la base de datos

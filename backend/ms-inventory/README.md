@@ -15,7 +15,7 @@ Microservicio REST de gestión de inventario de la plataforma SmartLogix. Constr
 ### Prerrequisitos
 - Java 25
 - Maven
-- PostgreSQL corriendo en `localhost:5432`
+- PostgreSQL corriendo en `localhost:5433`
 
 ### Crear la base de datos
 ```sql
@@ -41,7 +41,7 @@ Swagger UI: `http://localhost:9091/swagger-ui/index.html`
 | Propiedad | Valor |
 |-----------|-------|
 | `server.port` | `9091` |
-| `spring.datasource.url` | `jdbc:postgresql://localhost:5432/inventorydb` |
+| `spring.datasource.url` | `jdbc:postgresql://localhost:5433/inventorydb` |
 | `spring.datasource.username` | `inventory` |
 | `spring.datasource.password` | `inventorypass123` |
 

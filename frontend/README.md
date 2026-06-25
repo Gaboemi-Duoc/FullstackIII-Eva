@@ -77,7 +77,7 @@ La URL base se configura en `src/api/ApiConfig.ts`:
 BFF_URL: import.meta.env.VITE_BFF_URL || 'http://localhost:8081'
 ```
 
-Para desarrollo local, el frontend apunta directamente al BFF en `:8081`.       
+Para desarrollo local, el frontend apunta directamente al BFF en `:8081`.
 En producción (Docker), la variable de entorno `VITE_BFF_URL` debe apuntar al API Gateway KrakenD en `:8080`.
 
 ---
