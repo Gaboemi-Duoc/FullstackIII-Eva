@@ -18,7 +18,7 @@ public class BffApplication {
     @PostConstruct
     public void initSentry() {
         Sentry.init(options -> {
-            options.setDsn("https://11a8058997bd43bead1bb490357eded6@app.glitchtip.com/25284");
+            options.setDsn("https://eb715c4fc99e4e0bb9661e8d658f676f@app.glitchtip.com/25295");
             options.setEnvironment("production");
             options.setRelease("your-app-version@1.0.0");
             options.setTracesSampleRate(0.01);
