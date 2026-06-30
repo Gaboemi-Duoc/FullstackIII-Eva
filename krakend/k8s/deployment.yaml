@@ -38,7 +38,7 @@ spec:
             cpu: "100m"
           limits:
             memory: "512Mi"
-            cpu: "250m
+            cpu: "250m"
       volumes:
       - name: krakend-config
         configMap:

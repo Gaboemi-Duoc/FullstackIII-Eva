@@ -40,6 +40,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
 
         if (path.equals("/api/bff/users/login")
+                || path.equals("/api/bff/test-error")
                 || path.equals("/api/bff/health")
                 || path.startsWith("/api/bff/orders")
                 || path.startsWith("/swagger-ui")
