@@ -6,16 +6,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import io.sentry.Sentry;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<DtoApiResponse<Void>> handleGenericException(Exception e) {
+
         log.error("Unexpected error occurred", e);
+
+        // Envía la excepción a GlitchTip
+        Sentry.captureException(e);
+
         return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new DtoApiResponse<>(false, "Internal server error", null, 500));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new DtoApiResponse<>(false, "Internal server error", null, 500));
     }
 }
