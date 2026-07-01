@@ -5,15 +5,18 @@ import java.util.List;
 
 import com.smartlogix.ms_user.repository.UserRepository;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EmailService emailService) {
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     public List<User> listarUsuarios() {
@@ -26,7 +29,25 @@ public class UserService {
     }
 
     public User registrarUsuario(User user) {
-        return userRepository.save(user);
+        try {
+            User nuevoUsuario = userRepository.save(user);
+            
+            // Send welcome email, but don't fail if it doesn't work
+            sendWelcomeEmailSafely(nuevoUsuario);
+            
+            return nuevoUsuario;
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error al registrar usuario", e);
+        }
+    }
+    
+    private void sendWelcomeEmailSafely(User user) {
+        try {
+            emailService.enviarCorreoBienvenida(user.getEmail(), user.getUsername());
+        } catch (Exception e) {
+            System.out.println("Failed to send welcome email for user " + user.getId_user() + ": " + e.getMessage());
+            // Optionally, store in a retry queue or database for later processing
+        }
     }
 
     public User login(String username, String password) {

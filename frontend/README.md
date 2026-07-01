@@ -1,64 +1,91 @@
-## Frontend (React + Vite)
-Requiere Node.js
-React
+# Frontend — SmartLogix
 
-http://localhost:5173
+Single Page Application (SPA) construida con React 19 y empaquetada con Vite. Implementa el patrón **MVVM** mediante React Context API.
 
-El frontend es una Single Page Application (SPA) construida con React 19 y empaquetada con Vite. Implementa el patrón **MVVM** mediante React Context API.
+---
 
-#### Patrones de Diseño usados:
-    - ViewModel
-    - Arquitectura basada en Componentes: Assets, Componentes, Paginas, Tipos, VM, API
-    - Singletons
+## Patrones de Diseño aplicados
+- ViewModel (React Context como estado global)
+- Arquitectura basada en Componentes: Assets, Componentes, Páginas, Tipos, ViewModel, API
+- Singleton (instancia única de Axios por módulo de API)
 
-#### `UserView.tsx` — ViewModel / Estado global
+---
 
-Se implementó un contexto de React (`UserContext`) que actúa como ViewModel, centralizado el estado del usuario autenticado. Esto permite que cualquier componente del árbol acceda o modifique los datos del usuario sin necesidad de prop drilling.
+## Rutas de la aplicación
 
-```tsx
-// Provee { user, setUser } a toda la aplicación
-export const UserProvider = ({ children }) => { ... }
-export const useUser = () => useContext(UserContext);
+| Ruta | Componente | Auth requerida |
+|---|---|---|
+| `/` | `Login.tsx` | No |
+| `/register` | `Register.tsx` | No |
+| `/profile` | `Profile.tsx` | Sí |
+| `/inventory` | `Inventory.tsx` | Sí |
+| `/orders` | `Orders.tsx` | Sí |
+| `/restock` | `Restock.tsx` | Sí |
+
+---
+
+## Estructura de archivos relevante
+
+```
+frontend/src/
+├── api/
+│   ├── ApiConfig.ts       # URL base del BFF (VITE_BFF_URL o localhost:8081)
+│   ├── userApi.ts         # Login, registro, actualización de usuario
+│   ├── InventoryApi.ts    # CRUD de ítems de inventario
+│   ├── OrdersApi.ts       # CRUD de órdenes
+│   └── RestockApi.ts      # CRUD de solicitudes de restock
+├── components/
+│   ├── Navbar.tsx         # Barra de navegación con avatar de usuario
+│   └── ProtectedRoute.tsx # Redirige a / si no hay sesión activa
+├── pages/                 # Una página por ruta
+├── viewmodels/
+│   └── UserViewModel.tsx  # Contexto global del usuario autenticado
+└── types/
+    └── index.tsx          # Tipos compartidos (Item, Order, RestockRequest, etc.)
 ```
 
-#### `App.tsx` — Enrutador principal
+---
 
-Envuelve la aplicación en el `UserProvider` y define dos rutas principales:
-- `/` → Página de Login
-- `/profile` → Página de Perfil (accesible tras autenticarse)
+## Cómo levantar (desarrollo local)
 
-#### `Navbar.tsx` — Barra de navegación
-
-Muestra el nombre de la aplicación **SmartLogix** y, cuando hay un usuario autenticado, muestra un avatar generado con la primera letra del username en mayúscula.
-
-#### `Login.tsx` — Página de inicio de sesión
-
-Formulario con campos `username` y `password`. Al hacer clic en "Login":
-1. Llama a `login()` desde `userApi.js` (POST al backend).
-2. Si es exitoso, guarda el usuario en el contexto global con `setUser`.
-3. Redirige automáticamente a `/profile` usando `useNavigate`.
-4. Si las credenciales son incorrectas, muestra un alert de error.
-
-#### `Profile.tsx` — Página de perfil
-
-Muestra los datos del usuario autenticado (username actual) y permite actualizarlos:
-1. El usuario ingresa un nuevo username en el campo de texto.
-2. Al hacer clic en "Actualizar", se llama a `updateUsername()` (PUT al backend).
-3. Si el servidor responde con éxito, el estado global se actualiza y se muestra un alert de confirmación.
-
-#### `userApi.js` — Capa de comunicación con la API
-
-Centraliza todas las llamadas HTTP usando Axios. Actualmente implementa dos funciones:
-
-- **`login(username, password)`** — `POST /api/users/login` — Autentica un usuario y retorna sus datos.
-- **`updateUsername(id, username)`** — `PUT /api/users/{id}/username` — Actualiza el username del usuario identificado por su ID.
-
-La URL base apunta directamente al microservicio en `http://localhost:8080/api/users` (en producción se enrutaría a través de KrakenD).
-
-## Cómo levantar el proyecto
 ```bash
 cd frontend
 npm install
-npm install axios react-router-dom
 npm run dev
 ```
+
+Disponible en: `http://localhost:5173`
+
+---
+
+## Cómo levantar con Docker Compose
+
+```bash
+# Desde la raíz del proyecto:
+docker compose up --build frontend
+```
+
+Disponible en: `http://localhost:30080`
+
+---
+
+## Configuración de la URL del BFF
+
+La URL base se configura en `src/api/ApiConfig.ts`:
+
+```ts
+BFF_URL: import.meta.env.VITE_BFF_URL || 'http://localhost:8081'
+```
+
+Para desarrollo local, el frontend apunta directamente al BFF en `:8081`.
+En producción (Docker), la variable de entorno `VITE_BFF_URL` debe apuntar al API Gateway KrakenD en `:8080`.
+
+---
+
+## Notas
+
+- El frontend nunca llama directamente a los microservicios; toda comunicación pasa por el BFF (vía KrakenD en producción)
+- La autenticación se gestiona con JWT almacenado en `localStorage`
+- Las rutas protegidas redirigen a `/` si no hay token activo
+
+

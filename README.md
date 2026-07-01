@@ -1,6 +1,6 @@
-# SmartLogix — Fullstack III (Evaluación)
+# SmartLogix — Fullstack III 
 
-Aplicación web fullstack de arquitectura orientada a microservicios para la gestión de usuarios de la plataforma **SmartLogix**. El proyecto implementa un frontend en React, un microservicio de usuarios en Spring Boot, un API Gateway con KrakenD, y una infraestructura completa orquestada con Docker Compose.
+Plataforma web fullstack de arquitectura orientada a microservicios para la gestión logística de eCommerce. El proyecto implementa un frontend en React, un BFF, cuatro microservicios en Spring Boot, un API Gateway con KrakenD, y una infraestructura completa orquestada con Docker Compose.
 
 ---
 
@@ -9,14 +9,7 @@ Aplicación web fullstack de arquitectura orientada a microservicios para la ges
 - [Arquitectura general](#arquitectura-general)
 - [Tecnologías utilizadas](#tecnologías-utilizadas)
 - [Estructura del proyecto](#estructura-del-proyecto)
-- [Componentes implementados](#componentes-implementados)
-  - [Frontend (React + Vite)](#frontend-react--vite)
-  - [Microservicio de Usuarios (Spring Boot)](#microservicio-de-usuarios-spring-boot)
-  - [API Gateway (KrakenD)](#api-gateway-krakend)
-  - [Infraestructura Docker](#infraestructura-docker)
-- [Endpoints disponibles](#endpoints-disponibles)
 - [Cómo levantar el proyecto](#cómo-levantar-el-proyecto)
-- [Servicios pendientes de implementar](#servicios-pendientes-de-implementar)
 
 ---
 
@@ -25,23 +18,24 @@ Aplicación web fullstack de arquitectura orientada a microservicios para la ges
 El sistema sigue una arquitectura de microservicios donde cada componente tiene una responsabilidad bien definida:
 
 ```
-[Frontend React :5173]
+[Frontend React :30080]
+        │
+        ▼
+[API Gateway KrakenD :8080]
         │
         ▼
 [BFF Spring Boot :8081]
         │
-   ┌────┴────┐
-   ▼         ▼
-[service-user    [service-inventory
-    :9090]             :9091]
-      │                   │
- [PostgreSQL]        [PostgreSQL]
- user_service_db  inventory_service_db
+   ┌────┼────┬────────┐
+   ▼    ▼    ▼        ▼
+[ms-user  [ms-inventory  [ms-orders  [ms-restock
+  :9090]      :9091]       :9092]      :9093]
+    │            │            │           │
+[PostgreSQL] [PostgreSQL] [PostgreSQL] [PostgreSQL]
+  userdb    inventorydb   ordersdb    restockdb
 ```
 
-El frontend se comunica **únicamente con el BFF**, que actúa como punto de entrada único, maneja la autenticación JWT y enruta las peticiones hacia los microservicios correspondientes.
-
-> El diagrama de contenedores completo se encuentra en `docs/Diagrama de Contenedores - Fullstack III.drawio.png`.
+El frontend se comunica únicamente con el API Gateway (KrakenD), que enruta las peticiones al BFF, y este las distribuye hacia los microservicios correspondientes.
 
 ---
 
@@ -49,82 +43,100 @@ El frontend se comunica **únicamente con el BFF**, que actúa como punto de ent
 
 | Capa | Tecnología | Versión |
 |---|---|---|
-| Frontend Framework / Librerías | React | 19.x |
-| Bundler | Vite | 8.x |
+| Frontend | React + Vite | 19.x / 8.x |
 | Routing frontend | React Router DOM | 7.x |
-| HTTP client frontend | Axios | 1.16.x |
-| Backend Framework | Spring Boot | 3.x |
+| HTTP client frontend | Axios | 1.x |
+| Backend Framework | Spring Boot | 4.0.6 |
 | Lenguaje backend | Java | 25 |
 | Persistencia | PostgreSQL | 17 |
-| Migraciones | Flyway | — |
+| Migraciones | Flyway | 11.x |
 | Reducción de boilerplate | Lombok | — |
-| Autenticación | JWT | — |
+| API Gateway | KrakenD | latest |
 | Contenedores | Docker + Docker Compose | — |
+| Testing | JUnit 5 + Mockito + JaCoCo | — |
 
 ---
 
 ## Estructura del proyecto
 
 ```
-FullstackIII-Eva-indev/
+FullstackIII-Eva-main/
 ├── docker-compose.yml          # Orquestación de todos los servicios
 ├── docs/                       # Documentación extra del proyecto
 ├── frontend/                   # Aplicación React + Vite
-├── bff/                        # Backend for Frontend (Spring Boot)
-├── service-user/               # Microservicio de usuarios (Spring Boot)
-├── service-inventory/          # Microservicio de inventario (Spring Boot)
-├── service-orders/             # Microservicio de órdenes (pendiente)
-└── service-restock/            # Microservicio de restock (pendiente)
+├── krakend/                    # Configuración del API Gateway
+└── backend/
+    ├── bff/                    # Backend for Frontend (Spring Boot :8081)
+    ├── ms-user/                # Microservicio de usuarios (Spring Boot :9090)
+    ├── ms-inventory/           # Microservicio de inventario (Spring Boot :9091)
+    ├── ms-orders/              # Microservicio de órdenes (Spring Boot :9092)
+    └── ms-restock/             # Microservicio de reposición de stock (Spring Boot :9093)
 ```
+
 ---
 
-### Infraestructura Docker
+## Infraestructura Docker
 
-El archivo `docker-compose.yml` define cinco servicios dentro de la red `smartlogix-net` (bridge):
+El archivo `docker-compose.yml` define todos los servicios dentro de la red `app-network` (bridge):
 
-| Servicio | Imagen / Build | Puerto host | Descripción |
+| Servicio | Build | Puerto host | Descripción |
 |---|---|---|---|
-| `backend` | `./FullstackIII-Backend` | `8080` | Microservicio principal (Spring Boot) |
-| `bff` | `./smartlogix-bff` | `8081` | Backend for Frontend (pendiente de implementar) |
-| `krakend` | `devopsfaith/krakend:latest` | `8090` | API Gateway |
-| `frontend` | `./FullstackIII-Front` | `5173` | Aplicación React |
+| `ms-user` | `./backend/ms-user` | `9090` | Microservicio de usuarios |
+| `ms-inventory` | `./backend/ms-inventory` | `9091` | Microservicio de inventario |
+| `ms-orders` | `./backend/ms-orders` | `9092` | Microservicio de órdenes |
+| `ms-restock` | `./backend/ms-restock` | `9093` | Microservicio de reposición de stock |
+| `bff` | `./backend/bff` | `8081` | Backend for Frontend |
+| `krakend` | `devopsfaith/krakend:latest` | `8080` | API Gateway |
+| `frontend` | `./frontend` | `30080` | Aplicación React |
 
 ---
+
+## Cómo levantar el proyecto
 
 ### Prerrequisitos
 
 - Docker y Docker Compose instalados
-- Node.js 18+ (para desarrollo local del frontend)
+- Node.js 22+ (para desarrollo local del frontend)
 - Java 25 + Maven (para desarrollo local del backend)
 
 ### Levantar con Docker Compose
 
 ```bash
-# Clonar el repositorio
 git clone <url-del-repositorio>
 cd FullstackIII-Eva-main
-
-# Levantar todos los servicios
 docker compose up --build
 ```
 
 Los servicios estarán disponibles en:
 
-- **Frontend:** http://localhost:5173
-- **API Gateway (KrakenD):** http://localhost:8090
-- **Backend (service-user):** http://localhost:9090
-- **Backend (service-inventory):** http://localhost:9091
-- **BFF:** http://localhost:8080
+- **Frontend:** http://localhost:30080
+- **API Gateway (KrakenD):** http://localhost:8080
+- **BFF:** http://localhost:8081
+- **ms-user:** http://localhost:9090
+- **ms-inventory:** http://localhost:9091
+- **ms-orders:** http://localhost:9092
+- **ms-restock:** http://localhost:9093
 
-## Servicios pendientes de implementar
+### Levantar servicios individualmente (desarrollo local)
 
-Los siguientes servicios están estructurados en el repositorio pero aún no tienen código (contienen únicamente un `dummy.txt`):
+Cada microservicio requiere su propia base de datos PostgreSQL corriendo. Los puertos de host para las bases de datos en Docker son:
 
-| Servicio | Descripción esperada |
+| Base de datos | Puerto host |
 |---|---|
-| `bff/` | Backend for Frontend — capa de adaptación entre el gateway y el frontend |
-| `service-inventory/` | Microservicio de gestión de inventario |
-| `service-orders/` | Microservicio de gestión de órdenes |
-| `service-restock/` | Microservicio de reposición de stock |
+| `userdb` | 5432 |
+| `inventorydb` | 5433 |
+| `ordersdb` | 5434 |
+| `restockdb` | 5435 |
 
-Kafka ya está disponible en la infraestructura Docker, preparado para la comunicación asíncrona entre estos microservicios cuando sean implementados.
+```bash
+# Levantar solo las bases de datos
+docker compose up user-db inventory-db orders-db restock-db
+
+# Luego en terminales separadas:
+cd backend/ms-user && ./mvnw spring-boot:run
+cd backend/ms-inventory && ./mvnw spring-boot:run
+cd backend/ms-orders && ./mvnw spring-boot:run
+cd backend/ms-restock && ./mvnw spring-boot:run
+cd backend/bff && ./mvnw spring-boot:run
+cd frontend && npm install && npm run dev
+```

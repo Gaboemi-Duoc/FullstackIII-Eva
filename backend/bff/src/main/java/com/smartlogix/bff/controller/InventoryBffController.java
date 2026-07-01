@@ -18,7 +18,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bff/inventory")
-@CrossOrigin(origins = "http://localhost:5173")
 @Tag(name = "Gestion de Inventario", description = "Endpoints for managing warehouse inventory items, stock levels, and pricing")
 public class InventoryBffController {
 

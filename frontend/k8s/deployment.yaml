@@ -24,8 +24,12 @@ spec:
         image: frontend:1.0
         imagePullPolicy: IfNotPresent
         env:
-        - name: BFF_URL
-          value: "http://krakend:8080"
+        # Use the Ingress URL for production
+        - name: VITE_BFF_URL
+          value: "http://smartlogix.local"  # Match your ingress host
+        # Alternative: Use relative path if frontend and API are served from same domain
+        # - name: VITE_BFF_URL
+        #   value: ""
         ports:
         - containerPort: 80
         resources:
