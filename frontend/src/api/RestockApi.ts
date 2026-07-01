@@ -8,6 +8,7 @@ const getAuthHeaders = () => {
   return {
     headers: {
       Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
   };
 };
@@ -48,7 +49,12 @@ export const crearSolicitud = async (solicitud: NewRestockRequest): Promise<Rest
   const response: AxiosResponse<RestockRequest> = await axios.post(
     RESTOCK_API_URL,
     solicitud,
-    getAuthHeaders()
+    {
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+        "Content-Type": "application/json",
+      },
+    }
   );
   return response.data;
 };

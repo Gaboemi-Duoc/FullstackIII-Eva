@@ -9,6 +9,7 @@ const getAuthHeaders = () => {
   return {
     headers: {
       Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
   };
 };
@@ -26,7 +27,12 @@ export const crearOrder = async (order: NewOrder): Promise<Order> => {
   const response: AxiosResponse<Order> = await axios.post(
     ORDERS_API_URL,
     order,
-    getAuthHeaders()
+    {
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+        "Content-Type": "application/json",
+      },
+    }
   );
 
   return response.data;

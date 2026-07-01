@@ -39,18 +39,6 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "250m"
-        livenessProbe:
-          httpGet:
-            path: /__health
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 30
-        readinessProbe:
-          httpGet:
-            path: /__health
-            port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 10
       volumes:
       - name: krakend-config
         configMap:

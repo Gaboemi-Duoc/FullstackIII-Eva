@@ -39,60 +39,62 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
+        // ONLY public endpoints bypass JWT validation
         if (path.equals("/api/bff/users/login")
                 || path.equals("/api/bff/health")
-                || path.startsWith("/api/bff/orders")
+                || path.equals("/api/bff/users/register")
                 || path.startsWith("/swagger-ui")
                 || path.startsWith("/v3/api-docs")
-                || path.equals("/api/bff/users/register")
-                || path.startsWith("/api/bff/inventory")) {
-
-                filterChain.doFilter(request, response);
-                return;
-        }
-        //temporal el inventoy
-        // Obtener header Authorization
-        final String authHeader =
-                request.getHeader("Authorization");
-
-        final String jwt;
-        final String username;
-
-        // Si no existe Bearer token
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-
+                || path.startsWith("/actuator")) {
+            
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Extraer token
-        jwt = authHeader.substring(7);
+        // ALL other endpoints require JWT validation
+        final String authHeader = request.getHeader("Authorization");
 
-        // Extraer username
-        username = jwtService.extractUsername(jwt);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Missing or invalid Authorization header\"}");
+            return;
+        }
 
-        // Si username válido y no autenticado
-        if (username != null &&
-                SecurityContextHolder.getContext().getAuthentication() == null) {
+        try {
+            final String jwt = authHeader.substring(7);
+            final String username = jwtService.extractUsername(jwt);
 
-            // Validar token
-            if (jwtService.isTokenValid(jwt, username)) {
+            if (username != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                username,
-                                null,
-                                Collections.emptyList()
-                        );
+                if (jwtService.isTokenValid(jwt, username)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    username,
+                                    null,
+                                    Collections.emptyList()
+                            );
 
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource()
-                                .buildDetails(request)
-                );
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request)
+                    );
 
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authToken);
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(authToken);
+                } else {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\": \"Invalid JWT token\"}");
+                    return;
+                }
             }
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"JWT validation failed: " + e.getMessage() + "\"}");
+            return;
         }
 
         filterChain.doFilter(request, response);

@@ -29,6 +29,11 @@ public class InventoryController {
         this.inventoryService = inventoryService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<Item>> listarItems() {
+        return ResponseEntity.ok(inventoryService.listarItems());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Item> obtenerItem(@PathVariable @Min(1) Long id) {
         return ResponseEntity.ok(inventoryService.obtenerPorId(id));
