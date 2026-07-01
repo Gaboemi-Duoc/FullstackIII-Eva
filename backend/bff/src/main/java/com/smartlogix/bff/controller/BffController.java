@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.smartlogix.bff.dto.DtoApiResponse;
 
+import io.sentry.Sentry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -55,5 +56,15 @@ public class BffController {
     public ResponseEntity<DtoApiResponse<String>> healthCheck() {
         log.debug("BFF: Health check requested");
         return ResponseEntity.ok(new DtoApiResponse<>(true, "BFF is running", "OK", 200));
+    }
+
+    @GetMapping("/test-error")
+    public String testError() {
+        try {
+            throw new Exception("This is a test error from Spring Boot!");
+        } catch (Exception e) {
+            Sentry.captureException(e);
+            return "Error sent to GlitchTip!";
+        }
     }
 }
