@@ -3,17 +3,12 @@ import axios, { AxiosResponse } from "axios";
 import type { Item, NewItem } from "../types";
 import { getApiUrl } from "./ApiConfig";
 
-export interface AuthHeaders {
-  headers: {
-    Authorization: string;
-  };
-}
-
-const getAuthHeaders = (): AuthHeaders => {
+const getAuthHeaders = () => {
   const token = localStorage.getItem("authToken");
   return {
     headers: {
-      Authorization: `Bearer ${token}`,
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
   };
 };
@@ -49,7 +44,12 @@ export const crearItem = async (item: NewItem): Promise<Item> => {
   const response: AxiosResponse<Item> = await axios.post(
     INVENTORY_API_URL,
     item,
-    getAuthHeaders()
+    {
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+        "Content-Type": "application/json",
+      },
+    }
   );
   return response.data;
 };

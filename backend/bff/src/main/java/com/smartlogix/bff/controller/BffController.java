@@ -10,10 +10,8 @@ import com.smartlogix.bff.dto.DtoApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -55,5 +53,16 @@ public class BffController {
     public ResponseEntity<DtoApiResponse<String>> healthCheck() {
         log.debug("BFF: Health check requested");
         return ResponseEntity.ok(new DtoApiResponse<>(true, "BFF is running", "OK", 200));
+    }
+
+    @GetMapping("/log-test")
+    public ResponseEntity<DtoApiResponse<String>> testLogging() {
+        log.trace("TRACE log message");
+        log.debug("DEBUG log message");
+        log.info("INFO log message");
+        log.warn("WARN log message");
+        log.error("ERROR log message");
+        
+        return ResponseEntity.ok(new DtoApiResponse<>(true, "Log levels tested", "Logs sent to GlitchTip", 200));
     }
 }
