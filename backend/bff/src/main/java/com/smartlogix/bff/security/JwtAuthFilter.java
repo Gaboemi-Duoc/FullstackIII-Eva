@@ -41,7 +41,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         // ONLY public endpoints bypass JWT validation
         if (path.equals("/api/bff/users/login")
-                || path.equals("/api/bff/test-error")
+                || path.equals("/api/bff/log-test")
                 || path.equals("/api/bff/health")
                 || path.equals("/api/bff/users/register")
                 || path.startsWith("/swagger-ui")
