@@ -1,28 +1,28 @@
 {
   "version": 3,
-  "timeout": "30s",
-  "cache_ttl": "300s",
   "name": "SmartLogix API Gateway",
   "port": 8080,
+  "timeout": "10s",
+  "cache_ttl": "0s",
+  "output_encoding": "no-op",
+  "host": ["http://bff:8081"],
+
   "extra_config": {
-    "github_com/devopsfaith/krakend-gologging": {
+    "security/cors": {
+      "allow_origins": [
+        "*"
+      ],
+      "allow_methods": ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      "allow_headers": ["Origin", "Authorization", "Content-Type", "Accept"],
+      "expose_headers": ["Content-Length"],
+      "max_age": "12h",
+      "allow_credentials": true
+    },
+    "telemetry/logging": {
       "level": "DEBUG",
       "prefix": "[KRAKEND]",
       "syslog": false,
-      "stdout": true,
-      "format": "default"
-    },
-    "github_com/devopsfaith/krakend-cors": {
-      "allow_origins": [
-        "http://localhost:5173",
-        "http://localhost:30080",
-        "http://localhost:8080",
-        "http://smartlogix.local"
-      ],
-      "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      "allow_headers": ["Content-Type", "Authorization", "Accept"],
-      "expose_headers": ["Content-Length", "Authorization"],
-      "max_age": "3600"
+      "stdout": true
     }
   },
   "endpoints": [
@@ -34,7 +34,23 @@
         {
           "url_pattern": "/api/bff/health",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/bff/log-test",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/api/bff/log-test",
+          "host": ["http://bff:8081"],
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -47,7 +63,8 @@
           "url_pattern": "/api/bff/users/login",
           "host": ["http://bff:8081"],
           "encoding": "json",
-          "method": "POST"
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -60,21 +77,22 @@
           "url_pattern": "/api/bff/users/register",
           "host": ["http://bff:8081"],
           "encoding": "json",
-          "method": "POST"
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
     {
-      "endpoint": "/api/bff/users/{id}/username",
-      "method": "PUT",
+      "endpoint": "/api/bff/jwks",
+      "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
-          "url_pattern": "/api/bff/users/{id}/username",
+          "url_pattern": "/api/bff/jwks",
           "host": ["http://bff:8081"],
           "encoding": "json",
-          "method": "PUT"
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -82,25 +100,41 @@
       "endpoint": "/api/bff/users/{id}",
       "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/users/{id}",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/bff/users/{id}/username",
+      "method": "PUT",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/api/bff/users/{id}/username",
+          "host": ["http://bff:8081"],
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
     {
       "endpoint": "/api/bff/inventory",
       "method": "GET",
-      "output_encoding": "no-op",
-      "input_headers": ["Authorization"],
+      "output_encoding": "json",
       "backend": [
         {
           "url_pattern": "/api/bff/inventory",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -108,12 +142,13 @@
       "endpoint": "/api/bff/inventory/{id}",
       "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/inventory/{id}",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -121,12 +156,13 @@
       "endpoint": "/api/bff/inventory/stock-bajo",
       "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/inventory/stock-bajo",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -134,13 +170,13 @@
       "endpoint": "/api/bff/inventory",
       "method": "POST",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/inventory",
           "host": ["http://bff:8081"],
           "encoding": "json",
-          "method": "POST"
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -148,13 +184,13 @@
       "endpoint": "/api/bff/inventory/{id}/cantidad",
       "method": "PUT",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/inventory/{id}/cantidad",
           "host": ["http://bff:8081"],
           "encoding": "json",
-          "method": "PUT"
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -162,13 +198,13 @@
       "endpoint": "/api/bff/inventory/{id}/precio",
       "method": "PUT",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/inventory/{id}/precio",
           "host": ["http://bff:8081"],
           "encoding": "json",
-          "method": "PUT"
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -176,13 +212,13 @@
       "endpoint": "/api/bff/inventory/{id}",
       "method": "DELETE",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/inventory/{id}",
           "host": ["http://bff:8081"],
           "encoding": "json",
-          "method": "DELETE"
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -190,12 +226,13 @@
       "endpoint": "/api/bff/orders",
       "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/orders",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -203,12 +240,13 @@
       "endpoint": "/api/bff/orders/{id}",
       "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/orders/{id}",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -216,13 +254,13 @@
       "endpoint": "/api/bff/orders",
       "method": "POST",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/orders",
           "host": ["http://bff:8081"],
           "encoding": "json",
-          "method": "POST"
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -230,13 +268,13 @@
       "endpoint": "/api/bff/orders/{id}/status",
       "method": "PUT",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/orders/{id}/status",
           "host": ["http://bff:8081"],
           "encoding": "json",
-          "method": "PUT"
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -244,12 +282,13 @@
       "endpoint": "/api/bff/orders/status/{status}",
       "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/orders/status/{status}",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -257,13 +296,13 @@
       "endpoint": "/api/bff/orders/{id}",
       "method": "DELETE",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/orders/{id}",
           "host": ["http://bff:8081"],
           "encoding": "json",
-          "method": "DELETE"
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -271,12 +310,13 @@
       "endpoint": "/api/bff/restock",
       "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/restock",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -284,12 +324,13 @@
       "endpoint": "/api/bff/restock/{id}",
       "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/restock/{id}",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -297,12 +338,13 @@
       "endpoint": "/api/bff/restock/estado",
       "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/restock/estado",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -310,12 +352,13 @@
       "endpoint": "/api/bff/restock/item/{id_item}",
       "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/restock/item/{id_item}",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -323,12 +366,13 @@
       "endpoint": "/api/bff/restock/bodega",
       "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/restock/bodega",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -336,12 +380,13 @@
       "endpoint": "/api/bff/restock/bodega/pendientes",
       "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/restock/bodega/pendientes",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -349,12 +394,13 @@
       "endpoint": "/api/bff/restock/resumen",
       "method": "GET",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/restock/resumen",
           "host": ["http://bff:8081"],
-          "encoding": "json"
+          "encoding": "json",
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -362,13 +408,13 @@
       "endpoint": "/api/bff/restock",
       "method": "POST",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/restock",
           "host": ["http://bff:8081"],
           "encoding": "json",
-          "method": "POST"
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -376,13 +422,13 @@
       "endpoint": "/api/bff/restock/{id}/estado",
       "method": "PUT",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/restock/{id}/estado",
           "host": ["http://bff:8081"],
           "encoding": "json",
-          "method": "PUT"
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     },
@@ -390,126 +436,13 @@
       "endpoint": "/api/bff/restock/{id}",
       "method": "DELETE",
       "output_encoding": "json",
-      "input_headers": ["Authorization"],
       "backend": [
         {
           "url_pattern": "/api/bff/restock/{id}",
           "host": ["http://bff:8081"],
           "encoding": "json",
-          "method": "DELETE"
-        }
-      ]
-    },
-    {
-      "endpoint": "/api/restock",
-      "method": "GET",
-      "output_encoding": "json",
-      "backend": [
-        {
-          "url_pattern": "/api/restock",
-          "host": ["http://ms-restock:9093"]
-        }
-      ]
-    },
-    {
-      "endpoint": "/api/restock/{id}",
-      "method": "GET",
-      "output_encoding": "json",
-      "backend": [
-        {
-          "url_pattern": "/api/restock/{id}",
-          "host": ["http://ms-restock:9093"]
-        }
-      ]
-    },
-    {
-      "endpoint": "/api/restock/estado",
-      "method": "GET",
-      "output_encoding": "json",
-      "backend": [
-        {
-          "url_pattern": "/api/restock/estado",
-          "host": ["http://ms-restock:9093"]
-        }
-      ]
-    },
-    {
-      "endpoint": "/api/restock/resumen",
-      "method": "GET",
-      "output_encoding": "json",
-      "backend": [
-        {
-          "url_pattern": "/api/restock/resumen",
-          "host": ["http://ms-restock:9093"]
-        }
-      ]
-    },
-    {
-      "endpoint": "/api/restock/item/{id_item}",
-      "method": "GET",
-      "output_encoding": "json",
-      "backend": [
-        {
-          "url_pattern": "/api/restock/item/{id_item}",
-          "host": ["http://ms-restock:9093"]
-        }
-      ]
-    },
-    {
-      "endpoint": "/api/restock/bodega",
-      "method": "GET",
-      "output_encoding": "json",
-      "backend": [
-        {
-          "url_pattern": "/api/restock/bodega",
-          "host": ["http://ms-restock:9093"]
-        }
-      ]
-    },
-    {
-      "endpoint": "/api/restock/bodega/pendientes",
-      "method": "GET",
-      "output_encoding": "json",
-      "backend": [
-        {
-          "url_pattern": "/api/restock/bodega/pendientes",
-          "host": ["http://ms-restock:9093"]
-        }
-      ]
-    },
-    {
-      "endpoint": "/api/restock",
-      "method": "POST",
-      "output_encoding": "json",
-      "backend": [
-        {
-          "url_pattern": "/api/restock",
-          "host": ["http://ms-restock:9093"],
-          "method": "POST"
-        }
-      ]
-    },
-    {
-      "endpoint": "/api/restock/{id}/estado",
-      "method": "PUT",
-      "output_encoding": "json",
-      "backend": [
-        {
-          "url_pattern": "/api/restock/{id}/estado",
-          "host": ["http://ms-restock:9093"],
-          "method": "PUT"
-        }
-      ]
-    },
-    {
-      "endpoint": "/api/restock/{id}",
-      "method": "DELETE",
-      "output_encoding": "json",
-      "backend": [
-        {
-          "url_pattern": "/api/restock/{id}",
-          "host": ["http://ms-restock:9093"],
-          "method": "DELETE"
+          "sd": "static",
+          "disable_host_sanitize": true
         }
       ]
     }

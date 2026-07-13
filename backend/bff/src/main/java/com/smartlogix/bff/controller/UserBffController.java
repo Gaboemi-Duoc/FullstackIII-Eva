@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/bff/users")
 @Tag(
     name = "User Management",
