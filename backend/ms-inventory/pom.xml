@@ -77,6 +77,22 @@
         <artifactId>lombok</artifactId>
         <optional>true</optional>
     </dependency>
+<!-- Logging -->
+    <dependency>
+        <groupId>io.sentry</groupId>
+        <artifactId>sentry-spring-boot-4</artifactId>
+        <version>8.46.0</version>
+    </dependency>
+    <dependency>
+        <groupId>io.sentry</groupId>
+        <artifactId>sentry-logback</artifactId>
+        <version>8.46.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-aop</artifactId>
+        <version>LATEST</version>
+    </dependency>
 
     <dependency>
         <groupId>org.springdoc</groupId>
@@ -93,6 +109,11 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-test</artifactId>
         <scope>test</scope>
+    </dependency>
+    <dependency>
+    <groupId>io.sentry</groupId>
+    <artifactId>sentry-spring-boot-starter-jakarta</artifactId>
+    <version>7.14.0</version>
     </dependency>
 
 </dependencies>
