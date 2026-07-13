@@ -22,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/bff/orders")
+@CrossOrigin(origins = "*")
 @Tag(name = "Order Management", description = "Endpoints for managing orders in the SmartLogix logistics platform")
 public class OrdersBffController {
 

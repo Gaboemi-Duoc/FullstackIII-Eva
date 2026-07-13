@@ -19,6 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bff/restock")
+@CrossOrigin(origins = "*")
 @Tag(name = "Restock Management", description = "Endpoints for managing stock replenishment requests in the SmartLogix logistics platform")
 public class RestockBffController {
 
