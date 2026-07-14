@@ -5,8 +5,6 @@ metadata:
   namespace: smartlogix
   labels:
     app: ms-restock
-    service: backend
-    component: restock-service
 spec:
   replicas: 1
   selector:
@@ -16,40 +14,52 @@ spec:
     metadata:
       labels:
         app: ms-restock
-        service: backend
-        component: restock-service
     spec:
+      initContainers:
+        - name: wait-for-db
+          image: postgres:15-alpine
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h postgres-restock -p 5432 -U restock; do
+                echo "waiting for postgres-restock...";
+                sleep 2;
+              done
       containers:
-      - name: ms-restock
-        image: ms-restock:1.0
-        imagePullPolicy: IfNotPresent
-        env:
-        - name: SPRING_DATASOURCE_URL
-          value: "jdbc:postgresql://restock-db:5432/restockdb"
-        - name: SPRING_DATASOURCE_USERNAME
-          value: "restock"
-        - name: SPRING_DATASOURCE_PASSWORD
-          value: "restockpass123"
-        - name: INVENTORY_SERVICE_URL
-          value: "http://ms-inventory:9091"
-        ports:
-        - containerPort: 9093
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 9093
-          initialDelaySeconds: 60
-          periodSeconds: 30
-        readinessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 9093
-          initialDelaySeconds: 30
-          periodSeconds: 10
+        - name: ms-restock
+          # Build & push this image from ./backend/ms-restock, or load it directly
+          # into your local cluster (kind load docker-image / minikube image load).
+          image: smartlogix/ms-restock:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9093
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres-restock:5432/restockdb"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "restock"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: smartlogix-secrets
+                  key: POSTGRES_RESTOCK_PASSWORD
+            - name: INVENTORY_SERVICE_URL
+              value: "http://inventory-service:9091"
+          readinessProbe:
+            tcpSocket:
+              port: 9093
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 9093
+            initialDelaySeconds: 45
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 750m
+              memory: 768Mi

@@ -2,6 +2,10 @@ FROM node:22-alpine AS build
 
 WORKDIR /app
 
+# Accept build argument and make it available during build
+ARG VITE_BFF_URL
+ENV VITE_BFF_URL=$VITE_BFF_URL
+
 RUN npm install -g pnpm
 
 COPY package*.json ./

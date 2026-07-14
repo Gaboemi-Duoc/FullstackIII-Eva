@@ -5,8 +5,6 @@ metadata:
   namespace: smartlogix
   labels:
     app: ms-user
-    service: backend
-    component: user-service
 spec:
   replicas: 1
   selector:
@@ -16,54 +14,55 @@ spec:
     metadata:
       labels:
         app: ms-user
-        service: backend
-        component: user-service
     spec:
+      initContainers:
+        - name: wait-for-db
+          image: postgres:15-alpine
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h postgres-user -p 5432 -U user; do
+                echo "waiting for postgres-user...";
+                sleep 2;
+              done
       containers:
-      - name: ms-user
-        image: ms-user:1.0
-        imagePullPolicy: IfNotPresent
-        env:
-        - name: SPRING_DATASOURCE_URL
-          value: "jdbc:postgresql://user-db:5432/userdb"
-        - name: SPRING_DATASOURCE_USERNAME
-          value: "user"
-        - name: SPRING_DATASOURCE_PASSWORD
-          value: "userpass123"
-        - name: BREVO_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: brevo-secrets
-              key: api-key
-              optional: true
-        - name: BREVO_SENDER_EMAIL
-          value: "noreply@smartlogix.com"
-        - name: SPRING_PROFILES_ACTIVE
-          value: "kubernetes"
-        ports:
-        - containerPort: 9090
-          name: http
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
-        # Use a simpler health check if actuator isn't available
-        livenessProbe:
-          httpGet:
-            path: /api/users/health  # Use a custom health endpoint instead
-            port: 9090
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /api/users/health  # Use a custom health endpoint instead
-            port: 9090
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
+        - name: ms-user
+          # Build & push this image from ./backend/ms-user, or load it directly
+          # into your local cluster (kind load docker-image / minikube image load).
+          image: smartlogix/ms-user:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9090
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres-user:5432/userdb"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "user"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: smartlogix-secrets
+                  key: POSTGRES_USER_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: smartlogix-secrets
+                  key: JWT_SECRET
+          readinessProbe:
+            tcpSocket:
+              port: 9090
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 9090
+            initialDelaySeconds: 45
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 750m
+              memory: 768Mi

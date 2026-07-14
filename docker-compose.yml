@@ -1,9 +1,8 @@
 services:
-  # ========== DATABASES ==========
-  
-  user-db:
-    image: postgres:17-alpine
-    container_name: user-db
+  # ============= DATABASES =============
+  postgres-user:
+    image: postgres:15-alpine
+    container_name: postgres-user
     environment:
       POSTGRES_DB: userdb
       POSTGRES_USER: user
@@ -11,18 +10,18 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - user-db-data:/var/lib/postgresql/data
+      - postgres-user-data:/var/lib/postgresql/data
     networks:
-      - app-network
+      - smartlogix-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d userdb"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  inventory-db:
-    image: postgres:17-alpine
-    container_name: inventory-db
+  postgres-inventory:
+    image: postgres:15-alpine
+    container_name: postgres-inventory
     environment:
       POSTGRES_DB: inventorydb
       POSTGRES_USER: inventory
@@ -30,37 +29,18 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - inventory-db-data:/var/lib/postgresql/data
+      - postgres-inventory-data:/var/lib/postgresql/data
     networks:
-      - app-network
+      - smartlogix-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U inventory -d inventorydb"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  restock-db:
-    image: postgres:17-alpine
-    container_name: restock-db
-    environment:
-      POSTGRES_DB: restockdb
-      POSTGRES_USER: restock
-      POSTGRES_PASSWORD: restockpass123
-    ports:
-      - "5435:5432"
-    volumes:
-      - restock-db-data:/var/lib/postgresql/data
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U restock -d restockdb"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  orders-db:
-    image: postgres:17-alpine
-    container_name: orders-db
+  postgres-orders:
+    image: postgres:15-alpine
+    container_name: postgres-orders
     environment:
       POSTGRES_DB: ordersdb
       POSTGRES_USER: orders
@@ -68,177 +48,150 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - orders-db-data:/var/lib/postgresql/data
+      - postgres-orders-data:/var/lib/postgresql/data
     networks:
-      - app-network
+      - smartlogix-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U orders -d ordersdb"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # ========== BACKEND SERVICES ==========
+  postgres-restock:
+    image: postgres:15-alpine
+    container_name: postgres-restock
+    environment:
+      POSTGRES_DB: restockdb
+      POSTGRES_USER: restock
+      POSTGRES_PASSWORD: restockpass123
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres-restock-data:/var/lib/postgresql/data
+    networks:
+      - smartlogix-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U restock -d restockdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # ============= BACKEND MICROSERVICES =============
   ms-user:
-    image: ms-user:1.0
-    container_name: ms-user
     build:
       context: ./backend/ms-user
       dockerfile: Dockerfile
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://user-db:5432/userdb
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: userpass123
-      BREVO_API_KEY: ${BREVO_API_KEY}
-      BREVO_SENDER_EMAIL: ${BREVO_SENDER_EMAIL}
+    container_name: ms-user
     ports:
       - "9090:9090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-user:5432/userdb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: userpass123
     depends_on:
-      user-db:
+      postgres-user:
         condition: service_healthy
     networks:
-      - app-network
-    restart: on-failure
+      smartlogix-network:
+        aliases:
+          - user-service
 
   ms-inventory:
-    image: ms-inventory:1.0
-    container_name: ms-inventory
     build:
       context: ./backend/ms-inventory
       dockerfile: Dockerfile
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://inventory-db:5432/inventorydb
-      SPRING_DATASOURCE_USERNAME: inventory
-      SPRING_DATASOURCE_PASSWORD: inventorypass123
+    container_name: ms-inventory
     ports:
       - "9091:9091"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-inventory:5432/inventorydb
+      SPRING_DATASOURCE_USERNAME: inventory
+      SPRING_DATASOURCE_PASSWORD: inventorypass123
+      INVENTORY_SERVICE_URL: http://ms-inventory:9091
     depends_on:
-      inventory-db:
+      postgres-inventory:
         condition: service_healthy
     networks:
-      - app-network
-    restart: on-failure
+      smartlogix-network:
+        aliases:
+          - inventory-service
 
   ms-orders:
-    image: ms-orders:1.0
-    container_name: ms-orders
     build:
       context: ./backend/ms-orders
       dockerfile: Dockerfile
-    environment:
-      # Assuming orders service uses its own database
-      SPRING_DATASOURCE_URL: jdbc:postgresql://orders-db:5432/ordersdb
-      SPRING_DATASOURCE_USERNAME: orders
-      SPRING_DATASOURCE_PASSWORD: orderspass123
-      # Dependencies on other services
-      USER_SERVICE_URL: http://ms-user:9090
-      INVENTORY_SERVICE_URL: http://ms-inventory:9091
+    container_name: ms-orders
     ports:
       - "9092:9092"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-orders:5432/ordersdb
+      SPRING_DATASOURCE_USERNAME: orders
+      SPRING_DATASOURCE_PASSWORD: orderspass123
+      ORDERS_SERVICE_URL: http://ms-orders:9092
     depends_on:
-      - ms-user
-      - ms-inventory
+      postgres-orders:
+        condition: service_healthy
     networks:
-      - app-network
-    restart: on-failure
+      smartlogix-network:
+        aliases:
+          - orders-service
 
   ms-restock:
-    image: ms-restock:1.0
-    container_name: ms-restock
     build:
       context: ./backend/ms-restock
       dockerfile: Dockerfile
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://restock-db:5432/restockdb
-      SPRING_DATASOURCE_USERNAME: restock
-      SPRING_DATASOURCE_PASSWORD: restockpass123
-      INVENTORY_SERVICE_URL: http://ms-inventory:9091
+    container_name: ms-restock
     ports:
       - "9093:9093"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-restock:5432/restockdb
+      SPRING_DATASOURCE_USERNAME: restock
+      SPRING_DATASOURCE_PASSWORD: restockpass123
+      RESTOCK_SERVICE_URL: http://ms-restock:9093
+      INVENTORY_SERVICE_URL: http://inventory-service:9091
     depends_on:
-      restock-db:
+      postgres-restock:
         condition: service_healthy
     networks:
-      - app-network
-    restart: on-failure
+      smartlogix-network:
+        aliases:
+          - restock-service
 
-  # ========== BFF (Backend for Frontend) ==========
-
+  # ============= BFF (KRAKEND API GATEWAY) =============
   bff:
-    image: bff:1.0
-    container_name: bff
     build:
       context: ./backend/bff
       dockerfile: Dockerfile
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      USER_SERVICE_URL: http://ms-user:9090
-      INVENTORY_SERVICE_URL: http://ms-inventory:9091
-      # Add these if your BFF also needs orders/restock
-      ORDERS_SERVICE_URL: http://ms-orders:9092
-      RESTOCK_SERVICE_URL: http://ms-restock:9093
-      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+    container_name: bff
     ports:
-      - "8081:8081"
+      - "8080:8080"
     depends_on:
       - ms-user
       - ms-inventory
       - ms-orders
       - ms-restock
     networks:
-      - app-network
-    restart: on-failure
+      - smartlogix-network
 
-  # ========== FRONTEND ==========
-
+  # ============= FRONTEND =============
   frontend:
-    image: frontend:1.0
-    container_name: frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    container_name: frontend
     ports:
-      - "30080:80"
-    environment:
-      BFF_URL: http://krakend:8080    # Ahora apunta al gateway
-    depends_on:
-      - krakend                         # Depende del gateway, no directamente del BFF
-    networks:
-      - app-network
-    restart: on-failure
-
-  # ========== API GATEWAY ==========
-
-  krakend:
-    image: krakend:latest
-    container_name: krakend
-    ports:
-      - "8080:8080"      # Gateway principal
-      - "8090:8090"      # Admin endpoint (opcional)
-    volumes:
-      - ./krakend/krakend.json:/etc/krakend/krakend.json
-    networks:
-      - app-network
+      - "80:80"
     depends_on:
       - bff
-    restart: on-failure
-    environment:
-      FC_ENABLE: "1"
-    command:
-      - "run"
-      - "-c"
-      - "/etc/krakend/krakend.json"
-
-# ========== VOLUMES ==========
-
-volumes:
-  user-db-data:
-  inventory-db-data:
-  orders-db-data:
-  restock-db-data:
-
-# ========== NETWORKS ==========
+    networks:
+      - smartlogix-network
 
 networks:
-  app-network:
+  smartlogix-network:
     driver: bridge
+
+volumes:
+  postgres-user-data:
+  postgres-inventory-data:
+  postgres-orders-data:
+  postgres-restock-data:

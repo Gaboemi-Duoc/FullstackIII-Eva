@@ -231,8 +231,8 @@ const Inventory = () => {
 
             <tbody>
               {items.map((item) => (
-                <tr key={item.id_item}>
-                  <td>{item.id_item}</td>
+                <tr key={item.id}>
+                  <td>{item.id}</td>
                   <td>{item.nombre}</td>
                   <td>{item.descripcion}</td>
                   <td>{item.cantidad}</td>
@@ -242,21 +242,21 @@ const Inventory = () => {
                   <td>
                     <button
                       className="small-btn"
-                      onClick={() => handleActualizarCantidad(item.id_item)}
+                      onClick={() => handleActualizarCantidad(item.id)}
                     >
                       Cantidad
                     </button>
 
                     <button
                       className="small-btn"
-                      onClick={() => handleActualizarPrecio(item.id_item)}
+                      onClick={() => handleActualizarPrecio(item.id)}
                     >
                       Precio
                     </button>
 
                     <button
                       className="small-btn danger"
-                      onClick={() => handleEliminar(item.id_item)}
+                      onClick={() => handleEliminar(item.id)}
                     >
                       Eliminar
                     </button>

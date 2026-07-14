@@ -41,7 +41,7 @@ class InventoryServiceApplicationTests {
     @BeforeEach
     void setUp() {
         itemMock = new Item();
-        itemMock.setId_item(1L);
+        itemMock.setId(1L);
         itemMock.setNombre("Caja A");
         itemMock.setDescripcion("Caja de prueba");
         itemMock.setCantidad(100);
@@ -69,7 +69,7 @@ class InventoryServiceApplicationTests {
         Item resultado = inventoryService.obtenerPorId(1L);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getId_item());
+        assertEquals(1L, resultado.getId());
     }
 
     @Test
@@ -141,7 +141,7 @@ class InventoryServiceApplicationTests {
     @DisplayName("itemsConStockBajo: retorna items con cantidad menor al umbral")
     void itemsConStockBajo_retornaItemsFiltrados() {
         Item itemBajoStock = new Item();
-        itemBajoStock.setId_item(2L);
+        itemBajoStock.setId(2L);
         itemBajoStock.setNombre("Caja B");
         itemBajoStock.setCantidad(5);
         itemBajoStock.setPrecio(500.0);

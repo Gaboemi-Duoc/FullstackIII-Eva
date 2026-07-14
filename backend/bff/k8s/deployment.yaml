@@ -5,8 +5,6 @@ metadata:
   namespace: smartlogix
   labels:
     app: bff
-    service: backend
-    component: bff-service
 spec:
   replicas: 1
   selector:
@@ -16,60 +14,42 @@ spec:
     metadata:
       labels:
         app: bff
-        service: backend
-        component: bff-service
     spec:
       containers:
-      - name: bff
-        image: bff:1.0
-        imagePullPolicy: IfNotPresent
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: "docker"
-        - name: USER_SERVICE_URL
-          value: "http://ms-user:9090"
-        - name: INVENTORY_SERVICE_URL
-          value: "http://ms-inventory:9091"
-        - name: ORDERS_SERVICE_URL
-          value: "http://ms-orders:9092"
-        - name: RESTOCK_SERVICE_URL
-          value: "http://ms-restock:9093"
-        - name: JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: jwt-secret
-              key: secret
-        - name: SPRING_APPLICATION_NAME
-          value: "bff-service"
-        - name: SERVER_PORT
-          value: "8081"
-        ports:
-        - containerPort: 8081
-          name: http
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /api/bff/health
-            port: 8081
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /api/bff/health
-            port: 8081
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        lifecycle:
-          preStop:
-            exec:
-              command: ["/bin/sh", "-c", "sleep 10"]
+        - name: bff
+          # Build & push from ./backend/bff, or load directly into your local cluster.
+          image: smartlogix/bff:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            # These shadow whatever krakend.json/jwk.json the Dockerfile COPY'd in,
+            # so you can change routing/JWT config by editing the ConfigMap and
+            # doing a rollout restart -- no image rebuild needed.
+            - name: bff-config
+              mountPath: /etc/krakend/krakend.json
+              subPath: krakend.json
+            - name: bff-config
+              mountPath: /etc/krakend/jwk.json
+              subPath: jwk.json
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
+        - name: bff-config
+          configMap:
+            name: bff-config

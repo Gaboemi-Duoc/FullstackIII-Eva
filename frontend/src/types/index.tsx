@@ -12,7 +12,7 @@ export interface LoginCredentials {
 
 // Inventory types
 export interface Item {
-  id_item: number;
+  id: number;
   nombre: string;
   descripcion: string;
   cantidad: number;
