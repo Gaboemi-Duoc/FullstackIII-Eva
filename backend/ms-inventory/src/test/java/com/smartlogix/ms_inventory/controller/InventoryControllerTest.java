@@ -38,7 +38,7 @@ class InventoryControllerTest {
     @BeforeEach
     void setUp() {
         itemMock = new Item();
-        itemMock.setId_item(1L);
+        itemMock.setId(1L);
         itemMock.setNombre("Caja A");
         itemMock.setCantidad(100);
         itemMock.setPrecio(1500.0);

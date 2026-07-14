@@ -92,7 +92,9 @@ services:
       postgres-user:
         condition: service_healthy
     networks:
-      - smartlogix-network
+      smartlogix-network:
+        aliases:
+          - user-service
 
   ms-inventory:
     build:
@@ -110,7 +112,9 @@ services:
       postgres-inventory:
         condition: service_healthy
     networks:
-      - smartlogix-network
+      smartlogix-network:
+        aliases:
+          - inventory-service
 
   ms-orders:
     build:
@@ -128,7 +132,9 @@ services:
       postgres-orders:
         condition: service_healthy
     networks:
-      - smartlogix-network
+      smartlogix-network:
+        aliases:
+          - orders-service
 
   ms-restock:
     build:
@@ -146,39 +152,23 @@ services:
       postgres-restock:
         condition: service_healthy
     networks:
-      - smartlogix-network
+      smartlogix-network:
+        aliases:
+          - restock-service
 
-  # ============= BFF SERVICE =============
+  # ============= BFF (KRAKEND API GATEWAY) =============
   bff:
     build:
       context: ./backend/bff
       dockerfile: Dockerfile
     container_name: bff
     ports:
-      - "8081:8081"
-    environment:
-      USER_SERVICE_URL: http://ms-user:9090
-      INVENTORY_SERVICE_URL: http://ms-inventory:9091
-      ORDERS_SERVICE_URL: http://ms-orders:9092
-      RESTOCK_SERVICE_URL: http://ms-restock:9093
+      - "8080:8080"
     depends_on:
       - ms-user
       - ms-inventory
       - ms-orders
       - ms-restock
-    networks:
-      - smartlogix-network
-
-  # ============= KRAKEND API GATEWAY =============
-  krakend:
-    build:
-      context: ./krakend
-      dockerfile: Dockerfile
-    container_name: krakend
-    ports:
-      - "8080:8080"
-    depends_on:
-      - bff
     networks:
       - smartlogix-network
 
@@ -191,7 +181,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - krakend
+      - bff
     networks:
       - smartlogix-network
 

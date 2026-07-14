@@ -1,22 +1,11 @@
-# Etapa 1: Compilación
-FROM maven:3.9-eclipse-temurin-25 AS build
-WORKDIR /app
+FROM devopsfaith/krakend:2.6
 
-# Copiar pom.xml primero para cachear dependencias
-COPY pom.xml .
-RUN mvn dependency:go-offline
+# Copy configuration
+COPY krakend.json /etc/krakend/krakend.json
+COPY jwk.json /etc/krakend/jwk.json
 
-# Copiar código fuente y compilar
-COPY src ./src
-RUN mvn clean package -DskipTests
+# Expose Krakend port
+EXPOSE 8080
 
-# Etapa 2: Ejecución
-FROM eclipse-temurin:25-jre-alpine
-WORKDIR /app
-
-# Copiar el JAR desde la etapa de compilación
-COPY --from=build /app/target/*.jar app.jar
-
-EXPOSE 8081
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run Krakend
+CMD ["krakend", "run", "-c", "/etc/krakend/krakend.json"]
