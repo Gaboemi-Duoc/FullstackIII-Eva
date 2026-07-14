@@ -21,6 +21,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controlador REST encargado de exponer las operaciones de gestión de usuarios.
+ * <p>
+ * Provee endpoints para el registro, autenticación, consulta, actualización y
+ * eliminación de cuentas de usuario. Las rutas expuestas por este controlador
+ * están bajo el prefijo {@code /api/users}.
+ */
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "*")
@@ -29,10 +36,21 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
+    /**
+     * Crea una nueva instancia del controlador de usuarios.
+     *
+     * @param userService servicio que contiene la lógica de negocio de los usuarios
+     */
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
+    /**
+     * Obtiene un usuario a partir de su identificador único.
+     *
+     * @param id identificador del usuario, debe ser mayor o igual a 1
+     * @return el usuario encontrado envuelto en un {@link ResponseEntity} con estado 200
+     */
     @Operation(summary = "Obtener usuario por id", description = "Retorna un usuario según su identificador único.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
@@ -43,6 +61,12 @@ public class UserController {
         return ResponseEntity.ok(UserResponse.from(userService.obtenerPorId(id)));
     }
 
+    /**
+     * Registra una nueva cuenta de usuario en la plataforma.
+     *
+     * @param request datos necesarios para crear la cuenta (username, email y contraseña)
+     * @return el usuario registrado envuelto en un {@link ResponseEntity} con estado 200
+     */
     @Operation(summary = "Registrar usuario", description = "Crea una nueva cuenta de usuario en la plataforma.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Usuario registrado correctamente"),
@@ -59,6 +83,12 @@ public class UserController {
         return ResponseEntity.ok(UserResponse.from(userService.registrarUsuario(user)));
     }
 
+    /**
+     * Valida las credenciales de un usuario existente para iniciar sesión.
+     *
+     * @param request credenciales de acceso (username y contraseña)
+     * @return el usuario autenticado envuelto en un {@link ResponseEntity} con estado 200
+     */
     @Operation(summary = "Login de usuario", description = "Valida las credenciales de un usuario existente.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Login exitoso"),
@@ -70,6 +100,13 @@ public class UserController {
         return ResponseEntity.ok(UserResponse.from(user));
     }
 
+    /**
+     * Actualiza el nombre de usuario de una cuenta existente.
+     *
+     * @param id identificador del usuario a actualizar, debe ser mayor o igual a 1
+     * @param request datos con el nuevo username a asignar
+     * @return el usuario actualizado envuelto en un {@link ResponseEntity} con estado 200
+     */
     @Operation(summary = "Actualizar username", description = "Modifica el nombre de usuario de una cuenta existente.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Username actualizado correctamente"),
@@ -85,6 +122,12 @@ public class UserController {
         return ResponseEntity.ok(UserResponse.from(userActualizado));
     }
 
+    /**
+     * Elimina una cuenta de usuario a partir de su identificador.
+     *
+     * @param id identificador del usuario a eliminar, debe ser mayor o igual a 1
+     * @return respuesta sin contenido envuelta en un {@link ResponseEntity} con estado 204
+     */
     @Operation(summary = "Eliminar usuario", description = "Elimina una cuenta de usuario según su identificador.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Usuario eliminado correctamente"),

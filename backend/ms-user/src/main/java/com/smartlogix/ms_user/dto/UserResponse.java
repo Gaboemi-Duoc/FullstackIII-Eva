@@ -25,6 +25,13 @@ public class UserResponse {
     @Schema(description = "Correo electrónico del usuario", example = "jperez@example.com")
     private String email;
 
+    /**
+     * Crea un {@link UserResponse} a partir de una entidad {@link User}, omitiendo
+     * cualquier información sensible como la contraseña.
+     *
+     * @param user entidad de usuario de origen
+     * @return un nuevo DTO con los datos públicos del usuario
+     */
     public static UserResponse from(User user) {
         return new UserResponse(user.getId_user(), user.getUsername(), user.getEmail());
     }

@@ -2,11 +2,16 @@ package com.smartlogix.ms_user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * DTO utilizado para recibir las credenciales de acceso al iniciar sesión.
+ */
 public class LoginRequest {
 
+    /** Nombre de usuario de la cuenta. */
     @NotBlank(message = "El username es obligatorio")
     private String username;
 
+    /** Contraseña de la cuenta. */
     @NotBlank(message = "La contraseña es obligatoria")
     private String password;
 

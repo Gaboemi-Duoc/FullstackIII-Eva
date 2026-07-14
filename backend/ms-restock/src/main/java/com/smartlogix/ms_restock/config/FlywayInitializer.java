@@ -22,6 +22,13 @@ public class FlywayInitializer {
     @Autowired
     private Environment environment;
 
+    /**
+     * Ejecuta las migraciones de Flyway sobre la base de datos configurada.
+     * <p>
+     * Se dispara automáticamente cuando la aplicación termina de inicializarse
+     * ({@link ApplicationReadyEvent}), imprimiendo en consola la URL de conexión,
+     * el usuario, la versión actual y el resultado de las migraciones aplicadas.
+     */
     @EventListener(ApplicationReadyEvent.class)
     public void migrateDatabase() {
         System.out.println("=== Iniciando Flyway manualmente ===");

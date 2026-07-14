@@ -10,6 +10,10 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Servicio encargado del envío de correos electrónicos a los usuarios de la plataforma,
+ * utilizando la API transaccional de Brevo (antes Sendinblue).
+ */
 @Service
 public class EmailService {
 
@@ -26,6 +30,16 @@ public class EmailService {
     @Value("${brevo.sender.name:SmartLogix}")
     private String senderName;
 
+    /**
+     * Envía un correo de bienvenida al usuario recién registrado.
+     * <p>
+     * Si la API key de Brevo no está configurada, el envío se omite silenciosamente.
+     * Cualquier error durante el envío se registra en el log pero no se propaga,
+     * para que una falla en el correo no interrumpa el flujo de registro.
+     *
+     * @param destinatario correo electrónico del destinatario
+     * @param username nombre de usuario que se incluirá en el saludo del correo
+     */
     public void enviarCorreoBienvenida(String destinatario, String username) {
         // Skip if API key is not configured
         if (apiKey == null || apiKey.isEmpty()) {

@@ -15,6 +15,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controlador REST encargado de exponer las operaciones de gestión de órdenes.
+ * <p>
+ * Provee endpoints para listar, consultar, crear, actualizar el estado y eliminar
+ * órdenes de pedido. Las rutas expuestas por este controlador están bajo el
+ * prefijo {@code /api/orders}.
+ */
 @RestController
 @RequestMapping("/api/orders")
 @CrossOrigin(origins = "*")
@@ -23,10 +30,20 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    /**
+     * Crea una nueva instancia del controlador de órdenes.
+     *
+     * @param orderService servicio que contiene la lógica de negocio de las órdenes
+     */
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
+    /**
+     * Lista todas las órdenes registradas en el sistema.
+     *
+     * @return listado completo de órdenes envuelto en un {@link ResponseEntity} con estado 200
+     */
     @Operation(summary = "Listar todas las órdenes", description = "Retorna el listado completo de órdenes registradas.")
     @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
     @GetMapping
@@ -34,6 +51,12 @@ public class OrderController {
         return ResponseEntity.ok(orderService.listarOrdenes());
     }
 
+    /**
+     * Obtiene una orden a partir de su identificador único.
+     *
+     * @param id identificador de la orden
+     * @return la orden encontrada envuelta en un {@link ResponseEntity} con estado 200
+     */
     @Operation(summary = "Obtener orden por id", description = "Retorna una orden según su identificador único.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Orden encontrada"),
@@ -44,6 +67,12 @@ public class OrderController {
         return ResponseEntity.ok(orderService.obtenerPorId(id));
     }
 
+    /**
+     * Registra una nueva orden de pedido a partir de los datos recibidos.
+     *
+     * @param request datos necesarios para crear la orden
+     * @return la orden creada envuelta en un {@link ResponseEntity} con estado 200
+     */
     @Operation(summary = "Crear orden", description = "Registra una nueva orden de pedido.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Orden creada correctamente"),
@@ -56,6 +85,13 @@ public class OrderController {
         return ResponseEntity.ok(orderService.crearOrden(request));
     }
 
+    /**
+     * Actualiza el estado de una orden existente (ej. PENDIENTE, ENVIADA, ENTREGADA).
+     *
+     * @param id identificador de la orden a actualizar
+     * @param request datos con el nuevo estado a asignar
+     * @return la orden actualizada envuelta en un {@link ResponseEntity} con estado 200
+     */
     @Operation(summary = "Actualizar estado de una orden", description = "Cambia el estado de una orden existente (ej. PENDIENTE, ENVIADA, ENTREGADA).")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Estado actualizado correctamente"),
@@ -72,6 +108,12 @@ public class OrderController {
         );
     }
 
+    /**
+     * Lista las órdenes que se encuentran en un estado determinado.
+     *
+     * @param status estado por el cual filtrar las órdenes
+     * @return listado de órdenes en el estado indicado, envuelto en un {@link ResponseEntity} con estado 200
+     */
     @Operation(summary = "Listar órdenes por estado", description = "Retorna las órdenes que se encuentran en un estado determinado.")
     @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
     @GetMapping("/status/{status}")
@@ -83,6 +125,12 @@ public class OrderController {
         );
     }
 
+    /**
+     * Elimina una orden a partir de su identificador.
+     *
+     * @param id identificador de la orden a eliminar
+     * @return respuesta sin contenido envuelta en un {@link ResponseEntity} con estado 204
+     */
     @Operation(summary = "Eliminar orden", description = "Elimina una orden según su identificador.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Orden eliminada correctamente"),

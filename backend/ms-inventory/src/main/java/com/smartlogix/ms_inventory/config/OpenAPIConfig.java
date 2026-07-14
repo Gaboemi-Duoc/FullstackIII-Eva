@@ -7,6 +7,12 @@ import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuración de la documentación OpenAPI/Swagger para el microservicio de inventario.
+ * <p>
+ * Define el título, versión, descripción, contacto, licencia y servidores disponibles
+ * que se muestran en la interfaz de Swagger UI.
+ */
 @Configuration
 @OpenAPIDefinition(
     info = @Info(
