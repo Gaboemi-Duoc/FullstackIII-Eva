@@ -72,8 +72,6 @@ public class UserBffService {
     public DtoApiResponse<User> getUserDetails(Long userId) {
         try {
             User user = userServiceClient.getUserById(userId);
-            // Remove sensitive data
-            user.setPassword(null);
             return new DtoApiResponse<>(true, "User found", user, 200);
         } catch (Exception e) {
             log.error("User not found with ID: {}", userId, e);
