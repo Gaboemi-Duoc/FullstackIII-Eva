@@ -279,13 +279,14 @@
     {
       "endpoint": "/api/bff/orders",
       "method": "GET",
-      "output_encoding": "json",
+      "output_encoding": "json-collection",
       "backend": [
         {
           "url_pattern": "/api/orders",
           "host": [
             "http://orders-service:9092"
-          ]
+          ],
+          "is_collection": true
         }
       ],
       "extra_config": {
@@ -383,13 +384,14 @@
     {
       "endpoint": "/api/bff/orders/status/{status}",
       "method": "GET",
-      "output_encoding": "json",
+      "output_encoding": "json-collection",
       "backend": [
         {
           "url_pattern": "/api/orders/status/{status}",
           "host": [
             "http://orders-service:9092"
-          ]
+          ],
+          "is_collection": true
         }
       ],
       "extra_config": {
@@ -435,13 +437,14 @@
     {
       "endpoint": "/api/bff/restock",
       "method": "GET",
-      "output_encoding": "json",
+      "output_encoding": "json-collection",
       "backend": [
         {
           "url_pattern": "/api/restock",
           "host": [
             "http://restock-service:9093"
-          ]
+          ],
+          "is_collection": true
         }
       ],
       "extra_config": {
@@ -487,13 +490,14 @@
     {
       "endpoint": "/api/bff/restock/estado",
       "method": "GET",
-      "output_encoding": "json",
+      "output_encoding": "json-collection",
       "backend": [
         {
           "url_pattern": "/api/restock/estado",
           "host": [
             "http://restock-service:9093"
-          ]
+          ],
+          "is_collection": true
         }
       ],
       "extra_config": {
@@ -513,13 +517,14 @@
     {
       "endpoint": "/api/bff/restock/item/{idItem}",
       "method": "GET",
-      "output_encoding": "json",
+      "output_encoding": "json-collection",
       "backend": [
         {
           "url_pattern": "/api/restock/item/{idItem}",
           "host": [
             "http://restock-service:9093"
-          ]
+          ],
+          "is_collection": true
         }
       ],
       "extra_config": {
@@ -539,13 +544,14 @@
     {
       "endpoint": "/api/bff/restock/bodega",
       "method": "GET",
-      "output_encoding": "json",
+      "output_encoding": "json-collection",
       "backend": [
         {
           "url_pattern": "/api/restock/bodega",
           "host": [
             "http://restock-service:9093"
-          ]
+          ],
+          "is_collection": true
         }
       ],
       "extra_config": {
@@ -565,13 +571,14 @@
     {
       "endpoint": "/api/bff/restock/bodega/pendientes",
       "method": "GET",
-      "output_encoding": "json",
+      "output_encoding": "json-collection",
       "backend": [
         {
           "url_pattern": "/api/restock/bodega/pendientes",
           "host": [
             "http://restock-service:9093"
-          ]
+          ],
+          "is_collection": true
         }
       ],
       "extra_config": {

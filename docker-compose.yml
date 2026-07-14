@@ -148,6 +148,7 @@ services:
       SPRING_DATASOURCE_USERNAME: restock
       SPRING_DATASOURCE_PASSWORD: restockpass123
       RESTOCK_SERVICE_URL: http://ms-restock:9093
+      INVENTORY_SERVICE_URL: http://inventory-service:9091
     depends_on:
       postgres-restock:
         condition: service_healthy
