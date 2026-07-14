@@ -5,21 +5,20 @@ import org.springframework.web.bind.annotation.*;
 
 import com.smartlogix.ms_inventory.model.Item;
 import com.smartlogix.ms_inventory.service.InventoryService;
-
 import com.smartlogix.ms_inventory.dto.CreateItemRequest;
 import com.smartlogix.ms_inventory.dto.UpdateCantidadRequest;
 import com.smartlogix.ms_inventory.dto.UpdatePrecioRequest;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/inventory")
-@CrossOrigin(origins = "*") // <-- CORREGIDO
+@CrossOrigin(origins = "*")
 @Validated
 public class InventoryController {
 
@@ -57,7 +56,7 @@ public class InventoryController {
         item.setCantidad(request.getCantidad());
         item.setPrecio(request.getPrecio());
         item.setBodega(request.getBodega());
-
+        
         return ResponseEntity.ok(inventoryService.crearItem(item));
     }
 
@@ -65,7 +64,6 @@ public class InventoryController {
     public ResponseEntity<Item> actualizarCantidad(
             @PathVariable @Min(1) Long id,
             @Valid @RequestBody UpdateCantidadRequest request) {
-
         return ResponseEntity.ok(inventoryService.actualizarCantidad(id, request.getCantidad()));
     }
 
@@ -73,7 +71,6 @@ public class InventoryController {
     public ResponseEntity<Item> actualizarPrecio(
             @PathVariable @Min(1) Long id,
             @Valid @RequestBody UpdatePrecioRequest request) {
-
         return ResponseEntity.ok(inventoryService.actualizarPrecio(id, request.getPrecio()));
     }
 

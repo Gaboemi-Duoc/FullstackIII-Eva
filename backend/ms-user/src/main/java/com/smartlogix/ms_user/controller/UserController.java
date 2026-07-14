@@ -1,6 +1,7 @@
 package com.smartlogix.ms_user.controller;
 
 import com.smartlogix.ms_user.model.User;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/")
+    public ResponseEntity<List<User>> obtenerListaUsuarios() {
+        return ResponseEntity.ok(userService.listarUsuarios());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<User> obtenerUsuario(@PathVariable @Min(1) Long id) {
         return ResponseEntity.ok(userService.obtenerPorId(id));
@@ -43,9 +49,20 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody LoginRequest request) {
         User user = userService.login(request.getUsername(), request.getPassword());
-        return ResponseEntity.ok(user);
+        String token = userService.generarToken(user);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("id_user", user.getId_user());
+        data.put("username", user.getUsername());
+        data.put("token", token);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("success", true);
+        body.put("data", data);
+
+        return ResponseEntity.ok(body);
     }
 
     @PutMapping("/{id}/username")

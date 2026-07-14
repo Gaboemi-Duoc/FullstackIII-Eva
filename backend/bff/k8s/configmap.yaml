@@ -1,0 +1,745 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bff-config
+  namespace: smartlogix
+data:
+  krakend.json: |
+    {
+      "version": 3,
+      "name": "SmartLogix Gateway",
+      "port": 8080,
+      "cache_ttl": "300s",
+      "timeout": "5000ms",
+      "read_timeout": "6000ms",
+      "write_timeout": "6000ms",
+      "idle_timeout": "120s",
+      "endpoints": [
+        {
+          "endpoint": "/api/bff/users/login",
+          "method": "POST",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/users/login",
+              "host": [
+                "http://user-service:9090"
+              ]
+            }
+          ]
+        },
+        {
+          "endpoint": "/api/bff/users/register",
+          "method": "POST",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/users/register",
+              "host": [
+                "http://user-service:9090"
+              ]
+            }
+          ]
+        },
+        {
+          "endpoint": "/api/bff/users/{id}",
+          "method": "GET",
+          "output_encoding": "json",
+          "input_headers": [
+            "Authorization"
+          ],
+          "backend": [
+            {
+              "url_pattern": "/api/users/{id}",
+              "host": [
+                "http://user-service:9090"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/users/{id}/username",
+          "method": "PUT",
+          "output_encoding": "json",
+          "input_headers": [
+            "Authorization"
+          ],
+          "backend": [
+            {
+              "url_pattern": "/api/users/{id}/username",
+              "host": [
+                "http://user-service:9090"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/inventory",
+          "method": "GET",
+          "output_encoding": "json-collection",
+          "backend": [
+            {
+              "url_pattern": "/api/inventory",
+              "host": [
+                "http://inventory-service:9091"
+              ],
+              "is_collection": true
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/inventory/{id}",
+          "method": "GET",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/inventory/{id}",
+              "host": [
+                "http://inventory-service:9091"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/inventory/stock-bajo",
+          "method": "GET",
+          "output_encoding": "json-collection",
+          "backend": [
+            {
+              "url_pattern": "/api/inventory/stock-bajo",
+              "host": [
+                "http://inventory-service:9091"
+              ],
+              "is_collection": true
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/inventory",
+          "method": "POST",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/inventory",
+              "host": [
+                "http://inventory-service:9091"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/inventory/{id}/cantidad",
+          "method": "PUT",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/inventory/{id}/cantidad",
+              "host": [
+                "http://inventory-service:9091"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/inventory/{id}/precio",
+          "method": "PUT",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/inventory/{id}/precio",
+              "host": [
+                "http://inventory-service:9091"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/inventory/{id}",
+          "method": "DELETE",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/inventory/{id}",
+              "host": [
+                "http://inventory-service:9091"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/orders",
+          "method": "GET",
+          "output_encoding": "json-collection",
+          "backend": [
+            {
+              "url_pattern": "/api/orders",
+              "host": [
+                "http://orders-service:9092"
+              ],
+              "is_collection": true
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/orders/{id}",
+          "method": "GET",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/orders/{id}",
+              "host": [
+                "http://orders-service:9092"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/orders",
+          "method": "POST",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/orders",
+              "host": [
+                "http://orders-service:9092"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/orders/{id}/status",
+          "method": "PUT",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/orders/{id}/status",
+              "host": [
+                "http://orders-service:9092"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/orders/status/{status}",
+          "method": "GET",
+          "output_encoding": "json-collection",
+          "backend": [
+            {
+              "url_pattern": "/api/orders/status/{status}",
+              "host": [
+                "http://orders-service:9092"
+              ],
+              "is_collection": true
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/orders/{id}",
+          "method": "DELETE",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/orders/{id}",
+              "host": [
+                "http://orders-service:9092"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/restock",
+          "method": "GET",
+          "output_encoding": "json-collection",
+          "backend": [
+            {
+              "url_pattern": "/api/restock",
+              "host": [
+                "http://restock-service:9093"
+              ],
+              "is_collection": true
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/restock/{id}",
+          "method": "GET",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/restock/{id}",
+              "host": [
+                "http://restock-service:9093"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/restock/estado",
+          "method": "GET",
+          "output_encoding": "json-collection",
+          "backend": [
+            {
+              "url_pattern": "/api/restock/estado",
+              "host": [
+                "http://restock-service:9093"
+              ],
+              "is_collection": true
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/restock/item/{idItem}",
+          "method": "GET",
+          "output_encoding": "json-collection",
+          "backend": [
+            {
+              "url_pattern": "/api/restock/item/{idItem}",
+              "host": [
+                "http://restock-service:9093"
+              ],
+              "is_collection": true
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/restock/bodega",
+          "method": "GET",
+          "output_encoding": "json-collection",
+          "backend": [
+            {
+              "url_pattern": "/api/restock/bodega",
+              "host": [
+                "http://restock-service:9093"
+              ],
+              "is_collection": true
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/restock/bodega/pendientes",
+          "method": "GET",
+          "output_encoding": "json-collection",
+          "backend": [
+            {
+              "url_pattern": "/api/restock/bodega/pendientes",
+              "host": [
+                "http://restock-service:9093"
+              ],
+              "is_collection": true
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/restock/resumen",
+          "method": "GET",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/restock/resumen",
+              "host": [
+                "http://restock-service:9093"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/restock",
+          "method": "POST",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/restock",
+              "host": [
+                "http://restock-service:9093"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/restock/{id}/estado",
+          "method": "PUT",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/restock/{id}/estado",
+              "host": [
+                "http://restock-service:9093"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        },
+        {
+          "endpoint": "/api/bff/restock/{id}",
+          "method": "DELETE",
+          "output_encoding": "json",
+          "backend": [
+            {
+              "url_pattern": "/api/restock/{id}",
+              "host": [
+                "http://restock-service:9093"
+              ]
+            }
+          ],
+          "extra_config": {
+            "auth/validator": {
+              "alg": "HS256",
+              "jwk_local_path": "/etc/krakend/jwk.json",
+              "disable_jwk_security": true
+            },
+            "qos/circuit-breaker": {
+              "interval": 60,
+              "timeout": 10,
+              "max_errors": 5,
+              "log_status_change": true
+            }
+          }
+        }
+      ],
+      "extra_config": {
+        "github_com/devopsfaith/krakend-cors": {
+          "allow_origins": [
+            "*"
+          ],
+          "allow_methods": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+            "OPTIONS"
+          ],
+          "allow_headers": [
+            "Origin",
+            "Authorization",
+            "Content-Type"
+          ],
+          "expose_headers": [
+            "Content-Length"
+          ],
+          "max_age": "3600s"
+        }
+      }
+    }
+  jwk.json: |
+    {
+      "keys": [
+        {
+          "kty": "oct",
+          "kid": "smartlogix-key-1",
+          "alg": "HS256",
+          "use": "sig",
+          "k": "bXlTdXBlclNlY3JldEtleUZvckp3dEF1dGhlbnRpY2F0aW9uMTIzNDU2"
+        }
+      ]
+    }

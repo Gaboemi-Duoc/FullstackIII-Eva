@@ -1,0 +1,11 @@
+{
+  "keys": [
+    {
+      "kty": "oct",
+      "kid": "smartlogix-key-1",
+      "alg": "HS256",
+      "use": "sig",
+      "k": "bXlTdXBlclNlY3JldEtleUZvckp3dEF1dGhlbnRpY2F0aW9uMTIzNDU2"
+    }
+  ]
+}
