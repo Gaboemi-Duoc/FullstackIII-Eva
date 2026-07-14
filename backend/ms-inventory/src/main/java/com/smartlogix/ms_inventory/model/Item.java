@@ -12,7 +12,8 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_item;
+    @Column(name = "id_item")
+    private Long id;
 
     @Column(nullable = false)
     private String nombre;
@@ -26,8 +27,6 @@ public class Item {
     @Column(nullable = false)
     private Double precio;
 
-    // RF13 — stock por bodega
-    // Ej: "Bodega Central", "Bodega Norte", "Bodega Sur"
     @Column(nullable = false)
     private String bodega;
 }

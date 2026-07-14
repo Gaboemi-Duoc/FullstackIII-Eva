@@ -25,6 +25,14 @@
       "stdout": true
     }
   },
+
+  "telemetry/logging": {
+    "level": "DEBUG",
+    "prefix": "[KRAKEND]",
+    "syslog": false,
+    "stdout": true
+  },
+
   "endpoints": [
     {
       "endpoint": "/api/bff/health",

@@ -24,11 +24,11 @@ public interface InventoryServiceClient {
 
     @PutMapping("/api/inventory/{id}/cantidad")
     Item actualizarCantidad(@PathVariable("id") Long id,
-                                    @RequestBody Map<String, Integer> datos);
+                           @RequestBody Map<String, Integer> datos);
 
     @PutMapping("/api/inventory/{id}/precio")
     Item actualizarPrecio(@PathVariable("id") Long id,
-                                @RequestBody Map<String, Double> datos);
+                         @RequestBody Map<String, Double> datos);
 
     @DeleteMapping("/api/inventory/{id}")
     void eliminarItem(@PathVariable("id") Long id);

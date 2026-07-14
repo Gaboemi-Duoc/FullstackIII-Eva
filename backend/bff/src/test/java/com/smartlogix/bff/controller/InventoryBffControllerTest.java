@@ -56,6 +56,7 @@ class InventoryBffControllerTest {
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(1, response.getBody().getData().size());
+        verify(inventoryBffService, times(1)).getAllItems();
     }
 
     @Test
@@ -68,6 +69,7 @@ class InventoryBffControllerTest {
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals("Caja A", response.getBody().getData().getNombre());
+        verify(inventoryBffService, times(1)).getItemById(1L);
     }
 
     @Test
@@ -79,6 +81,8 @@ class InventoryBffControllerTest {
         ResponseEntity<DtoApiResponse<List<Item>>> response = inventoryBffController.stockBajo(10);
 
         assertEquals(200, response.getStatusCode().value());
+        assertEquals(1, response.getBody().getData().size());
+        verify(inventoryBffService, times(1)).getLowStockItems(10);
     }
 
     @Test
@@ -90,6 +94,8 @@ class InventoryBffControllerTest {
         ResponseEntity<DtoApiResponse<Item>> response = inventoryBffController.crearItem(itemMock);
 
         assertEquals(200, response.getStatusCode().value());
+        assertEquals(itemMock, response.getBody().getData());
+        verify(inventoryBffService, times(1)).createItem(any(Item.class));
     }
 
     @Test
@@ -103,6 +109,8 @@ class InventoryBffControllerTest {
         ResponseEntity<DtoApiResponse<Item>> response = inventoryBffController.actualizarCantidad(1L, datos);
 
         assertEquals(200, response.getStatusCode().value());
+        assertEquals(itemMock, response.getBody().getData());
+        verify(inventoryBffService, times(1)).updateItemQuantity(eq(1L), anyMap());
     }
 
     @Test
@@ -116,6 +124,8 @@ class InventoryBffControllerTest {
         ResponseEntity<DtoApiResponse<Item>> response = inventoryBffController.actualizarPrecio(1L, datos);
 
         assertEquals(200, response.getStatusCode().value());
+        assertEquals(itemMock, response.getBody().getData());
+        verify(inventoryBffService, times(1)).updateItemPrice(eq(1L), anyMap());
     }
 
     @Test
@@ -128,5 +138,29 @@ class InventoryBffControllerTest {
 
         assertEquals(204, response.getStatusCode().value());
         verify(inventoryBffService, times(1)).deleteItem(1L);
+    }
+
+    @Test
+    @DisplayName("listarItems: retorna 500 cuando hay error")
+    void listarItems_retorna500() {
+        DtoApiResponse<List<Item>> mockResponse = new DtoApiResponse<>(false, "Error", null, 500);
+        when(inventoryBffService.getAllItems()).thenReturn(mockResponse);
+
+        ResponseEntity<DtoApiResponse<List<Item>>> response = inventoryBffController.listarItems();
+
+        assertEquals(500, response.getStatusCode().value());
+        verify(inventoryBffService, times(1)).getAllItems();
+    }
+
+    @Test
+    @DisplayName("obtenerItem: retorna 404 cuando no existe")
+    void obtenerItem_retorna404() {
+        DtoApiResponse<Item> mockResponse = new DtoApiResponse<>(false, "Not found", null, 404);
+        when(inventoryBffService.getItemById(99L)).thenReturn(mockResponse);
+
+        ResponseEntity<DtoApiResponse<Item>> response = inventoryBffController.obtenerItem(99L);
+
+        assertEquals(404, response.getStatusCode().value());
+        verify(inventoryBffService, times(1)).getItemById(99L);
     }
 }
