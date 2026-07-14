@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-inventory
+  namespace: smartlogix
+  labels:
+    app: ms-inventory
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-inventory
+  template:
+    metadata:
+      labels:
+        app: ms-inventory
+    spec:
+      initContainers:
+        - name: wait-for-db
+          image: postgres:15-alpine
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h postgres-inventory -p 5432 -U inventory; do
+                echo "waiting for postgres-inventory...";
+                sleep 2;
+              done
+      containers:
+        - name: ms-inventory
+          # Build & push this image from ./backend/ms-inventory, or load it directly
+          # into your local cluster (kind load docker-image / minikube image load).
+          image: smartlogix/ms-inventory:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9091
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres-inventory:5432/inventorydb"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "inventory"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: smartlogix-secrets
+                  key: POSTGRES_INVENTORY_PASSWORD
+          readinessProbe:
+            tcpSocket:
+              port: 9091
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 9091
+            initialDelaySeconds: 45
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 250m
+              memory: 384Mi
+            limits:
+              cpu: 750m
+              memory: 768Mi

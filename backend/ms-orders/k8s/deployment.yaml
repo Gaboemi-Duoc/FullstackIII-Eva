@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-orders
+  namespace: smartlogix
+  labels:
+    app: ms-orders
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-orders
+  template:
+    metadata:
+      labels:
+        app: ms-orders
+    spec:
+      initContainers:
+        - name: wait-for-db
+          image: postgres:15-alpine
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h postgres-orders -p 5432 -U orders; do
+                echo "waiting for postgres-orders...";
+                sleep 2;
+              done
+      containers:
+        - name: ms-orders
+          # Build & push this image from ./backend/ms-orders, or load it directly
+          # into your local cluster (kind load docker-image / minikube image load).
+          image: smartlogix/ms-orders:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9092
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres-orders:5432/ordersdb"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "orders"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: smartlogix-secrets
+                  key: POSTGRES_ORDERS_PASSWORD
+          readinessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 45
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 250m
+              memory: 384Mi
+            limits:
+              cpu: 750m
+              memory: 768Mi

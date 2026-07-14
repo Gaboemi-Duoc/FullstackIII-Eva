@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bff
+  namespace: smartlogix
+  labels:
+    app: bff
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bff
+  template:
+    metadata:
+      labels:
+        app: bff
+    spec:
+      containers:
+        - name: bff
+          # Build & push from ./backend/bff, or load directly into your local cluster.
+          image: smartlogix/bff:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            # These shadow whatever krakend.json/jwk.json the Dockerfile COPY'd in,
+            # so you can change routing/JWT config by editing the ConfigMap and
+            # doing a rollout restart -- no image rebuild needed.
+            - name: bff-config
+              mountPath: /etc/krakend/krakend.json
+              subPath: krakend.json
+            - name: bff-config
+              mountPath: /etc/krakend/jwk.json
+              subPath: jwk.json
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
+        - name: bff-config
+          configMap:
+            name: bff-config

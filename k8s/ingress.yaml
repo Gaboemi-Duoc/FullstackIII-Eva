@@ -1,0 +1,34 @@
+# Requires an ingress controller (e.g. ingress-nginx) installed in the cluster.
+# For local clusters (kind/minikube), add both hostnames to /etc/hosts pointing
+# at the ingress controller's address, e.g.:
+#   127.0.0.1  smartlogix.local api.smartlogix.local
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: smartlogix-ingress
+  namespace: smartlogix
+  annotations:
+    nginx.ingress.class: "nginx"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: smartlogix.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+    - host: api.smartlogix.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: bff
+                port:
+                  number: 8080
