@@ -16,6 +16,28 @@ data:
       "idle_timeout": "120s",
       "endpoints": [
         {
+          "endpoint": "/api/bff/users/register",
+          "method": "OPTIONS",
+          "output_encoding": "no-op",
+          "backend": [
+            {
+              "url_pattern": "/no-op",
+              "host": ["http://localhost"]
+            }
+          ]
+        },
+        {
+          "endpoint": "/api/bff/users/login",
+          "method": "OPTIONS",
+          "output_encoding": "no-op",
+          "backend": [
+            {
+              "url_pattern": "/no-op",
+              "host": ["http://localhost"]
+            }
+          ]
+        },
+        {
           "endpoint": "/api/bff/users/login",
           "method": "POST",
           "output_encoding": "json",
@@ -32,19 +54,6 @@ data:
           "endpoint": "/api/bff/users/register",
           "method": "POST",
           "output_encoding": "json",
-          "backend": [
-            {
-              "url_pattern": "/api/users/register",
-              "host": [
-                "http://user-service:9090"
-              ]
-            }
-          ]
-        },
-        {
-          "endpoint": "/api/bff/users/register",
-          "method": "OPTIONS",
-          "output_encoding": "no-op",
           "backend": [
             {
               "url_pattern": "/api/users/register",
@@ -722,10 +731,10 @@ data:
       ],
       "extra_config": {
         "github_com/devopsfaith/krakend-cors": {
-          "allow_origins": ["*"],
-          "allow_methods": ["*"],
-          "allow_headers": ["*"],
-          "expose_headers": ["*"],
+        "allow_origins": ["*"],
+        "allow_methods": ["*"],
+        "allow_headers": ["*"],
+        "expose_headers": ["*"],
           "max_age": "3600s"
         }
       }
