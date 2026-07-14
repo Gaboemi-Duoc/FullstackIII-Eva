@@ -15,7 +15,7 @@ Write-Host "Installing Traefik ingress controller..." -ForegroundColor Cyan
 helm repo add traefik https://traefik.github.io/charts
 helm repo update
 # Create namespace if it doesn't exist (ignore errors)
-kubectl create namespace smartlogix 2>$null
+kubectl create namespace smartlogix
 helm install traefik traefik/traefik --namespace smartlogix --set service.type=NodePort
 
 Write-Host "Applying shared resources (namespace & secrets)..." -ForegroundColor Cyan
@@ -35,7 +35,7 @@ Write-Host "Deploying frontend..." -ForegroundColor Cyan
 kubectl apply -f frontend/k8s/
 
 Write-Host "Applying Traefik Ingress..." -ForegroundColor Cyan
-kubectl apply -f k8s/ingress-traefik.yaml
+kubectl apply -f k8s/ingress.yaml
 
 Write-Host "Deployment complete. Waiting for pods to be ready..." -ForegroundColor Green
 kubectl wait --for=condition=ready pod -l app=ms-user -n smartlogix --timeout=120s
@@ -53,5 +53,5 @@ Write-Host "`n Port-forwarding services:" -ForegroundColor Yellow
 Write-Host "  - KrakenD gateway: http://localhost:8081"
 Write-Host "  - Frontend:        http://localhost:8080"
 Write-Host "`nRun these commands in separate terminals:"
-Write-Host "  kubectl port-forward -n smartlogix service/krakend 8081:8080"
-Write-Host "  kubectl port-forward -n smartlogix service/frontend 8080:80"
+Write-Host "  kubectl port-forward -n smartlogix service/bff 8080:8080"
+Write-Host "  kubectl port-forward -n smartlogix service/frontend 80:80"
